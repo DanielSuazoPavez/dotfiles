@@ -19,6 +19,24 @@ alias l='ls -CF'
 # Usage: sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+# Git aliases
+alias gl='git log --oneline --graph --decorate'
+alias glog='git log --oneline --graph --decorate --all'
+
 # Zellij aliases
 alias zj='zellij'
 alias zjl='zellij list-sessions'
+alias zja='zellij attach'
+alias zjk='zellij kill-session'
+alias zjka='zellij kill-all-sessions'
+
+# Zoxide (smarter cd)
+alias cd='z'
+
+# Python virtual environment
+alias act='source .venv/bin/activate'
+
+# Quick edits
+alias bashrc='nvim ~/.bashrc'
+alias aliases='nvim ~/.aliases'
+alias reload='source ~/.bashrc'
