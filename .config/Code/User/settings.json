@@ -1,3 +1,7 @@
 {
-    "editor.fontFamily": "'JetBrainsMono Nerd Font', 'Fira Code', monospace"
+    "editor.fontFamily": "'JetBrainsMono Nerd Font', 'Fira Code', monospace",
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.shellIntegration.enabled": false,
+    "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font'",
+    "terminal.integrated.fontSize": 13
 }
