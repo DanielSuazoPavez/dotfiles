@@ -70,6 +70,25 @@ install_nerd_fonts() {
         echo "✅ $font_name Nerd Font installed"
     done
 
+    # Install Cascadia Code (required for Ghostty icon rendering)
+    if fc-list | grep -qi "Cascadia Code"; then
+        echo "✅ Cascadia Code already installed"
+    else
+        echo "📥 Installing Cascadia Code..."
+        local cascadia_version="v2404.23"
+        local cascadia_zip="CascadiaCode.zip"
+
+        curl -fLo "$cascadia_zip" \
+            "https://github.com/microsoft/cascadia-code/releases/download/${cascadia_version}/CascadiaCode-${cascadia_version#v}.zip"
+
+        unzip -q "$cascadia_zip" -d /tmp/cascadia
+        cp /tmp/cascadia/ttf/CascadiaCode.ttf "$font_dir/"
+        cp /tmp/cascadia/ttf/CascadiaCodeNF.ttf "$font_dir/" 2>/dev/null || true
+        rm -rf "$cascadia_zip" /tmp/cascadia
+
+        echo "✅ Cascadia Code installed"
+    fi
+
     # Refresh font cache
     fc-cache -fv
 }

@@ -15,35 +15,98 @@
 # Additionally, each config option is also explained in detail
 # on Ghostty's website, at https://ghostty.org/docs/config.
 
-# Config syntax crash course
-# ==========================
-# # The config file consists of simple key-value pairs,
-# # separated by equals signs.
-# font-family = Iosevka
-# window-padding-x = 2
-#
-# # Spacing around the equals sign does not matter.
-# # All of these are identical:
-# key=value
-# key= value
-# key =value
-# key = value
-#
-# # Any line beginning with a # is a comment. It's not possible to put
-# # a comment after a config option, since it would be interpreted as a
-# # part of the value. For example, this will have a value of "#123abc":
-# background = #123abc
-#
-# # Empty values are used to reset config keys to default.
-# key =
-#
-# # Some config options have unique syntaxes for their value,
-# # which is explained in the docs for that config option.
-# # Just for example:
-# resize-overlay-duration = 4s 200ms
-#
-#
-shell-integration = "bash"
-font-family = "JetBrainsMono Nerd Font"
+# ============================================================================
+# Terminal Configuration
+# ============================================================================
+# Use Ghostty's native TERM for better compatibility
+term = xterm-ghostty
 
+# Try legacy width method for better compatibility with some apps
+grapheme-width-method = legacy
+
+# ============================================================================
+# Shell Integration
+# ============================================================================
+shell-integration = "bash"
+# Enhanced shell integration features:
+# - cursor: marks command boundaries for navigation
+# - sudo: detects elevated privileges
+# - title: updates window title with current directory/command
+shell-integration-features = cursor,sudo,title
+
+# ============================================================================
+# Font Configuration
+# ============================================================================
+font-family = "JetBrainsMono Nerd Font"
+font-size = 13
+
+# Map specific Unicode codepoint U+23F5 (⏵) to Cascadia Code
+# This character is used by Claude Code for UI elements like "accept edits"
+# Cascadia Code is installed via install.sh
+font-codepoint-map = "U+23F5=Cascadia Code"
+
+# ============================================================================
+# Theme - Nord Color Palette (matches Starship config)
+# ============================================================================
+background = 1e1e1e
+foreground = d8dee9
+cursor-color = 88c0d0
+
+# Nord palette colors
+palette = 0=#3b4252
+palette = 1=#bf616a
+palette = 2=#a3be8c
+palette = 3=#ebcb8b
+palette = 4=#81a1c1
+palette = 5=#b48ead
+palette = 6=#88c0d0
+palette = 7=#e5e9f0
+palette = 8=#4c566a
+palette = 9=#bf616a
+palette = 10=#a3be8c
+palette = 11=#ebcb8b
+palette = 12=#81a1c1
+palette = 13=#b48ead
+palette = 14=#8fbcbb
+palette = 15=#eceff4
+
+# ============================================================================
+# Cursor Configuration
+# ============================================================================
+cursor-style = block
+cursor-style-blink = true
+
+# ============================================================================
+# Scrollback & Behavior
+# ============================================================================
+scrollback-limit = 10000
+confirm-close-surface = true
+copy-on-select = true
+
+# ============================================================================
+# Window Configuration
+# ============================================================================
+window-padding-x = 8
+window-padding-y = 8
+window-title-font-family = JetBrainsMono Nerd Font
+window-decoration = true
+
+# ============================================================================
+# WSL2 Performance Optimizations
+# ============================================================================
+adjust-cell-height = 0
+adjust-underline-position = 0
+adjust-underline-thickness = 0
+
+# ============================================================================
+# Keybindings
+# ============================================================================
 keybind = shift+enter=text:\x1b\r
+
+# Font size adjustment
+keybind = ctrl+plus=increase_font_size:1
+keybind = ctrl+minus=decrease_font_size:1
+keybind = ctrl+0=reset_font_size
+
+# Quick config reload
+keybind = ctrl+shift+r=reload_config
