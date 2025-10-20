@@ -44,10 +44,15 @@ Install these before running the install script:
 - **Ghostty terminal**: Follow [official installation guide](https://ghostty.org/docs/install/build)
 
 - **Neovim**
-  ```bash
-  sudo apt-get install -y neovim
-  # OR build from source for latest version
-  ```
+
+    Our Neovim configuration is based on `kickstart.nvim` and requires a **recent version of Neovim (v0.9.0 or newer)**.
+
+    The easiest way to install a recent version on Linux is by using the **AppImage**:
+    1.  Download the `nvim.appimage` from the [Neovim releases page](https://github.com/neovim/neovim/releases).
+    2.  Make it executable: `chmod u+x nvim.appimage`
+    3.  Move it to a location in your `PATH`, for example: `sudo mv nvim.appimage /usr/local/bin/nvim`
+
+    Alternatively, you can build from source for the very latest updates. Using your system's package manager (e.g., `sudo apt-get install neovim`) is also an option, but please verify that it provides a recent enough version.
 
 ## Quick Setup
 
