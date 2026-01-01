@@ -17,7 +17,17 @@ return {
       highlight NeoTreeGitConflict guifg=#F92672
     ]])
 
-    require("neo-tree").setup({})
+    require("neo-tree").setup({
+      filesystem = {
+        filtered_items = {
+          visible = false,
+          hide_dotfiles = false,
+          hide_gitignored = true,
+          never_show = { ".git" },
+        },
+        use_libuv_file_watcher = true,
+      },
+    })
     vim.keymap.set("n", "<C-n>", ":Neotree filesystem reveal toggle left<CR>", {})
   end,
 }
