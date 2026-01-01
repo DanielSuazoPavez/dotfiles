@@ -1,0 +1,40 @@
+# OS and editor files
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode-settings-local.json
+
+# Sensitive files (never commit these!)
+.ssh/
+.aws/
+.env
+.env.local
+*.pem
+*.key
+.netrc
+credentials
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+*.egg-info/
+
+# Pre-commit
+.secrets.baseline
+
+# Backup directories created by install script
+dotfiles-backup-*/
+
+# Makefile artifacts (if any)
+*.o
+
+# VS Code workspace files
+*.code-workspace
+
+# AI-Agent stuff
+.claude
