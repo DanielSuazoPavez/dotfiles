@@ -94,6 +94,16 @@ When resuming from a handoff:
 | 3-7 days | Stale | Verify state matches |
 | > 7 days | Very stale | Re-analyze before continuing |
 
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **Skip Code Commit** | Docs committed with code changes | Always commit code first, then docs |
+| **Wrong Bump** | Patch for new feature | Major=breaking, Minor=feature, Patch=fix |
+| **Empty Changelog** | "Updated stuff" | Describe what changed and why |
+| **Stale Backlog** | Completed items still in TODO | Move to "Recently Completed" |
+| **No Handoff** | Ending multi-day work without context | Create handoff for sessions >2h |
+
 ## Notes
 
 - Uncommitted code changes are committed first, then docs/version updates

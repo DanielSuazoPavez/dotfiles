@@ -1,3 +1,8 @@
+---
+name: next-steps
+description: Preserve context before /clear. Generates a continuation file for resuming work in a new session.
+---
+
 Use before /clear to preserve context. Generates a continuation file for resuming work in a new session.
 
 ## Output
@@ -76,3 +81,12 @@ Wrote continuation file.
 To resume in a new session, paste:
 read docs/sessions/YYYY-MM-DD_HHmm_continue.md
 ```
+
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **The Novel** | 500+ line continuation file | Focus on actionable context only |
+| **Stale Files** | Old continuation files pile up | Delete after resuming |
+| **Missing Branch** | Forgot to note current branch | Always include branch name |
+| **No Next Steps** | Context but no direction | List 1-3 immediate actions |

@@ -1,7 +1,7 @@
 ---
 name: list-memories
 description: List available memories with their Quick Reference summaries. Use to discover relevant context without loading full files into conversation.
-allowed-tools: Bash(for f in *), Bash(sed *)
+allowed-tools: Bash(for f in *)
 ---
 
 # List Memories
@@ -20,27 +20,37 @@ for f in .claude/memories/*.md; do
 done
 ```
 
-## Output
+## Decision Tree: What to Load
 
-Shows each memory name with its Quick Reference summary:
+### By Task Type
 
-```
-### essential-conventions-code_style
-- Use snake_case for functions
-- Classes use PascalCase
-- ...
----
-### philosophy-reducing_entropy
-- Measure final code amount, not effort
-- ...
----
-```
+| Task | Load | Skip |
+|------|------|------|
+| **New feature** | `essential-*`, architecture | `idea-*`, unrelated areas |
+| **Bug fix** | `essential-*`, affected area only | Everything else |
+| **Refactor** | `essential-conventions-*` | `idea-*`, `branch-*` |
+| **Quick question** | Just Quick Reference | Don't load full files |
+| **Continue branch work** | `branch-*` for that branch | Other branches |
+
+### Prioritization
+
+1. **Essential** - Always relevant (conventions, architecture)
+2. **Area-specific** - Only if touching that area
+3. **Branch** - Only if continuing that specific work
+4. **Idea** - Only if exploring that direction
+
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **Load Everything** | Wastes context on irrelevant info | Use Quick Reference to filter |
+| **Skip Essential** | Make mistakes the memory prevents | Always check essential-* |
+| **Ignore Quick Reference** | Load full file for one fact | Read summary first |
+| **Stale Branch Memories** | Loading old branch context | Check if branch still active |
 
 ## After Running
 
-Based on the Quick References, decide which full memories to read:
+Based on Quick References, load only relevant full memories:
 ```
 Read .claude/memories/<memory-name>.md
 ```
-
-Only load full memories when their Quick Reference indicates relevance to the current task.

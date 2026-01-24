@@ -4,6 +4,8 @@ description: Generate a pull request description. Use after /wrap-up when ready 
 disable-model-invocation: true
 ---
 
+# Draft PR
+
 Generate a pull request description for the current branch.
 
 ## Instructions
@@ -13,30 +15,70 @@ Generate a pull request description for the current branch.
    - Check changed files: `git diff main --stat`
    - Read CHANGELOG.md for the latest entry (created by /wrap-up)
 
-2. **Generate PR description** following this structure:
+2. **Check PR size** (see sizing guidance below)
+
+3. **Generate PR description** following this structure:
 
 ```markdown
-## Description
-[Concise summary of what this PR does]
+## Summary
+[2-3 sentences: what and why]
 
-## Motivation and Context
-[Why this change is needed - problem it solves or feature it adds]
+## Changes
+- [Key change 1]
+- [Key change 2]
 
-## How has this been tested?
-[Testing approach - manual, automated, or N/A with reason]
-
-## Checklist
-- [ ] Include changes in the root `CHANGELOG.md`
-- [ ] Bumped package version in the `pyproject.toml`
-- [ ] Update tests
-- [ ] Update documentation
+## Testing
+[How you verified it works]
 ```
 
-3. **Output** the PR description to console (ready to copy/paste into GitHub)
+4. **Output** the PR description to console (ready to copy/paste)
+
+## PR Sizing - The Hard Rule
+
+| Lines Changed | Action |
+|---------------|--------|
+| <200 | Ship it |
+| 200-400 | Review scope - can it split? |
+| 400-600 | Should split unless tightly coupled |
+| >600 | Must split - find the seam |
+
+### How to Split
+
+1. **By layer**: API changes → Backend logic → Frontend
+2. **By feature slice**: Core feature → Edge cases → Polish
+3. **By risk**: Safe refactors → Behavioral changes
+4. **Stacked PRs**: PR1 (base) → PR2 (builds on PR1) → PR3
+
+### Split Decision Tree
+
+```
+Is the PR >400 lines?
+├─ No → Ship it
+└─ Yes → Are all changes tightly coupled?
+    ├─ Yes → Document why in PR, ship it
+    └─ No → Find the seam:
+        ├─ Different files/areas? → Split by area
+        ├─ Refactor + feature? → Refactor PR first
+        └─ Multiple features? → One feature per PR
+```
+
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **The Mega-PR** | 1500 lines, "it's all connected" | It's not. Find the seam. |
+| **The Empty PR** | "Fixed bug" | Add context: what bug, why it happened |
+| **The Novel** | 5 paragraphs explaining the diff | Summary should add context, not repeat code |
+| **The Commit Dump** | Copy-pasted commit messages | Synthesize into coherent narrative |
+
+## The Test
+
+> Can a reviewer understand the WHY in 30 seconds and review in one sitting?
+
+If no → split or improve description.
 
 ## Notes
 
 - Run `/wrap-up` first to update changelog and version
-- Keep description concise - details are in the changelog
-- Reference issue numbers if applicable: `Fixes #123`
-- Check off completed checklist items with `[x]`
+- Reference issue numbers: `Fixes #123`
+- Smaller PRs = faster reviews = faster merges

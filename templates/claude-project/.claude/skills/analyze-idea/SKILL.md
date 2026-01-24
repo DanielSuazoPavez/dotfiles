@@ -1,3 +1,8 @@
+---
+name: analyze-idea
+description: Research and exploration tasks. Investigates a topic, gathers evidence, and generates a saved report. Use for feasibility analysis, coverage gaps, codebase audits.
+---
+
 Use for research and exploration tasks. Investigates a topic, gathers evidence, and generates a saved report.
 
 ## Context
@@ -87,3 +92,12 @@ The user provides context after `/analyze-idea` describing what to investigate. 
 - Be factual and evidence-based
 - Include file paths and line numbers for traceability
 - Keep recommendations actionable but don't implement them
+
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **Analysis Paralysis** | Investigating forever | Set scope, timebox, deliver findings |
+| **Confirmation Bias** | Only finding evidence for hypothesis | Actively seek counter-evidence |
+| **Shallow Investigation** | Surface-level grep | Trace code paths, check tests, read commits |
+| **No Evidence** | "I think X is true" | Include file paths, line numbers, metrics |

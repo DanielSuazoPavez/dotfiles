@@ -58,3 +58,13 @@ Brief description.
 - Use underscores in filenames: `relevant-opensearch-query_patterns.md`
 - Branch memories include date: `branch-20260121-feature_name-context.md`
 - Idea memories need: `**NOTE**: ONLY READ WITH USER EXPLICIT PERMISSION`
+
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **One-off Info** | Memory for temporary facts | Use session handoff or inline comment |
+| **Duplicate Memory** | Topic already has a memory | Update existing memory instead |
+| **No Quick Reference** | Full file must be loaded | Always add Quick Reference section |
+| **Wrong Category** | Using `essential-` for WIP | Match category to stability |
+| **Giant Memory** | 500+ lines, everything included | Split into focused memories |

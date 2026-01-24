@@ -18,6 +18,18 @@ Create professional software diagrams using Mermaid's text-based syntax.
 | C4 Diagrams | System architecture at multiple levels |
 | State Diagrams | State machines, lifecycle states |
 
+## When to Use Which
+
+```
+What are you showing?
+├─ Data relationships → ERD
+├─ Object structure → Class Diagram
+├─ Time-based flow → Sequence Diagram
+├─ Process/algorithm → Flowchart
+├─ System boundaries → C4 Diagram
+└─ State transitions → State Diagram
+```
+
 ## Quick Examples
 
 ### Class Diagram
@@ -101,6 +113,16 @@ erDiagram
 3. Use meaningful names
 4. Comment complex relationships with `%%`
 5. Store `.mmd` files alongside code
+
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **The Kitchen Sink** | 50+ nodes, unreadable | Split into multiple diagrams |
+| **Wrong Abstraction** | ERD for process flow | Match diagram type to content |
+| **Missing Legend** | Custom notation unexplained | Add `%% Legend:` comment |
+| **Dead Diagram** | Code changed, diagram didn't | Store near code, update together |
+| **Over-Detailed** | Implementation details in architecture | Match detail level to audience |
 
 ## Rendering
 

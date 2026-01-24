@@ -61,6 +61,36 @@ Does it follow established patterns?
 ### D8: Practical Usability (15 pts)
 Decision trees, working examples, error handling, edge cases?
 
+## Scoring Calibration
+
+### D1 (Knowledge Delta) - 20 pts
+
+| Score | Criteria |
+|-------|----------|
+| 18-20 | Expert says "yes, this took years to learn" |
+| 14-17 | Useful but partially derivable from first principles |
+| 10-13 | Mostly activation knowledge, some expert bits |
+| 5-9 | Tutorial territory - explains basics |
+| 0-4 | Pure redundancy - Claude already knows this |
+
+### D3 (Anti-Pattern Quality) - 15 pts
+
+| Score | Criteria |
+|-------|----------|
+| 13-15 | Specific anti-patterns with reasoning AND fixes |
+| 10-12 | Named anti-patterns with some reasoning |
+| 6-9 | Vague warnings ("avoid bad practices") |
+| 0-5 | No anti-patterns section |
+
+## Edge Cases
+
+| Skill Type | Evaluation Adjustment |
+|------------|----------------------|
+| **Reset/Calibration** | D1 judged on "resets behavior effectively" not "adds knowledge" |
+| **Meta-skills** | Self-reference is fine if genuinely useful |
+| **Navigation** | Minimal is correct; penalize bloat, not brevity |
+| **Wrapper/Utility** | Lower D1 bar if procedural value is clear |
+
 ## Grading Scale
 
 | Grade | Score | Status |
@@ -73,10 +103,12 @@ Decision trees, working examples, error handling, edge cases?
 
 ## Common Failures
 
-1. **The Tutorial** - Explains basics Claude knows
-2. **The Dump** - 800+ lines, everything included
-3. **The Invisible Skill** - Great content, vague description
-4. **The Freedom Mismatch** - Rigid for creative, vague for fragile
+| Failure | How to Recognize | How to Fix |
+|---------|------------------|------------|
+| **The Tutorial** | "What is X" sections, explains basics | Delete basics, keep only expert delta |
+| **The Dump** | 800+ lines, everything included | Split into skill + references |
+| **The Invisible Skill** | Great content, vague description | Add WHEN and KEYWORDS to description |
+| **The Freedom Mismatch** | Rigid for creative, vague for fragile | Match freedom to task risk |
 
 ## Evaluation Protocol
 
@@ -85,6 +117,35 @@ Decision trees, working examples, error handling, edge cases?
 3. Score each dimension with evidence
 4. Calculate total, assign grade
 5. Generate report with critical issues and top 3 improvements
+
+## Example Evaluation
+
+**Before (D - 62/120):**
+```markdown
+# Git Workflow
+Use branches for features. Commit often. Write good messages.
+```
+- D1: 6/20 - Claude knows this
+- D3: 0/15 - No anti-patterns
+- D8: 4/15 - No decision trees
+
+**After (A - 112/120):**
+```markdown
+# Git Workflow
+## Branch Naming Decision Tree
+[specific tree based on team conventions]
+
+## Commit Sizing
+| Change Type | Commit Strategy |
+[expert guidance on atomic commits]
+
+## Anti-Patterns
+| Pattern | Why Bad | Fix |
+| Mega-commit | Unreviewable | [specific split strategy]
+```
+- D1: 18/20 - Team-specific expert knowledge
+- D3: 14/15 - Specific anti-patterns with fixes
+- D8: 14/15 - Decision trees, examples
 
 ## The Meta-Question
 
