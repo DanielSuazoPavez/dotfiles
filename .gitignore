@@ -38,3 +38,5 @@ dotfiles-backup-*/
 
 # AI-Agent stuff
 .claude
+!templates/claude-project/.claude
+!templates/claude-project/.claude/**
