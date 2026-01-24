@@ -60,5 +60,9 @@ cache/
 # Claude Code (project-specific settings tracked separately)
 .claude/
 
+# Planning artifacts (debug sessions are ephemeral)
+.planning/debug/*
+!.planning/debug/.gitkeep
+
 # Project-specific (add as needed)
 # *.lock  # Uncomment if not tracking uv.lock

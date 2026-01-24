@@ -1,21 +1,26 @@
 #!/bin/bash
 
-# Get current git branch
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+# === ESSENTIAL CONTEXT (auto-injected) ===
 
-cat <<EOF
-SESSION START
+# Output essential memories directly - these are always relevant
+for f in .claude/memories/essential-*.md; do
+  if [ -f "$f" ]; then
+    echo "=== $(basename "$f" .md) ==="
+    cat "$f"
+    echo ""
+  fi
+done
 
-MANDATORY FIRST ACTIONS (BEFORE ANSWERING THE USER):
-1. Read essential memories in parallel:
-   - .claude/memories/essential-conventions-code_style.md
-   - .claude/memories/essential-preferences-conversational_patterns.md
-2. Apply conversational patterns immediately
-3. Acknowledge completion briefly
+# === AVAILABLE MEMORIES ===
+echo "=== OTHER MEMORIES AVAILABLE ==="
+ls -1 .claude/memories/*.md 2>/dev/null | xargs -n1 basename | sed 's/.md$//' | grep -v "^essential-" || echo "(none)"
+echo ""
+echo "Run /list-memories for Quick Reference summaries, or read specific files when relevant."
 
-CURRENT CONTEXT:
-- Branch: ${CURRENT_BRANCH}
-- Main branch: main
-EOF
+# === GIT CONTEXT ===
+echo ""
+echo "=== GIT CONTEXT ==="
+echo "Branch: $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'unknown')"
+echo "Main: main"
 
 exit 0

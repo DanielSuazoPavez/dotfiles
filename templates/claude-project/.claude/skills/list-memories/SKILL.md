@@ -1,53 +1,46 @@
 ---
 name: list-memories
-description: List project memories with their Quick Reference sections. Use to discover available context before reading full memories.
+description: List available memories with their Quick Reference summaries. Use to discover relevant context without loading full files into conversation.
+allowed-tools: Bash(for f in *), Bash(sed *)
 ---
 
-# List Memories Skill
+# List Memories
 
-## Purpose
-
-Discover and preview project memories without loading full content into context.
+Preview available memories without loading full content.
 
 ## Instructions
 
-When this skill is invoked:
-
-1. **List all memories** in `.claude/memories/` directory
-2. **Extract Quick Reference** section from each (the content between `## 1. Quick Reference` and `## 2.`)
-3. **Display** memory names with their Quick Reference summaries
-
-## Output Format
-
-For each memory file:
-```
-### <memory-name>
-<Quick Reference content>
----
-```
-
-## Implementation
+Run this command to extract only Quick Reference sections:
 
 ```bash
-# List memories and extract Quick Reference sections
-for file in .claude/memories/*.md; do
-  name=$(basename "$file" .md)
-  echo "### $name"
-  # Extract content between "## 1. Quick Reference" and "## 2."
-  sed -n '/^## 1\. Quick Reference/,/^## 2\./p' "$file" | head -n -1 | tail -n +2
+for f in .claude/memories/*.md; do
+  echo "### $(basename "$f" .md)"
+  sed -n '/^## .*Quick Reference/,/^## /{/^## .*Quick Reference/d;/^## /d;p}' "$f" 2>/dev/null
   echo "---"
 done
 ```
 
-## When to Use
+## Output
 
-- At session start to understand available context
-- When unsure which memory contains relevant information
-- Before reading a full memory to confirm relevance
+Shows each memory name with its Quick Reference summary:
+
+```
+### essential-conventions-code_style
+- Use snake_case for functions
+- Classes use PascalCase
+- ...
+---
+### philosophy-reducing_entropy
+- Measure final code amount, not effort
+- ...
+---
+```
 
 ## After Running
 
-Based on the Quick References, decide which full memories to read using:
+Based on the Quick References, decide which full memories to read:
 ```
 Read .claude/memories/<memory-name>.md
 ```
+
+Only load full memories when their Quick Reference indicates relevance to the current task.

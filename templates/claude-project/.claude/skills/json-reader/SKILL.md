@@ -1,6 +1,6 @@
 ---
 name: json-reader
-description: Process and analyze JSON files using jq commands instead of reading entire files. Use for inspecting, filtering, transforming JSON structures, and extracting specific data without loading large files into context.
+description: Use when reading, inspecting, or analyzing any JSON file. Uses jq for efficient querying instead of loading entire files into context. Activate this skill whenever a user asks to read, view, explore, or extract data from a .json file.
 ---
 
 # JSON Reader Skill
