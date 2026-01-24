@@ -1,7 +1,6 @@
 ---
 name: skill-judge
 description: Evaluate Agent Skill design quality against specifications and best practices. Use when reviewing, auditing, or improving SKILL.md files. Provides multi-dimensional scoring and actionable improvements.
-disable-model-invocation: true
 ---
 
 # Skill Judge
