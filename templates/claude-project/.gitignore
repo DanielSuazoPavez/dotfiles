@@ -37,11 +37,15 @@ htmlcov/
 # Runtime directories (created during execution)
 build/
 dist/
-data/
+data/*
 logs/
-output/
+output/*
 tmp/
 cache/
+
+# Keep empty directories
+!data/.gitkeep
+!output/.gitkeep
 
 # IDEs
 .idea/

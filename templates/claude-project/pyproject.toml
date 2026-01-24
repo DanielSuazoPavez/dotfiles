@@ -7,11 +7,16 @@ requires-python = ">=3.12"
 dependencies = []
 
 [project.optional-dependencies]
-dev = [
+test = [
     "pytest>=8.0",
     "pytest-cov>=4.0",
-    "ty>=0.0.1a7",
+]
+lint = [
     "pre-commit",
+    "ty>=0.0.1a7",
+]
+dev = [
+    "project-name[test,lint]",
 ]
 
 # Uncomment to add CLI entry point
