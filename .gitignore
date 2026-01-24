@@ -40,3 +40,8 @@ dotfiles-backup-*/
 .claude
 !templates/claude-project/.claude
 !templates/claude-project/.claude/**
+
+# VS Code (except template)
+.vscode/
+!templates/claude-project/.vscode
+!templates/claude-project/.vscode/**

@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+
+# Type checkers
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment & secrets
+.env
+.env.local
+*.pem
+*.key
+
+# Runtime directories (created during execution)
+build/
+dist/
+data/
+logs/
+output/
+tmp/
+cache/
+
+# IDEs
+.idea/
+# .vscode/  # Uncomment if not tracking VS Code settings
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Claude Code (project-specific settings tracked separately)
+.claude/
+
+# Project-specific (add as needed)
+# *.lock  # Uncomment if not tracking uv.lock
