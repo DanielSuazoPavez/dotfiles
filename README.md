@@ -14,4 +14,3 @@ cd ~/dotfiles
 - Ghostty terminal
 - Zellij multiplexer
 - Neovim and VS Code settings
-
