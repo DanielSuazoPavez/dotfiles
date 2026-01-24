@@ -93,13 +93,17 @@ Decision trees, working examples, error handling, edge cases?
 
 ## Grading Scale
 
-| Grade | Score | Status |
-|-------|-------|--------|
-| A | 90%+ (108+) | Production-ready |
-| B | 80-89% | Minor improvements |
-| C | 70-79% | Clear improvement path |
-| D | 60-69% | Significant issues |
-| F | <60% | Needs redesign |
+| Grade | Score | Description |
+|-------|-------|-------------|
+| A | 108+ (90%) | Exemplary - reference quality |
+| A- | 102-107 (85-89%) | Excellent - minimal polish needed |
+| B+ | 96-101 (80-84%) | Solid - minor improvements |
+| B | 90-95 (75-79%) | Good - clear path forward |
+| B- | 84-89 (70-74%) | Functional - needs attention |
+| C+ | 78-83 (65-69%) | Adequate - notable gaps |
+| C | 72-77 (60-64%) | Needs work |
+| D | 60-71 (50-59%) | Significant issues |
+| F | <60 (<50%) | Needs redesign |
 
 ## Common Failures
 
