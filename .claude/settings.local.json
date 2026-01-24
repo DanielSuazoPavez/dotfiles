@@ -1,9 +1,20 @@
 {
-  "spinnerTipsEnabled": false,
   "permissions": {
-    "allow": []
+    "allow": [
+      "Skill(list-memories)"
+    ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -26,5 +37,6 @@
         ]
       }
     ]
-  }
+  },
+  "spinnerTipsEnabled": false
 }
