@@ -21,6 +21,68 @@ The user provides context after `/analyze-idea` describing what to investigate. 
    - Use Task tool with Explore agent for broad codebase questions
    - Gather concrete evidence (file paths, line counts, patterns found)
 
+### Investigation Techniques
+
+#### For Code Analysis
+```bash
+# Find all implementations of a pattern
+grep -rn "pattern" src/ --include="*.py"
+
+# Trace dependencies
+grep -rn "from module import" . --include="*.py"
+
+# Find test coverage for a module
+grep -rn "test_modulename" tests/
+
+# Check git history for context
+git log --oneline -20 -- path/to/file.py
+git blame path/to/file.py | head -50
+```
+
+#### For Architecture Questions
+1. Start with entry points (main.py, __init__.py, routes/)
+2. Follow imports to trace data flow
+3. Check tests for expected behavior
+4. Look for existing docs (README, docstrings, comments)
+
+#### For Coverage/Gap Analysis
+```bash
+# Count lines per module
+find src/ -name "*.py" -exec wc -l {} + | sort -n
+
+# Find untested modules
+diff <(ls src/*.py | xargs -n1 basename | sed 's/.py//') \
+     <(ls tests/test_*.py | xargs -n1 basename | sed 's/test_//' | sed 's/.py//')
+
+# Check for TODO/FIXME
+grep -rn "TODO\|FIXME\|HACK" src/
+```
+
+#### For Feasibility Analysis
+1. Identify dependencies (external libs, APIs, infrastructure)
+2. Check for similar implementations in codebase
+3. Estimate scope by counting affected files
+4. Look for blockers (tech debt, missing abstractions)
+
+### When to Stop Investigating
+
+```
+Should I keep digging?
+├─ Have I answered the core question?
+│   └─ Yes → Stop, write findings
+├─ Are new searches returning the same results?
+│   └─ Yes → Diminishing returns, stop
+├─ Have I checked 3+ independent sources (code, tests, docs, git history)?
+│   └─ Yes → Probably enough evidence
+├─ Is this a tangent from the original question?
+│   └─ Yes → Note it, don't pursue
+└─ Am I confident enough to make a recommendation?
+    ├─ Yes → Stop, write report
+    └─ No → One more targeted search, then stop anyway
+```
+
+**Rule:** Deliver findings with current evidence rather than perfect findings never.
+
 3. **Evaluate objectively**:
    - Assess findings against practical criteria
    - Note trade-offs, not just problems

@@ -70,6 +70,33 @@ Only flag issues that are actual problems, not theoretical concerns:
 
 **Important**: Before flagging "missing validation" or "missing error handling", trace the data flow. If validation happens at the API boundary or errors are handled by the caller, don't flag it.
 
+## Issue Severity Decision Tree
+
+```
+Is this issue...
+├─ A security flaw or data corruption risk?
+│   └─ Yes → Critical
+├─ On a hot path (frequently executed)?
+│   ├─ Yes + causes failures → Critical
+│   └─ Yes + performance issue → Major
+├─ Handled by caller or another layer?
+│   └─ Yes → Not an issue (don't flag)
+├─ Breaking a public API contract?
+│   └─ Yes → Critical
+└─ Everything else
+    ├─ Affects correctness → Major
+    └─ Style/preference → Don't flag
+```
+
+## Anti-Patterns (Reviewer Mistakes)
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **False Positive** | Flagging validation "missing" when it's elsewhere | Trace data flow before flagging |
+| **Style Nitpicking** | "I would have done X" | Only flag if approach is wrong, not different |
+| **Missing Context** | Reviewing without understanding the goal | Read PR description, check related code first |
+| **Scope Creep** | "While you're here, also fix Y" | Review what's in the PR, not what's not |
+
 ## Output Format
 
 ```markdown

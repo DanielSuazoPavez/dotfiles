@@ -1,9 +1,30 @@
 ---
 name: next-steps
-description: Preserve context before /clear. Generates a continuation file for resuming work in a new session.
+description: Use before /clear when you have uncommitted changes, partial work, or context needed for next session.
 ---
 
 Use before /clear to preserve context. Generates a continuation file for resuming work in a new session.
+
+## What to Include vs Exclude
+
+```
+Is this information...
+├─ Needed to resume work immediately?
+│   ├─ Yes → Include in continuation file
+│   └─ No → Skip it
+├─ Already in CLAUDE.md or memories?
+│   ├─ Yes → Reference, don't repeat
+│   └─ No → Include if important
+├─ Specific to this branch?
+│   ├─ Yes → Include branch name and context
+│   └─ No → Probably skip
+└─ Actionable (has a "do this next")?
+    ├─ Yes → Include in Next Steps
+    └─ No → Consider if needed at all
+```
+
+**Always include:** Branch name, uncommitted changes summary, next 1-3 actions
+**Usually skip:** Full file contents, obvious context, completed work details
 
 ## Output
 
@@ -90,3 +111,25 @@ read docs/sessions/YYYY-MM-DD_HHmm_continue.md
 | **Stale Files** | Old continuation files pile up | Delete after resuming |
 | **Missing Branch** | Forgot to note current branch | Always include branch name |
 | **No Next Steps** | Context but no direction | List 1-3 immediate actions |
+| **The Dump** | Copy-pasted full files | Summarize, link to files |
+| **Vague Actions** | "Continue working on feature" | Specific: "Add tests for X in file Y" |
+| **Missing Dependencies** | Next step requires context not saved | Include blockers and prerequisites |
+| **Over-documenting** | Every detail from session | Only what's needed to resume |
+
+### Examples
+
+**Bad continuation file:**
+```markdown
+## Next Steps
+- Keep working on the feature
+- Fix bugs
+- Write tests
+```
+
+**Good continuation file:**
+```markdown
+## Next Steps
+1. Add unit tests for `validate_input()` in `src/validator.py:45`
+2. Fix edge case: empty array input returns None instead of []
+3. Run `pytest tests/test_validator.py -v` to verify
+```

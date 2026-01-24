@@ -7,6 +7,37 @@ description: Analyze and suggest better variable, function, and class names base
 
 Suggest better names based on context and conventions.
 
+## Analysis Workflow
+
+### Step 1: Gather Scope
+```bash
+# List all symbols in a file
+grep -E "^(def |class |[A-Z_]+ =)" src/module.py
+
+# Find all function definitions
+grep -rn "def " src/ --include="*.py"
+```
+
+### Step 2: Categorize Issues
+Run through each name asking:
+1. **What does it do?** → If you can't tell, it's unclear
+2. **Is it honest?** → Does behavior match name?
+3. **Is it consistent?** → Same pattern as similar names?
+
+### Step 3: Prioritize Fixes
+| Severity | Criteria | Example |
+|----------|----------|---------|
+| Critical | Misleading - name lies | `get_x()` that mutates |
+| Major | Unclear in large scope | `d` for date in 100-line function |
+| Minor | Convention violation | `active` instead of `is_active` |
+
+### Step 4: Report
+Generate report grouped by severity, with:
+- Location (file:line)
+- Current name
+- Issue description
+- Suggested name
+
 ## What to Analyze
 
 - Variables, constants, functions, methods
@@ -147,3 +178,12 @@ Is it a boolean?
 - Full words over abbreviations (except well-known: api, url, id)
 - Consistency within project > perfect naming
 - Refactor names as understanding improves
+
+## Refactoring Checklist
+
+When renaming:
+1. **Find all usages**: `grep -rn "old_name" src/ tests/`
+2. **Update tests**: Test files often have matching names
+3. **Update docs**: README, docstrings, comments
+4. **Update imports**: Check all `from X import old_name`
+5. **Commit separately**: Rename PR should be isolated from logic changes

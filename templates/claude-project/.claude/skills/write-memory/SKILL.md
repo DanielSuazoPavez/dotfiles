@@ -17,6 +17,30 @@ Activate when user says:
 - "create a memory for..."
 - "remember this..."
 
+## Category Decision Tree
+
+```
+Is this information stable for 6+ months?
+├─ Yes → Is it project-wide architecture or core workflow?
+│   ├─ Yes → `essential-`
+│   └─ No → `relevant-`
+│
+└─ No → Is it tied to a specific feature branch?
+    ├─ Yes → `branch-` (include date)
+    └─ No → Is it a future implementation idea?
+        ├─ Yes → `idea-` (needs explicit permission note)
+        └─ No → Consider if a memory is needed at all
+```
+
+### Quick Category Reference
+
+| Category | Lifetime | Example |
+|----------|----------|---------|
+| `essential-` | Permanent | Code style, architecture decisions |
+| `relevant-` | Months | API patterns, tool configurations |
+| `branch-` | Days/weeks | WIP context for feature-x |
+| `idea-` | Until decided | Future refactoring plans |
+
 ## Instructions
 
 1. **Read conventions**: Check `.claude/memories/essential-conventions-memory.md` for naming and format rules
@@ -58,6 +82,12 @@ Brief description.
 - Use underscores in filenames: `relevant-opensearch-query_patterns.md`
 - Branch memories include date: `branch-20260121-feature_name-context.md`
 - Idea memories need: `**NOTE**: ONLY READ WITH USER EXPLICIT PERMISSION`
+
+## Reference Examples
+
+For format and structure examples, see existing memories:
+- `essential-conventions-memory.md` - naming conventions and format rules
+- `essential-conventions-code_style.md` - example of stable, permanent memory
 
 ## Anti-Patterns
 

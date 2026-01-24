@@ -8,6 +8,32 @@ disable-model-invocation: true
 
 Create comprehensive testing documentation.
 
+## Expert QA Mindset
+
+**Think like a saboteur**: Your job is to break the system before users do.
+
+### Risk-Based Testing
+Focus effort where failures hurt most:
+1. **Money paths** - Payment, billing, refunds
+2. **Data integrity** - User data, transactions
+3. **Security boundaries** - Auth, permissions
+4. **High-traffic flows** - Login, search, checkout
+
+### When to Stop Testing
+- Time-boxed: Allocate fixed time per risk level
+- Diminishing returns: New tests find fewer bugs
+- Coverage plateau: Critical paths covered
+- Risk accepted: Stakeholder sign-off on gaps
+
+### Test Prioritization Matrix
+
+| Impact | Likelihood | Priority |
+|--------|------------|----------|
+| High | High | P0 - Test first |
+| High | Low | P1 - Test thoroughly |
+| Low | High | P2 - Test basic paths |
+| Low | Low | P3 - Test if time permits |
+
 ## Deliverables
 
 | Task | Output | Time |
@@ -101,13 +127,50 @@ Create comprehensive testing documentation.
 
 ## Anti-Patterns
 
-| Avoid | Instead |
-|-------|---------|
-| Vague steps | Specific actions + expected results |
-| Missing preconditions | Document all setup |
-| No test data | Provide sample data |
-| Generic bug titles | Specific: "[Feature] issue when [action]" |
-| Skip edge cases | Include boundary values |
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **Vague Steps** | "Test the feature" - not reproducible | Specific actions + expected results per step |
+| **Missing Preconditions** | Test fails due to setup not documented | Document all setup, test data, user state |
+| **Generic Bug Title** | "Login doesn't work" - unclear scope | Specific: "[Login] OTP fails when code contains leading zeros" |
+| **Happy Path Only** | Misses edge cases users will hit | Include boundary values, empty states, errors |
+| **No Priority** | Everything looks equally important | Assign P0-P3 based on impact × likelihood |
+
+## Writing Reproducible Steps
+
+**Bad:** "Test login functionality"
+
+**Good:**
+```markdown
+1. Navigate to https://app.example.com/login
+   **Expected:** Login form displays with email/password fields
+
+2. Enter "test@example.com" in email field
+   **Expected:** Input accepted, no validation errors
+
+3. Enter "wrongpassword" in password field
+   **Expected:** Input masked with dots
+
+4. Click "Sign In" button
+   **Expected:** Error message "Invalid credentials" appears within 2 seconds
+```
+
+**The rule:** Each step = one action + one expected result. No compound steps.
+
+## Risk → Test Effort Matrix
+
+```
+High Impact + High Likelihood → P0: Test first, test deeply
+├─ Payment flows, auth, data mutations
+│
+High Impact + Low Likelihood → P1: Test thoroughly
+├─ Edge cases in critical paths, error recovery
+│
+Low Impact + High Likelihood → P2: Test basic paths
+├─ UI quirks, minor features
+│
+Low Impact + Low Likelihood → P3: Test if time permits
+└─ Cosmetic issues, rare configurations
+```
 
 ## Test Plan Outline
 

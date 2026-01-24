@@ -1,3 +1,8 @@
+---
+name: brainstorm-idea
+description: Turn fuzzy ideas into clear designs through structured dialogue. Use BEFORE plan mode when requirements are unclear.
+---
+
 Turns fuzzy ideas into clear designs through structured dialogue. Use BEFORE plan mode.
 
 ## When to Use
@@ -55,9 +60,61 @@ Then either:
 - Stop here (design only)
 - Proceed to implementation planning (use plan mode)
 
-## Anti-patterns
+## Handling Disagreement
 
-- Asking 5 questions at once
-- Jumping to implementation before design is clear
-- Building for hypothetical future requirements
-- Skipping validation to "save time"
+When user pushes back on your suggestion:
+
+```
+User disagrees with approach
+├─ Did I miss context? → Ask clarifying question
+├─ Is their concern valid? → Acknowledge, adjust approach
+├─ Is it a tradeoff? → Present both sides, let them choose
+└─ Am I confident I'm right? → Explain reasoning once, then defer to user
+```
+
+**Don't:** Immediately cave to seem agreeable
+**Don't:** Stubbornly defend your position
+**Do:** Explain tradeoffs, respect their choice
+
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **Question Dump** | 5 questions at once overwhelms user | One question per message, prefer multiple choice |
+| **Premature Implementation** | Jumping to code before design is clear | Validate each phase before proceeding |
+| **YAGNI Violation** | Building for hypothetical future needs | Cut features that aren't essential NOW |
+| **Skipping Validation** | "Save time" by not checking alignment | Catch misalignments early, iterate small |
+
+## Example Dialogue
+
+### Phase 1: Understanding
+**Claude:** What problem does this feature solve for your users?
+- A) Users can't find items quickly
+- B) Users want to save items for later
+- C) Users need to compare multiple items
+- D) Other: [describe]
+
+**User:** A - they can't find items quickly
+
+**Claude:** What's the current search experience like?
+- A) Basic text search, often returns irrelevant results
+- B) No search at all, just browsing categories
+- C) Search exists but is slow
+- D) Other: [describe]
+
+### Phase 2: Approaches
+**Claude:** Here are two approaches for improving search:
+
+| Approach | Pros | Cons |
+|----------|------|------|
+| A: Elasticsearch | Fast, fuzzy matching, scalable | Operational complexity, cost |
+| B: PostgreSQL full-text | Simple, no new infra | Less fuzzy matching, slower at scale |
+
+Which fits your constraints better?
+
+### Phase 3: Incremental Design
+**Claude:** Starting with the search architecture...
+
+[200-300 word chunk explaining the chosen approach]
+
+Does this match your expectations before I continue to data flow?

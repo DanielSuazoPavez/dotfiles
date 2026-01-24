@@ -89,9 +89,21 @@ Evaluate the plan against these criteria:
 
 ## Verdicts
 
-- **APPROVE**: Plan is solid, proceed with implementation
-- **REVISE**: Minor issues to address, request specific changes
-- **RETHINK**: Fundamental problems with approach, needs replanning
+```
+What's the state of this plan?
+├─ Ready to implement as-is?
+│   └─ APPROVE
+├─ Good approach, but has specific fixable issues?
+│   └─ REVISE (list the specific changes needed)
+└─ Fundamental problems with the approach?
+    └─ RETHINK (explain what's wrong and why)
+```
+
+| Verdict | When to Use | Examples |
+|---------|-------------|----------|
+| **APPROVE** | No blocking issues | Minor gaps OK if intent is clear |
+| **REVISE** | Fixable issues | Missing error handling, unclear step |
+| **RETHINK** | Wrong approach | Over-engineered, wrong abstraction level |
 
 ## Important
 

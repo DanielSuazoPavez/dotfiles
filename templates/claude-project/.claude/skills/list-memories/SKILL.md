@@ -22,22 +22,31 @@ done
 
 ## Decision Tree: What to Load
 
-### By Task Type
+```
+What am I doing?
+├─ Quick question about project?
+│   └─ Read Quick References only, don't load full files
+├─ New feature or significant work?
+│   ├─ Load: essential-* (always)
+│   ├─ Load: relevant-* for affected area
+│   └─ Skip: idea-*, branch-* (unless continuing that branch)
+├─ Bug fix?
+│   ├─ Load: essential-*
+│   └─ Load: only the area with the bug
+├─ Continuing branch work?
+│   └─ Load: branch-* for that specific branch
+└─ Exploring an idea?
+    └─ Load: idea-* (only with explicit permission)
+```
 
-| Task | Load | Skip |
-|------|------|------|
-| **New feature** | `essential-*`, architecture | `idea-*`, unrelated areas |
-| **Bug fix** | `essential-*`, affected area only | Everything else |
-| **Refactor** | `essential-conventions-*` | `idea-*`, `branch-*` |
-| **Quick question** | Just Quick Reference | Don't load full files |
-| **Continue branch work** | `branch-*` for that branch | Other branches |
+### Loading Priority
 
-### Prioritization
-
-1. **Essential** - Always relevant (conventions, architecture)
-2. **Area-specific** - Only if touching that area
-3. **Branch** - Only if continuing that specific work
-4. **Idea** - Only if exploring that direction
+| Priority | Category | When |
+|----------|----------|------|
+| 1 | `essential-*` | Always load these |
+| 2 | `relevant-*` (area) | Only if touching that area |
+| 3 | `branch-*` | Only if continuing that branch |
+| 4 | `idea-*` | Only with explicit user permission |
 
 ## Anti-Patterns
 

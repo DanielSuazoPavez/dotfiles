@@ -1,10 +1,10 @@
 ---
 name: wrap-up
-description: Use when finishing work on a feature branch or ending a session. Updates changelog, bumps version, updates backlog, commits changes, and optionally creates a handoff document for session continuity.
+description: Use when finishing work on a feature branch. Updates changelog, bumps version, updates backlog, and commits changes.
 disable-model-invocation: true
 ---
 
-Use when finishing a feature branch or ending a session.
+Use when finishing a feature branch.
 
 ## Instructions
 
@@ -19,10 +19,18 @@ Use when finishing a feature branch or ending a session.
 Review commits since branching from main to understand what was done.
 
 ### 3. Determine version bump
-Read current version from `pyproject.toml` and increment:
-- **Major** (X.0.0): Breaking changes
-- **Minor** (0.X.0): New features (default)
-- **Patch** (0.0.X): Bug fixes only
+
+```
+What changed?
+├─ Breaking change (removes/renames public API, changes behavior)?
+│   └─ Yes → Major (X.0.0)
+├─ New feature (adds capability, new endpoint, new option)?
+│   └─ Yes → Minor (0.X.0)
+└─ Bug fix, refactor, docs, tests only?
+    └─ Yes → Patch (0.0.X)
+```
+
+**Breaking change test:** Does existing user code need to change? If yes → Major.
 
 ### 4. Update `CHANGELOG.md`
 Add new entry at the top:
@@ -49,50 +57,26 @@ git add CHANGELOG.md pyproject.toml BACKLOG.md uv.lock
 git commit -m "docs: update changelog, version X.Y.Z, backlog"
 ```
 
-### 8. Create session handoff (if ending session)
-If this is the end of a work session (not just a feature), create a handoff document:
+### 8. Report summary
+Output what was updated.
 
-**Path:** `docs/sessions/YYYY-MM-DD_HHMM_{slug}.md`
+## Changelog Examples
 
+**Good entries** (reference recent CHANGELOG.md for style):
 ```markdown
-# Session: {Brief Title}
+### Added
+- Rate limiting to /api/search (100 req/min per user)
 
-## Branch
-`{branch-name}` - {one-line description}
-
-## Work Completed
-- [Bullet points of what was done]
-
-## Current State
-- [Where things stand now]
-- [Any in-progress items]
-
-## Key Decisions Made
-- [Decision]: [Reasoning]
-
-## Next Steps
-1. [Immediate next action]
-2. [Follow-up items]
-
-## Context for Next Session
-- [Critical context the next session needs]
-- [Files to look at first]
-- [Gotchas or things to remember]
+### Fixed
+- Profile page crash when user.email is null (#123)
 ```
 
-### 9. Report summary
-Output what was updated and any handoff created.
-
-## Handoff Staleness Guide
-
-When resuming from a handoff:
-
-| Age | Status | Action |
-|-----|--------|--------|
-| < 24h | Fresh | Resume directly |
-| 1-3 days | Slightly stale | Quick context check |
-| 3-7 days | Stale | Verify state matches |
-| > 7 days | Very stale | Re-analyze before continuing |
+**Bad entries:**
+```markdown
+### Changed
+- Updated stuff
+- Fixed bug
+```
 
 ## Anti-Patterns
 
@@ -102,11 +86,9 @@ When resuming from a handoff:
 | **Wrong Bump** | Patch for new feature | Major=breaking, Minor=feature, Patch=fix |
 | **Empty Changelog** | "Updated stuff" | Describe what changed and why |
 | **Stale Backlog** | Completed items still in TODO | Move to "Recently Completed" |
-| **No Handoff** | Ending multi-day work without context | Create handoff for sessions >2h |
 
 ## Notes
 
 - Uncommitted code changes are committed first, then docs/version updates
 - The `uv-lock` pre-commit hook will auto-update `uv.lock` on version change
 - If commit fails due to hooks, re-run the commit
-- Handoff documents are optional - use when context preservation matters

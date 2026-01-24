@@ -5,6 +5,21 @@ description: Reference for git worktrees - setup, usage, and common pitfalls. Us
 
 Reference for git worktrees - setup, usage, and common pitfalls.
 
+## Layout Decision Tree
+
+```
+Where should I put worktrees?
+├─ Want everything self-contained? → Option A: Inside project (.worktrees/)
+├─ Working with multiple projects? → Option C: Central ~/worktrees/
+└─ Simple one-off worktree? → Option B: Sibling directory
+```
+
+| Layout | Best For | Setup Effort |
+|--------|----------|--------------|
+| Inside project | Most cases, easy cleanup | Add to .gitignore once |
+| Sibling dirs | Quick experiments | None |
+| Central dir | Multi-project workflows | One-time setup |
+
 ## What Are Worktrees?
 
 Multiple working directories sharing the same git repo. Each worktree has its own branch checked out. Changes in one don't affect others until merged.
@@ -150,61 +165,6 @@ If branch is checked out in a worktree, you can't delete it:
 git worktree remove .worktrees/feature-x
 git branch -d feature-x  # now works
 ```
-
-## Shared Resources (Docker, Databases, etc.)
-
-Worktrees are isolated, but infrastructure isn't. Two worktrees hitting the same Docker stack = chaos.
-
-### Docker: Use COMPOSE_PROJECT_NAME
-
-```bash
-# Derive from worktree directory name
-export COMPOSE_PROJECT_NAME=$(basename $(pwd))
-docker-compose up -d
-```
-
-This prefixes all containers, networks, volumes. No collisions between worktrees.
-
-**In Makefile:**
-```makefile
-# Auto-namespace Docker resources by directory
-COMPOSE_PROJECT_NAME ?= $(notdir $(CURDIR))
-export COMPOSE_PROJECT_NAME
-
-docker-up:
-	docker-compose up -d
-
-docker-down:
-	docker-compose down
-```
-
-### Port Conflicts
-
-Option 1: Dynamic ports (let Docker assign)
-```yaml
-ports:
-  - "5432"  # random host port -> container 5432
-```
-
-Option 2: Offset per worktree (via env)
-```yaml
-ports:
-  - "${DB_PORT:-5432}:5432"
-```
-
-### Before Removing a Worktree
-
-Checklist:
-1. `docker-compose down -v` (stop containers, remove volumes)
-2. Check no orphaned processes
-3. Then `git worktree remove <path>`
-
-### Coordination Between Worktrees
-
-For truly shared resources (single test DB, shared service):
-- Use a lockfile: `.worktrees/.docker-lock`
-- Or status file showing who "owns" the resource
-- Wrap-up should check/release the lock
 
 ## Multi-Agent Workflow
 

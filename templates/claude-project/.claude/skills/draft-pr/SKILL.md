@@ -71,11 +71,80 @@ Is the PR >400 lines?
 | **The Novel** | 5 paragraphs explaining the diff | Summary should add context, not repeat code |
 | **The Commit Dump** | Copy-pasted commit messages | Synthesize into coherent narrative |
 
+## Examples
+
+### Good PR Description
+```markdown
+## Summary
+Add rate limiting to the /api/search endpoint to prevent abuse.
+Implements token bucket algorithm with 100 req/min per user.
+
+## Changes
+- Add RateLimiter middleware (src/middleware/rate_limit.py)
+- Configure limits in settings (100/min authenticated, 20/min anonymous)
+- Add 429 response handling with Retry-After header
+
+## Testing
+- Unit tests for token bucket logic
+- Integration test verifying limit enforcement
+- Manual test: hit endpoint 101 times, confirmed 429 on 101st
+```
+
+### Bad PR Description
+```markdown
+## Summary
+Fixed the search issue
+
+## Changes
+- Updated some files
+- Added rate limiting
+
+## Testing
+Tested locally
+```
+
+**Why it's bad:** No context on what issue, what files, or how it was tested.
+
 ## The Test
 
 > Can a reviewer understand the WHY in 30 seconds and review in one sitting?
 
 If no → split or improve description.
+
+## Synthesizing Commits into Narrative
+
+**Commits:**
+```
+fix: handle null user in profile page
+refactor: extract user validation
+test: add tests for user validation
+fix: edge case when user.email is empty
+```
+
+**Bad PR description:** Copy-paste commit messages
+
+**Good PR description:**
+```markdown
+## Summary
+Add robust user validation to prevent crashes on the profile page.
+Previously, null users or missing emails caused silent failures.
+
+## Changes
+- Extract validation into `validate_user()` for reuse
+- Handle null user and empty email edge cases
+- Add comprehensive test coverage
+```
+
+**The rule:** Tell the story of WHY, not the chronology of HOW.
+
+## PR Author Checklist
+
+Before submitting:
+- [ ] Can reviewer understand WHY in 30 seconds?
+- [ ] Is it reviewable in one sitting (<400 lines)?
+- [ ] Does description explain non-obvious decisions?
+- [ ] Are there tests for new behavior?
+- [ ] Did I run `/wrap-up` first?
 
 ## Notes
 

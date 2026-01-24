@@ -63,3 +63,61 @@ jq '.specific.path' /path/to/file.json
 - Composable with other Unix tools
 - Clear, readable syntax
 - Industry-standard tool
+
+## Fallback: When jq Is Unavailable
+
+If jq is not installed, use Python as fallback:
+
+```bash
+# Check if jq exists
+which jq || echo "jq not found, using Python fallback"
+
+# Python fallback for common operations
+python3 -c "import json; print(json.dumps(json.load(open('file.json')), indent=2))"
+
+# Get keys
+python3 -c "import json; print(list(json.load(open('file.json')).keys()))"
+
+# Extract field
+python3 -c "import json; print(json.load(open('file.json'))['fieldname'])"
+
+# Get length
+python3 -c "import json; print(len(json.load(open('file.json'))))"
+```
+
+### jq vs Python Comparison
+
+| Task | jq | Python Fallback |
+|------|-----|-----------------|
+| Pretty-print | `jq '.'` | `python3 -c "import json; ..."` |
+| Keys | `jq 'keys'` | `.keys()` |
+| Field | `jq '.field'` | `['field']` |
+| Filter | `jq 'select(...)'` | List comprehension |
+
+**Prefer jq** when available (faster, cleaner). Use Python only as fallback.
+
+## Tool Selection
+
+```
+What do I need from this JSON?
+├─ Quick structure check → jq 'keys' (fastest)
+├─ Specific known path → jq '.path.to.value'
+├─ Complex filtering → jq with select()
+├─ jq not installed → Python fallback
+└─ Need to modify file → Python (jq is read-only)
+```
+
+| File Size | Approach |
+|-----------|----------|
+| < 1MB | jq or Python, either fine |
+| 1-50MB | jq preferred (streaming) |
+| > 50MB | `jq --stream` or `jq -c` for memory efficiency |
+
+## Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| **Load Full File** | Wastes tokens on structure you don't need | Use `jq 'keys'` first, then target specific paths |
+| **Blind Extraction** | Guessing paths that may not exist | Explore with `keys` and samples before extracting |
+| **Read Tool for JSON** | Loads entire file into context | Always use jq/Python, even for small files |
+| **No Length Check** | Surprised by 10K array elements | Check `length` before iterating |

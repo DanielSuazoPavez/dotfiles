@@ -32,6 +32,34 @@ design a schema for an e-commerce platform with users, products, orders
 | Indexes | FKs + WHERE columns |
 | Migrations | Always reversible |
 
+## SQL vs NoSQL Decision Tree
+
+```
+What's your primary access pattern?
+├─ Complex queries, joins, transactions → SQL
+│   ├─ Need ACID guarantees? → PostgreSQL
+│   ├─ High read volume? → MySQL with replicas
+│   └─ Embedded/lightweight? → SQLite
+│
+└─ Simple lookups by key, flexible schema → NoSQL
+    ├─ Document storage (nested, variable structure)? → MongoDB
+    ├─ Key-value with TTL (caching, sessions)? → Redis
+    ├─ Time-series data? → TimescaleDB, InfluxDB
+    └─ Graph relationships? → Neo4j
+```
+
+### Decision Factors
+
+| Factor | SQL | NoSQL |
+|--------|-----|-------|
+| Schema | Fixed, migrations | Flexible, schemaless |
+| Transactions | ACID guaranteed | Eventually consistent* |
+| Joins | Native, optimized | Application-level |
+| Scale | Vertical (+ read replicas) | Horizontal sharding |
+| Best for | Complex queries, reporting | High write volume, simple reads |
+
+*Some NoSQL (MongoDB, FaunaDB) support transactions
+
 ## Normal Forms
 
 | Form | Rule | Violation |
@@ -108,6 +136,26 @@ DROP INDEX idx_users_phone ON users;
 ALTER TABLE users DROP COLUMN phone;
 COMMIT;
 ```
+
+## Normalize vs Denormalize
+
+```
+Should I normalize this data?
+├─ Is it reference data (rarely changes)? → Normalize (separate table)
+├─ Is it frequently queried together? → Consider denormalizing
+├─ Does duplication risk inconsistency? → Normalize
+├─ Is read performance critical? → Denormalize with care
+└─ Is write performance critical? → Normalize (fewer updates)
+```
+
+| Scenario | Decision | Example |
+|----------|----------|---------|
+| User addresses | Normalize | `addresses` table with FK |
+| Order snapshot | Denormalize | Store price at time of order |
+| Product categories | Normalize | Categories change rarely |
+| Cached aggregates | Denormalize | Store `order_count` on user |
+
+**Rule of thumb:** Start normalized, denormalize only when you have measured performance problems.
 
 ## Checklist
 
