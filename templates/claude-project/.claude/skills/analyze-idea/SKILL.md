@@ -2,10 +2,10 @@ Use for research and exploration tasks. Investigates a topic, gathers evidence, 
 
 ## Context
 
-The user provides context after `/analyze` describing what to investigate. Examples:
-- `/analyze feasibility of adding real-time alerts`
-- `/analyze current test coverage gaps`
-- `/analyze over-engineering in the codebase`
+The user provides context after `/analyze-idea` describing what to investigate. Examples:
+- `/analyze-idea feasibility of adding real-time alerts`
+- `/analyze-idea current test coverage gaps`
+- `/analyze-idea over-engineering in the codebase`
 
 ## Instructions
 

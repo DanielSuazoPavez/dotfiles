@@ -1,5 +1,16 @@
 .PHONY: install test test-unit lint check clean help
 
+# =============================================================================
+# Docker + Worktrees Note:
+# If using git worktrees with Docker, namespace resources by directory to avoid
+# conflicts between worktrees. Add to your docker targets:
+#
+#   COMPOSE_PROJECT_NAME ?= $(notdir $(CURDIR))
+#   export COMPOSE_PROJECT_NAME
+#
+# See: .claude/skills/git-worktrees/SKILL.md
+# =============================================================================
+
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 

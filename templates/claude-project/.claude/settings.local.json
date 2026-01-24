@@ -33,6 +33,17 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/copy-plan-to-project.sh"
+          }
+        ]
+      }
     ]
   },
   "spinnerTipsEnabled": false
