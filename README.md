@@ -5,8 +5,8 @@ Personal development environment configuration for shell, git, editors, and term
 ## Quick Setup
 
 ```bash
-git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+git clone https://github.com/yourusername/dotfiles.git
+cd dotfiles
 ./install.sh
 ```
 
@@ -30,15 +30,15 @@ cd ~/dotfiles
 
 ```
 dotfiles/
-├── bash/           # Shell configuration
-├── git/            # Git config and templates
-├── starship/       # Prompt configuration
-├── ghostty/        # Terminal settings
-├── zellij/         # Multiplexer config
-├── nvim/           # Neovim configuration
-├── vscode/         # VS Code settings
-├── .claude/        # Claude Code config for this repo
-└── install.sh      # Installation script
+├── .bashrc, .aliases     # Shell config
+├── .gitconfig, etc.      # Git config
+├── .config/
+│   ├── starship.toml     # Prompt
+│   ├── ghostty/          # Terminal
+│   ├── zellij/           # Multiplexer
+│   └── nvim/             # Editor
+├── .vscode/              # VS Code settings
+└── install.sh            # Installation script
 ```
 
 ## Installation

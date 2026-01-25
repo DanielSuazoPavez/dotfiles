@@ -13,7 +13,7 @@ for cmd in git curl; do
 done
 
 # Variables
-DOTFILES_DIR="$HOME/dotfiles"
+DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 BACKUP_DIR="$HOME/dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
 # Function to create a symlink with a backup and prompt
