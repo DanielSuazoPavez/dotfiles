@@ -1,0 +1,37 @@
+# ~/.aliases
+# Shell aliases sourced by .bashrc
+
+# Enable color support of ls and grep
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Git aliases
+alias gl='git log --oneline --graph --decorate'
+alias glog='git log --oneline --graph --decorate --all'
+
+# Zellij aliases
+alias zj='zellij'
+alias zjl='zellij list-sessions'
+alias zja='zellij attach'
+alias zjk='zellij kill-session'
+alias zjka='zellij kill-all-sessions'
+
+# Zoxide (smarter cd)
+alias cd='z'
+
+# Python virtual environment
+alias act='source .venv/bin/activate'
+
+# Quick edits
+alias aliases='nvim ~/.aliases'
+alias reload='source ~/.bashrc'

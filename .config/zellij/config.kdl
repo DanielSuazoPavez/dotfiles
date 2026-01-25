@@ -144,7 +144,7 @@ keybinds clear-defaults=true {
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt f" { ToggleFloatingPanes; }
-        bind "Ctrl g" { SwitchToMode "locked"; }
+        bind "Alt u" { SwitchToMode "locked"; }
         bind "Alt h" { MoveFocusOrTab "left"; }
         bind "Alt i" { MoveTab "left"; }
         bind "Alt j" { MoveFocus "down"; }
@@ -273,35 +273,13 @@ web_client {
 }
 
 // Use a simplified UI without special fonts (arrow glyphs)
-// Options:
-//   - true
-//   - false (Default)
-//
-// simplified_ui true
-
-// Choose the theme that is specified in the themes section.
-// Default: default
-//
-// theme "dracula"
-
-// Choose the base input mode of zellij.
-// Default: normal
-//
-// default_mode "locked"
-
-// Choose the path to the default shell that zellij will use for opening new panes
-// Default: $SHELL
-//
-// default_shell "fish"
-
-// Choose the path to override cwd that zellij will use for opening new panes
-//
-// default_cwd "/tmp"
+simplified_ui false
 
 // The name of the default layout to load on startup
-// Default: "default"
-//
-// default_layout "compact"
+default_layout "default"
+
+// Choose the base input mode of zellij - start in normal mode
+default_mode "normal"
 
 // The folder in which Zellij will look for layouts
 // (Requires restart)
@@ -323,11 +301,7 @@ web_client {
 // mouse_mode false
 
 // Toggle having pane frames around the panes
-// Options:
-//   - true (default, enabled)
-//   - false
-//
-// pane_frames false
+pane_frames true
 
 // When attaching to an existing session with other users,
 // should the session be mirrored (true)
@@ -377,9 +351,7 @@ web_client {
 // copy_clipboard "primary"
 
 // Enable automatic copying (and clearing) of selection when releasing mouse
-// Default: true
-//
-// copy_on_select true
+copy_on_select true
 
 // Path to the default editor to use to edit pane scrollbuffer
 // Default: $EDITOR or $VISUAL

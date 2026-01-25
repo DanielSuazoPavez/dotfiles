@@ -1,7 +1,8 @@
-# ~/.config/starship.toml
+# ~/.config/starship/starship.toml
 format = """
 $directory\
 $git_branch\
+$git_status\
 $fill\
 $package\
 $python\
@@ -22,12 +23,27 @@ truncation_symbol = '.../'
 truncate_to_repo = false
 
 [docker_context]
-symbol = " "
+symbol = " "
 
 [git_branch]
 style = 'fg:green'
 symbol = " "
 format = '[on](white) [$symbol$branch ]($style)'
+
+[git_status]
+style = 'bold red'
+format = '([$all_status$ahead_behind ]($style))'
+conflicted = '🏳'
+ahead = '⇡${count}'
+behind = '⇣${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+up_to_date = ''
+untracked = '?${count}'
+modified = '!${count}'
+staged = '+${count}'
+renamed = '»${count}'
+deleted = '✘${count}'
+stashed = ''
 
 [package]
 style = 'bold orange'
@@ -35,7 +51,7 @@ format = '[${symbol}${version}]($style) '
 
 [python]
 style = 'teal'
-symbol = " "
+symbol = " "
 format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 pyenv_version_name = true
 pyenv_prefix = ""
