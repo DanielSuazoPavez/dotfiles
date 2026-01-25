@@ -16,7 +16,7 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # Remove symlinks in home directory
-for file in .bashrc .aliases .hushlogin .gitconfig .gitignore_global .gitmessage; do
+for file in .bashrc .aliases .hushlogin .gitconfig .gitignore_global; do
     if [ -L "$HOME/$file" ]; then
         rm "$HOME/$file"
         echo "  Removed symlink: ~/$file"

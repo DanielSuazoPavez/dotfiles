@@ -82,4 +82,4 @@ if [ -f /usr/share/bash-completion/completions/git ]; then
 fi
 
 # Playwright browser path for MCP server
-export PLAYWRIGHT_BROWSER_PATH=/home/hata/.cache/ms-playwright/chromium-1205/chrome-linux64/chrome
+export PLAYWRIGHT_BROWSER_PATH="$HOME/.cache/ms-playwright/chromium-1205/chrome-linux64/chrome"

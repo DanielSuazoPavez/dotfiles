@@ -10,10 +10,27 @@ cd dotfiles
 ./install.sh
 ```
 
+## Prerequisites
+
+Install these tools before running `install.sh`:
+
+| Tool | Install | Required for |
+|------|---------|--------------|
+| git | `sudo apt install git` | Always |
+| curl | `sudo apt install curl` | Font downloads |
+| starship | [starship.rs](https://starship.rs) | Prompt |
+| zellij | [zellij.dev](https://zellij.dev) | Multiplexer |
+| neovim | `sudo apt install neovim` (or [neovim.io](https://neovim.io)) | Editor |
+| zoxide | `cargo install zoxide` | Smarter cd |
+
+GUI tools (optional, skipped on headless):
+- ghostty
+- VS Code
+
 ## What's Included
 
 - **Shell**: Bash configuration, aliases, functions
-- **Git**: Global config, commit template, ignore patterns
+- **Git**: Global config, ignore patterns
 - **Prompt**: Starship configuration
 - **Terminal**: Ghostty settings
 - **Multiplexer**: Zellij layouts and config
@@ -54,6 +71,20 @@ To update after pulling changes:
 ```bash
 ./install.sh
 ```
+
+## Troubleshooting
+
+**Fonts not rendering correctly**
+- Ensure Nerd Fonts installed: `fc-list | grep -i nerd`
+- Configure your terminal to use "JetBrainsMono Nerd Font"
+
+**Starship prompt not showing**
+- Check if installed: `starship --version`
+- Verify .bashrc sources correctly: `source ~/.bashrc`
+
+**Zellij keybinds not working**
+- Check config loaded: `zellij options`
+- Config path: `~/.config/zellij/config.kdl`
 
 ## License
 
