@@ -157,6 +157,9 @@ alias zjl='zellij list-sessions'
 
 alias zj-bmsop='zellij attach --create bmsop -- --layout bmsop'
 
+# Claude toolkit
+alias claude-sync="$HOME/projects/personal/claude-toolkit/bin/claude-sync"
+
 # Starship
 export STARSHIP_CONFIG="/home/hata/.config/starship.toml"
 eval "$(starship init bash)"
