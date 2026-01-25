@@ -35,15 +35,6 @@ if [ -f ~/.aliases ]; then
     . ~/.aliases
 fi
 
-# Zellij
-alias zj='zellij'
-alias zja='zellij attach --create main'
-alias zjl='zellij list-sessions'
-alias zj-bmsop='zellij attach --create bmsop -- --layout bmsop'
-
-# Claude toolkit
-alias claude-sync="$HOME/projects/personal/claude-toolkit/bin/claude-sync"
-
 # ============================================================================
 # Programming Languages & Tools
 # ============================================================================
@@ -86,10 +77,9 @@ if [ -f "$HOME/.config/broot/launcher/bash/br" ]; then
 fi
 
 # git autocompletion
-source /usr/share/bash-completion/completions/git
-
-source ~/.nvm/nvm.sh
-nvm use node --silent
+if [ -f /usr/share/bash-completion/completions/git ]; then
+    source /usr/share/bash-completion/completions/git
+fi
 
 # Playwright browser path for MCP server
 export PLAYWRIGHT_BROWSER_PATH=/home/hata/.cache/ms-playwright/chromium-1205/chrome-linux64/chrome
