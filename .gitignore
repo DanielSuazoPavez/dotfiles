@@ -40,6 +40,7 @@ dotfiles-backup-*/
 .claude
 !/.claude
 !/.claude/**
+.claude/settings.local.json
 !templates/claude-project/.claude
 !templates/claude-project/.claude/**
 
