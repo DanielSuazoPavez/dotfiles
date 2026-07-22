@@ -12,6 +12,9 @@ cd dotfiles
 
 ## Prerequisites
 
+> **Fresh machine?** See [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md) for the full
+> path from a blank Windows/WSL install to running `install.sh`.
+
 Install these tools before running `install.sh`:
 
 | Tool | Install | Required for |
