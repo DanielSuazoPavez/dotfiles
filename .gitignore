@@ -36,11 +36,13 @@ dotfiles-backup-*/
 # VS Code workspace files
 *.code-workspace
 
-# AI-Agent stuff
-.claude
-!/.claude
-!/.claude/**
-.claude/settings.local.json
+# AI-Agent stuff (claude-toolkit)
+.claude/*
+!.claude/settings.json
+!.claude/mcp.json
+!.claude/memories/*-project-*
+.claude-toolkit-version
+output/claude-toolkit/
 !templates/claude-project/.claude
 !templates/claude-project/.claude/**
 

@@ -1,0 +1,9 @@
+.claude/rules/coding/python-conventions.md
+.claude/rules/config/env-vars.md
+.claude/rules/config/execution.md
+.claude/rules/config/permissions-config.md
+.claude/rules/config/settings-reload.md
+.claude/rules/project/claude-md-standard.md
+.claude/rules/resources/artifacts-gitignored.md
+.claude/rules/workflow/backlog.md
+.claude/rules/workflow/lessons-policy.md

@@ -21,7 +21,7 @@ alias glog='git log --oneline --graph --decorate --all'
 
 # Zellij
 alias zj='zellij'
-alias zja='zellij attach --create main'
+alias zja='zellij attach'
 alias zjl='zellij list-sessions'
 alias zjk='zellij kill-session'
 alias zjka='zellij kill-all-sessions'
@@ -31,9 +31,6 @@ alias cd='z'
 
 # Python virtual environment
 alias act='source .venv/bin/activate'
-
-# Claude toolkit
-alias claude-sync="$HOME/projects/personal/claude-toolkit/bin/claude-sync"
 
 # Quick edits
 alias aliases='nvim ~/.aliases'
