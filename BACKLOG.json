@@ -56,6 +56,19 @@
       "updated_at": "2026-07-22"
     },
     {
+      "id": "distro-probe",
+      "priority": "P2",
+      "title": "Probe openSUSE Tumbleweed (then Fedora) via dual-boot",
+      "scope": [
+        "repo",
+        "install"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-22",
+      "updated_at": "2026-07-22",
+      "notes": "Decision 2026-07-22: try Tumbleweed first (rolling + snapper rollbacks), Fedora as fallback; Debian testing and Arch ruled out. Dual-boot on this PC or upcoming machine. Follow-up: extend docs/BOOTSTRAP.md and eventually install.sh beyond apt (zypper/dnf). Disk cleanup done 2026-07-22 (C: 15->127 GB free); Windows prepped (BitLocker off, hibernation off, chkdsk clean); Disk Mgmt shrink blocked by NTFS metadata -> resize from installer."
+    },
+    {
       "id": "tool-install",
       "priority": "P1",
       "title": "Implement tool installation in install.sh (clone-and-run)",
