@@ -54,3 +54,6 @@ docs/plans/
 .vscode/
 !templates/claude-project/.vscode
 !templates/claude-project/.vscode/**
+
+# Auto-rendered from BACKLOG.json
+BACKLOG.md
