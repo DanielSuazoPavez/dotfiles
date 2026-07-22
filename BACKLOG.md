@@ -1,13 +1,22 @@
-# Backlog
+# Project Backlog
 
-- [ ] zellij: Dig deeper into configurations
-- [ ] nvim: Try lazygit integration
+## Current Goal
 
-## Recently Completed
+Portable dotfiles for setting up a new machine. Clone, run install, done.
 
-- [x] Interactive install with headless detection
-- [x] Category prompts for optional tools (Starship, Neovim, Zellij, Ghostty, VS Code, Fonts)
-- [x] Symlink verification with success/failure summary
-- [x] README prerequisites and troubleshooting sections
-- [x] Fix hardcoded path in .bashrc
-- [x] Remove .gitmessage references
+---
+
+## P0 - Critical
+
+## P1 - High
+
+## P2 - Medium
+
+- Dig deeper into zellij configurations (`zellij-config`)
+- Try lazygit integration in nvim (`nvim-lazygit`)
+
+## P100 - Nice to Have
+
+---
+
+## Graveyard

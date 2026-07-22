@@ -1,0 +1,370 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "enableAllProjectMcpServers": false,
+  "showClearContextOnPlanAccept": true,
+  "plansDirectory": "output/claude-toolkit/plans",
+  "env": {
+    "CLAUDE_TOOLKIT_LESSONS": "0",
+    "CLAUDE_TOOLKIT_TRACEABILITY": "1",
+    "CLAUDE_TOOLKIT_INJECTION_SCAN": "0",
+    "CLAUDE_TOOLKIT_OUTPUT_SCAN": "0",
+    "CLAUDE_TOOLKIT_PROTECTED_BRANCHES": "^(main|master)$",
+    "CLAUDE_TOOLKIT_CLAUDEMD_WARN_LINES": "100",
+    "CLAUDE_TOOLKIT_CLAUDEMD_NESTED_WARN_LINES": "150",
+    "CLAUDE_TOOLKIT_BACKLOG_NOTES_MAX_CHARS": "1300",
+    "CLAUDE_TOOLKIT_SETTINGS_INTEGRITY": "1",
+    "CLAUDE_CODE_ADAPTIVE_THINKING": "0"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(diff:*)",
+      "Bash(grep:*)",
+      "Bash(echo:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(trash-put:*)",
+      "Bash(jq:*)",
+      "Bash(sort:*)",
+      "Bash(basename:*)",
+      "Bash(dirname:*)",
+      "Bash(date:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git blame:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git fetch:*)",
+      "Bash(git stash:*)",
+      "Bash(git add:*)",
+      "Bash(git rm --cached:*)",
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(git commit:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git mv:*)",
+      "Bash(./.claude/hooks/*)",
+      "Bash(.claude/scripts/*)",
+      "Bash(claude-toolkit:*)",
+      "Grep(/**)",
+      "Read(/**)",
+      "Read(~/.claude/CLAUDE.md)",
+      "Read(~/.claude/settings.json)",
+      "Read(~/.claude/projects/**/*.jsonl)",
+      "Read(~/.claude/projects/**/memory/**)",
+      "Read(~/.claude/agents/**)",
+      "Read(~/.claude/skills/**)",
+      "Read(~/claude-analytics/**)",
+      "Read(//tmp/**)",
+      "Edit(/output/claude-toolkit/**)",
+      "Edit(/BACKLOG.json)",
+      "Edit(/CHANGELOG.md)"
+    ],
+    "ask": [
+      "Bash(git config:*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+      "Bash(git reset:*)",
+      "Bash(git pull:*)",
+      "Bash(git push:*)",
+      "Bash(git remote:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh pr close:*)",
+      "Bash(gh pr comment:*)",
+      "Bash(gh pr review:*)",
+      "Bash(gh pr edit:*)",
+      "Bash(gh pr reopen:*)",
+      "Bash(gh pr ready:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh issue reopen:*)",
+      "Bash(gh issue delete:*)",
+      "Bash(gh issue transfer:*)",
+      "Bash(gh issue pin:*)",
+      "Bash(gh issue unpin:*)",
+      "Bash(gh issue lock:*)",
+      "Bash(gh issue unlock:*)",
+      "Bash(gh release create:*)",
+      "Bash(gh release edit:*)",
+      "Bash(gh release delete:*)",
+      "Bash(gh release upload:*)",
+      "Bash(gh release download:*)",
+      "Bash(gh repo create:*)",
+      "Bash(gh repo delete:*)",
+      "Bash(gh repo rename:*)",
+      "Bash(gh repo archive:*)",
+      "Bash(gh repo unarchive:*)",
+      "Bash(gh repo edit:*)",
+      "Bash(gh repo set-default:*)",
+      "Bash(gh repo fork:*)",
+      "Bash(gh repo sync:*)",
+      "Bash(gh repo deploy-key:*)",
+      "Bash(gh secret set:*)",
+      "Bash(gh secret delete:*)",
+      "Bash(gh variable set:*)",
+      "Bash(gh variable delete:*)",
+      "Bash(gh workflow run:*)",
+      "Bash(gh workflow enable:*)",
+      "Bash(gh workflow disable:*)",
+      "Bash(gh auth login:*)",
+      "Bash(gh auth logout:*)",
+      "Bash(gh auth refresh:*)",
+      "Bash(gh auth setup-git:*)",
+      "Bash(gh ssh-key add:*)",
+      "Bash(gh api:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "Bash(rsync:*)",
+      "Bash(npm publish:*)",
+      "Bash(twine upload:*)",
+      "Bash(docker push:*)",
+      "Bash(terraform apply:*)",
+      "Bash(kubectl apply:*)",
+      "Bash(aws s3 cp:*)",
+      "Bash(aws s3 sync:*)",
+      "Bash(aws s3 mv:*)",
+      "Bash(gh gist create:*)"
+    ],
+    "deny": [
+      "NotebookEdit",
+      "CronCreate",
+      "CronDelete",
+      "CronList",
+      "DesignSync",
+      "RemoteTrigger",
+      "ReportFindings",
+      "ScheduleWakeup",
+      "Monitor",
+      "EnterWorktree",
+      "ExitWorktree",
+      "TaskUpdate",
+      "TaskCreate",
+      "TaskOutput",
+      "TaskGet",
+      "TaskStop",
+      "TaskList",
+      "PushNotification"
+    ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/scan-prompt-secrets.sh\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/grouped-bash-guard.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/grouped-edit-guard.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/secrets-guard.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-credential-exfiltration.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/grouped-write-guard.sh\""
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/approve-safe-commands.sh\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-permission-request.sh\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/grouped-posttooluse-bash-scan.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Read|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/scan-prompt-injection.sh\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-tool-uses.sh\""
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-tool-uses.sh\""
+          }
+        ]
+      }
+    ],
+    "PostToolBatch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-tool-uses.sh\""
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-permission-denied.sh\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-stop.sh\""
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-stop.sh\""
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-subagent-start.sh\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-subagent-stop.sh\""
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-session-end.sh\""
+          }
+        ]
+      }
+    ],
+    "InstructionsLoaded": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/track-instructions-loaded.sh\""
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "\"$CLAUDE_PROJECT_DIR/.claude/scripts/statusline-capture.sh\""
+  }
+}
