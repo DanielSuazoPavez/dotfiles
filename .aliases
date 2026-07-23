@@ -26,15 +26,14 @@ alias zjl='zellij list-sessions'
 alias zjk='zellij kill-session'
 alias zjka='zellij kill-all-sessions'
 # Open the current directory as a project: nvim (2/3) + Claude Code (1/3),
-# in a zellij session named after the directory. Attaches if it already exists.
+# in a zellij session named after the directory. Creates it with the project
+# layout if missing, attaches if it already exists.
+# Note: `zellij attach -c` does create-or-attach in one step; the `--session`
+# flag does NOT create a new session (it errors "not found"), so we don't use it.
 proj() {
     local name
     name="$(basename "$PWD")"
-    if zellij list-sessions -s -n 2>/dev/null | grep -qx "$name"; then
-        zellij attach "$name"
-    else
-        zellij --layout project --session "$name"
-    fi
+    zellij --layout project attach "$name" -c
 }
 
 # Open the current repo as a project TAB in the current zellij session
