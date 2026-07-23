@@ -15,20 +15,22 @@ cd dotfiles
 > **Fresh machine?** See [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md) for the full
 > path from a blank Windows/WSL install to running `install.sh`.
 
-Install these tools before running `install.sh`:
+Only `git` and `curl` are required up front — `install.sh` installs the rest.
 
-| Tool | Install | Required for |
-|------|---------|--------------|
-| git | `sudo apt install git` | Always |
-| curl | `sudo apt install curl` | Font downloads |
-| starship | [starship.rs](https://starship.rs) | Prompt |
-| zellij | [zellij.dev](https://zellij.dev) | Multiplexer |
-| neovim | `sudo apt install neovim` (or [neovim.io](https://neovim.io)) | Editor |
-| zoxide | `cargo install zoxide` | Smarter cd |
-| uv | [astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/) | Python tooling |
+## What install.sh Installs
 
-GUI tools (optional, skipped on headless):
-- ghostty
+Each category prompt means install-if-missing (native package on Tumbleweed,
+curl installer/tarball on Ubuntu) plus config symlinks. Already-installed
+tools skip straight to linking. Run as your user — the script invokes `sudo`
+inline where root is needed.
+
+| Tier | Tools |
+|------|-------|
+| Core (prompt, default Y) | starship, zellij, neovim, zoxide, ripgrep, broot |
+| Core GUI (skipped if headless) | ghostty, Nerd Fonts (JetBrainsMono + FiraCode) |
+| Runtimes (prompt, default Y) | uv, node, docker |
+| Optional (prompt, default Y) | Claude Code (+ playwright chromium) |
+| Doc-only (see [BOOTSTRAP.md](docs/BOOTSTRAP.md)) | rust, go |
 
 ## What's Included
 
@@ -62,7 +64,7 @@ dotfiles/
 
 ## Installation
 
-The `install.sh` script symlinks configuration files to their expected locations. Run it after cloning:
+The `install.sh` script installs missing tools and symlinks configuration files to their expected locations. Run it after cloning:
 
 ```bash
 ./install.sh

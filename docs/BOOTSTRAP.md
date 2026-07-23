@@ -1,11 +1,13 @@
-# Bootstrap: Fresh Machine → Ready for install.sh
+# Bootstrap (Ubuntu/WSL): Fresh Machine → Ready for install.sh
 
 Pre-steps for a brand-new machine (Windows + WSL Ubuntu, the primary use case).
 Goal: get from "nothing installed" to the point where you can clone this repo
-and run `./install.sh`.
+and run `./install.sh`. Tumbleweed machines: see
+[DUAL-BOOT-TUMBLEWEED.md](DUAL-BOOT-TUMBLEWEED.md) instead.
 
-`install.sh` only **symlinks configs** — it does not install the tools themselves.
-This guide covers installing them.
+`install.sh` installs the tool roster **and** symlinks configs. This guide
+covers only what must exist before you can clone and run it: WSL, base
+packages, and GitHub access.
 
 ## 1. WSL + Ubuntu (Windows only)
 
@@ -44,67 +46,30 @@ ssh-keygen -t ed25519 -C "you@example.com"
 cat ~/.ssh/id_ed25519.pub   # add at https://github.com/settings/keys
 ```
 
-## 4. Tools the dotfiles configure
+## 4. Not covered by install.sh
 
-Install before (or after) running `install.sh` — the shell config detects each
-tool and only activates it if present.
-
-```bash
-# Starship (prompt)
-curl -sS https://starship.rs/install.sh | sh
-
-# Zellij (multiplexer) — prebuilt binary
-curl -sL https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz \
-  | tar -xz && sudo mv zellij /usr/local/bin/
-
-# zoxide (smarter cd — .aliases maps `cd` to it)
-curl -sSf https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-
-# Neovim (apt version is old; use the official tarball)
-curl -sLo /tmp/nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-sudo tar -C /opt -xzf /tmp/nvim.tar.gz
-sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
-
-# broot (better tree) — optional
-# https://dystroy.org/broot/install/
-
-# Claude Code — install early; it helps with the rest of the setup
-curl -fsSL https://claude.ai/install.sh | bash
-
-# Playwright chromium — used by the Playwright MCP server
-# (.bashrc exports PLAYWRIGHT_BROWSER_PATH pointing into ~/.cache/ms-playwright;
-#  update the version in that path if it changes)
-npx playwright install chromium --with-deps
-```
+install.sh offers Claude Code (default yes); to get it before cloning:
+`curl -fsSL https://claude.ai/install.sh | bash`.
 
 ### Docker + Compose
 
-Docker Engine (native, no Docker Desktop needed — works in WSL2 and bare metal).
-The install script includes the Compose v2 plugin (`docker compose`):
-
-```bash
-curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker $USER   # then log out/in (or `wsl --shutdown`)
-```
+install.sh's Runtimes prompt installs Docker Engine via get.docker.com
+(includes the Compose v2 plugin) and adds you to the `docker` group —
+then log out/in (or `wsl --shutdown`).
 
 Verify: `docker run hello-world` and `docker compose version`.
 On WSL, systemd (default in current Ubuntu images) starts the daemon automatically.
 
 ### Optional language toolchains
 
-`.bashrc` sources these if present; skip what you don't need.
+`.bashrc` sources these if present; skip what you don't need. Node is handled
+by install.sh (via nvm on Ubuntu); rust and go stay manual:
 
 ```bash
 # Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-# Node (via NVM)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-
 # Go — download from https://go.dev/dl/ and extract to /usr/local/go
-
-# uv (Python)
-curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 ## 5. Fonts (WSL caveat)
