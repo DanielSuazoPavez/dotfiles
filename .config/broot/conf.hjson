@@ -1,0 +1,35 @@
+# broot configuration
+# Full reference: https://dystroy.org/broot/conf_file/
+
+# Respect .gitignore by default; toggle in-app with :toggle_git_ignore
+respect_git_ignore: true
+
+# Default flags applied on every launch (override on the CLI).
+# g = show git status. Add "h" here if you want hidden files shown by default.
+default_flags: "g"
+
+verbs: [
+    # Open the selection in Neovim, then return to broot
+    {
+        invocation: "edit"
+        key: "ctrl-e"
+        external: "nvim {file}"
+        leave_broot: false
+    }
+
+    # Open lazygit in the selected directory (or the file's parent)
+    {
+        invocation: "git"
+        key: "ctrl-g"
+        external: "lazygit --path {directory}"
+        leave_broot: false
+    }
+
+    # Preview the selection with bat, paging
+    {
+        invocation: "view"
+        key: "ctrl-v"
+        external: "bat --paging=always {file}"
+        leave_broot: false
+    }
+]
