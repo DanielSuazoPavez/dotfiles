@@ -18,6 +18,9 @@ return {
     ]])
 
     require("neo-tree").setup({
+      -- If neo-tree would be the last window open (e.g. after closing the
+      -- final buffer), close it instead of letting it fill the screen.
+      close_if_last_window = true,
       window = {
         width = 35,
       },

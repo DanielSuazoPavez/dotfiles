@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Neovim telescope pickers beyond find-files/live-grep: buffers, help tags, resume, recent files, keymaps, document symbols, diagnostics, and LSP references (`gr`). All grouped under the `<leader>f` "find" prefix.
+- `docs/NVIM-REFERENCE.md` and `docs/ZELLIJ-REFERENCE.md` — keybind/usage refreshers, linked from the README's Editor and Multiplexer entries.
+
+### Fixed
+- Neo-tree no longer fills the screen when the last buffer closes (`close_if_last_window`), and `<leader>bd` now deletes the buffer without closing its window/split — the sidebar layout stays intact.
+- Telescope now tracks `master` instead of the pinned `0.1.8` tag, which called the removed `ft_to_lang` and crashed the previewer on the current nvim/treesitter `main` branch.
+
+### Changed
+- Telescope find-files rebound from `Ctrl-p` to `<leader>ff` (zellij owns `Ctrl-p` for pane mode).
+
 ### Notes
+- Backlog: added `telescope-fzf-native` (P3) — consider the C-compiled sorter for faster fuzzy filtering.
 - Scope cleanup per `docs/agent/identity.md`: removed out-of-scope files that don't help a fresh machine reach working state — `dotfiles-setup-guide.md` (stray root doc), `docs/analysis`/`docs/plans`/`docs/sessions` (session and planning history), and `templates/pre-commit-config-python.yaml` (belongs in `python-template`). Fixed the dangling `dotfiles-setup-guide.md` link in `docs/BOOTSTRAP.md`, dropped the now-moot `.gitignore` entries, and refreshed the out-of-scope examples in `identity.md`.
 
 ## [0.1.5] - 2026-07-23

@@ -38,8 +38,8 @@ inline where root is needed.
 - **Git**: Global config, ignore patterns
 - **Prompt**: Starship configuration
 - **Terminal**: Ghostty settings
-- **Multiplexer**: Zellij layouts and config
-- **Editor**: Neovim (lazy.nvim, LSP, completion)
+- **Multiplexer**: Zellij layouts and config — [keybind reference](docs/ZELLIJ-REFERENCE.md)
+- **Editor**: Neovim (lazy.nvim, LSP, completion) — [keybind reference](docs/NVIM-REFERENCE.md)
 
 ## Related Projects
 
