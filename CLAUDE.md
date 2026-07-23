@@ -48,6 +48,7 @@ dotfiles/
 
 - Managed via `claude-toolkit backlog` — do not hand-edit the rendered file.
 - `BACKLOG.json` is the committed source of truth; `BACKLOG.md` is generated from it.
+- Read a single task: `claude-toolkit backlog task <id>` (add `--json` for the raw record).
 
 ## Related Repos
 
