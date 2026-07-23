@@ -37,11 +37,21 @@ proj() {
     fi
 }
 
-# Add a tab to the CURRENT zellij session using the project layout
-# (nvim + Claude Code), rooted at the current directory and named after it.
-# Run after cd-ing into the repo. Works from any tab.
+# Open the current repo as a project TAB in the current zellij session
+# (project layout: nvim + Claude Code + scratch), named after the dir.
+#   - Outside zellij: defer to `proj` (a project gets its own session).
+#   - Inside zellij:  focus the tab if it already exists, else create it.
+# Run after cd-ing into the repo.
 projtab() {
-    zellij action new-tab --layout project --cwd "$PWD" --name "$(basename "$PWD")"
+    local name
+    name="$(basename "$PWD")"
+    if [ -z "$ZELLIJ" ]; then
+        proj
+    elif zellij action query-tab-names 2>/dev/null | grep -qx "$name"; then
+        zellij action go-to-tab-name "$name"
+    else
+        zellij action new-tab --layout project --cwd "$PWD" --name "$name"
+    fi
 }
 
 # Zoxide (smarter cd)
