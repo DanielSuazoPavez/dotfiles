@@ -29,7 +29,18 @@ return {
     local map = vim.keymap.set
     map("n", "<Tab>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
     map("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
-    map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+    -- Close the current buffer without closing its window. `:bdelete` would
+    -- also close the split when it's the buffer's only window, which lets
+    -- neo-tree reflow to fill the screen. Switch to another buffer first so
+    -- the window survives and the sidebar layout stays intact.
+    map("n", "<leader>bd", function()
+      local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+      local cur = vim.api.nvim_get_current_buf()
+      if #bufs > 1 then
+        vim.cmd("BufferLineCyclePrev")
+      end
+      vim.cmd("bdelete " .. cur)
+    end, { desc = "Close buffer (keep window)" })
     map("n", "<leader>bp", "<cmd>BufferLineTogglePin<cr>", { desc = "Pin buffer" })
     -- Jump to buffer by position (Ctrl+1..9)
     for i = 1, 9 do
