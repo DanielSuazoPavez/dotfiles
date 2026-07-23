@@ -57,7 +57,9 @@ projtab() {
 }
 
 # Zoxide (smarter cd)
-alias cd='z'
+if command -v zoxide &> /dev/null; then
+    alias cd='z'
+fi
 
 # Python virtual environment
 alias act='source .venv/bin/activate'

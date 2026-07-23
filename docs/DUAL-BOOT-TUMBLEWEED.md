@@ -93,19 +93,10 @@ sudo zypper addrepo https://download.nvidia.com/opensuse/tumbleweed nvidia
 sudo zypper install-new-recommends --repo nvidia
 sudo reboot
 
-# Dev tools (all current versions, no tarballs needed)
-sudo zypper in git curl wget unzip gcc make ripgrep ripgrep-bash-completion \
-               starship zellij zoxide neovim gh docker docker-compose
-sudo usermod -aG docker $USER
-sudo systemctl enable --now docker
-# log out/in for the docker group
+# Prerequisites for install.sh (it installs the rest of the roster itself)
+sudo zypper in git curl wget unzip gcc make fontconfig bash-completion gh
 
-# Claude Code — get the assistant before doing the rest by hand :)
-curl -fsSL https://claude.ai/install.sh | bash
-# then: claude   (login via browser)
-
-# Playwright chromium (for the Playwright MCP server; needs Node from NVM first)
-npx playwright install chromium --with-deps
+# Claude Code + the rest of the roster: ./install.sh handles it
 
 # GitHub auth + dotfiles
 gh auth login
@@ -113,9 +104,8 @@ git clone https://github.com/DanielSuazoPavez/dotfiles.git ~/projects/personal/d
 cd ~/projects/personal/dotfiles && ./install.sh
 ```
 
-Fonts: install JetBrainsMono Nerd Font natively here
-(`sudo zypper in jetbrains-mono-fonts` gets the base; for the Nerd Font
-patched build, install.sh's font step works — this is native Linux, unlike WSL).
+Fonts: install.sh's Nerd Fonts step works natively here (this is native
+Linux, unlike WSL) — no Windows-side font install needed.
 
 ## Escape hatches
 

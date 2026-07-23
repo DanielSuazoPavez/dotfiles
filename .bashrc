@@ -45,8 +45,12 @@ if [ -f "$HOME/.cargo/env" ]; then
 fi
 
 # Go
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
+
+if [ -d /usr/local/go ]; then
+    export GOROOT=/usr/local/go
+    export GOPATH=$HOME/go
+    export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+fi
 
 # NVM (Node Version Manager)
 export NVM_DIR="$HOME/.nvm"
@@ -54,7 +58,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Update PATH
-export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 
 # ============================================================================
 # Shell Enhancements
