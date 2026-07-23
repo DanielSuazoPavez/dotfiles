@@ -84,7 +84,7 @@ fi
 # Playwright browser path for MCP server
 export PLAYWRIGHT_BROWSER_PATH="$HOME/.cache/ms-playwright/chromium-1205/chrome-linux64/chrome"
 
-[ -f "$HOME/.local/bin/env"] && . "$HOME/.local/share/../bin/env"
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/share/../bin/env"
 
 export EDITOR=nvim
 export VISUAL=nvim
