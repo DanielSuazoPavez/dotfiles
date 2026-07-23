@@ -94,8 +94,8 @@ sudo zypper install-new-recommends --repo nvidia
 sudo reboot
 
 # Dev tools (all current versions, no tarballs needed)
-sudo zypper in git curl wget unzip gcc make starship zellij zoxide neovim gh \
-               docker docker-compose
+sudo zypper in git curl wget unzip gcc make ripgrep ripgrep-bash-completion \
+               starship zellij zoxide neovim gh docker docker-compose
 sudo usermod -aG docker $USER
 sudo systemctl enable --now docker
 # log out/in for the docker group
