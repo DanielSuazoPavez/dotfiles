@@ -10,6 +10,9 @@ return {
           mantle = "#1e1f1c", -- Monokai sidebar/explorer background
         },
       },
+      integrations = {
+        bufferline = true,
+      },
     })
     vim.cmd.colorscheme("catppuccin-mocha")
   end,
