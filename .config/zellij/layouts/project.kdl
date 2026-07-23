@@ -23,9 +23,12 @@ layout {
     }
     tab {
         pane split_direction="vertical" {
+            // If the project has a BACKLOG.md, open it with the neo-tree
+            // sidebar toggled (same as Ctrl-e); else just open the directory.
+            // Runs in the pane's cwd (project root), so the path resolves.
             pane name="nvim" size="67%" {
-                command "nvim"
-                args "."
+                command "bash"
+                args "-c" "[ -f BACKLOG.md ] && exec nvim BACKLOG.md -c 'Neotree filesystem reveal toggle left' || exec nvim ."
             }
             pane name="claude-code" size="33%" {
                 command "claude"
