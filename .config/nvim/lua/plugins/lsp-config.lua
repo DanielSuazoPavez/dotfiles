@@ -9,7 +9,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "yamlls", "jsonls", "basedpyright", "ruff", "sqls" }
+        ensure_installed = { "lua_ls", "yamlls", "jsonls", "basedpyright", "ruff" }
       })
     end
   },
@@ -52,9 +52,6 @@ return {
 
       -- Ruff (Python linter/formatter)
       vim.lsp.enable('ruff')
-
-      -- SQL
-      vim.lsp.enable('sqls')
 
       -- YAML & JSON
       vim.lsp.enable('yamlls')

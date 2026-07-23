@@ -18,6 +18,9 @@ return {
     ]])
 
     require("neo-tree").setup({
+      window = {
+        width = 35,
+      },
       filesystem = {
         filtered_items = {
           visible = false,
@@ -29,5 +32,6 @@ return {
       },
     })
     vim.keymap.set("n", "<C-n>", ":Neotree filesystem reveal toggle left<CR>", {})
+    vim.keymap.set("n", "<C-e>", ":Neotree filesystem reveal toggle left<CR>", { desc = "Toggle file explorer" })
   end,
 }
