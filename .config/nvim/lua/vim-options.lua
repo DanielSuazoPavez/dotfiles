@@ -35,6 +35,13 @@ vim.opt.splitbelow = true
 -- No swap files
 vim.opt.swapfile = false
 
+-- Auto-reload files changed on disk (e.g. by Claude Code in the adjacent pane)
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+  pattern = "*",
+  command = "checktime",
+})
+
 -- Split navigation keymaps
 vim.keymap.set("n", "<C-h>", "<C-w>h", {})
 vim.keymap.set("n", "<C-j>", "<C-w>j", {})

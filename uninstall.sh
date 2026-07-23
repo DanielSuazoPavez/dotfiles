@@ -44,17 +44,6 @@ if [ -L "$HOME/.config/nvim" ]; then
     echo "  Removed symlink: ~/.config/nvim"
 fi
 
-# Remove VS Code symlinks
-if [ -L "$HOME/.config/Code/User/settings.json" ]; then
-    rm "$HOME/.config/Code/User/settings.json"
-    echo "  Removed symlink: ~/.config/Code/User/settings.json"
-fi
-
-if [ -L "$HOME/.config/Code/User/keybindings.json" ]; then
-    rm "$HOME/.config/Code/User/keybindings.json"
-    echo "  Removed symlink: ~/.config/Code/User/keybindings.json"
-fi
-
 echo ""
 echo "✅ Dotfiles uninstalled successfully!"
 echo ""
