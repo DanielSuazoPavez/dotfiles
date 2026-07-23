@@ -115,7 +115,27 @@ side (e.g. JetBrainsMono Nerd Font from <https://www.nerdfonts.com/font-download
 and select it in your terminal's settings. The `install.sh` Nerd Fonts step
 targets Linux (`~/.local/share/fonts`) and only matters for native Linux GUIs.
 
-## 6. Clone and install
+## 6. Keyboard layout (native desktop)
+
+Only relevant on a **native Linux desktop** (KDE/GNOME on real hardware), not
+WSL. If the physical keyboard is Spanish/Latin-American but you type in English,
+use the US layout with the **AltGr international variant**: plain `'` and `"`
+type instantly (no dead-key wait), and accents move onto AltGr —
+`AltGr+'` then a vowel → `á`, `AltGr+n` → `ñ`, `AltGr+.` → `·`.
+
+```bash
+# Test live (resets on logout):
+setxkbmap us -variant altgr-intl
+
+# Persist across reboots (systemd/X11; KDE reads this too):
+sudo localectl set-x11-keymap us pc105 altgr-intl
+```
+
+The plain `us(intl)` variant makes `'`/`"` **dead keys** (they wait for the next
+keypress to compose) — a common surprise on a fresh install. `altgr-intl` avoids
+it while keeping the accents a chord away.
+
+## 7. Clone and install
 
 ```bash
 git clone https://github.com/DanielSuazoPavez/dotfiles.git ~/projects/personal/dotfiles
