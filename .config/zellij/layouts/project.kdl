@@ -1,5 +1,9 @@
-// Per-project layout: nvim (2/3) + Claude Code (1/3), side by side.
+// Per-project layout: nvim (2/3) + Claude Code (1/3), side by side,
+// plus a hidden floating "scratch" terminal for quick commands.
 // Launch from a project root with:  zellij --layout project
+//
+// Quick terminal: press  Alt f  to toggle the floating scratch shell
+// on/off over the nvim+cc panes. It persists across toggles.
 layout {
     pane split_direction="vertical" {
         pane size="67%" {
@@ -8,6 +12,14 @@ layout {
         }
         pane size="33%" {
             command "claude"
+        }
+    }
+    floating_panes {
+        pane name="scratch" {
+            width "70%"
+            height "60%"
+            x "15%"
+            y "20%"
         }
     }
 }
