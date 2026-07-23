@@ -210,6 +210,12 @@ install_bat() {
     fi
 }
 
+install_trash_cli() {
+    command -v trash &> /dev/null && return 0
+    echo "  Installing trash-cli..."
+    pkg_install trash-cli   # packaged on both distros
+}
+
 install_broot() {
     command -v broot &> /dev/null && return 0
     echo "  Installing broot..."
@@ -365,7 +371,7 @@ if prompt_category "zoxide (smarter cd)" "y"; then
     INSTALL_ZOXIDE=true
 fi
 
-if prompt_category "CLI extras (ripgrep, broot, bat)" "y"; then
+if prompt_category "CLI extras (ripgrep, broot, bat, trash-cli)" "y"; then
     INSTALL_RIPGREP=true
     INSTALL_BROOT=true
 fi
@@ -448,6 +454,7 @@ if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
     run_install install_ripgrep
     run_install install_broot
     run_install install_bat
+    run_install install_trash_cli
 fi
 
 # broot config + br shell function (sourced by .bashrc)
@@ -506,7 +513,7 @@ echo "Verifying tools..."
 # curl installers drop binaries in ~/.local/bin, which may not be on the
 # script's PATH yet on a fresh machine
 PATH="$HOME/.local/bin:$PATH"
-for tool in starship zellij nvim zoxide rg broot bat; do
+for tool in starship zellij nvim zoxide rg broot bat trash; do
     if command -v "$tool" &> /dev/null; then
         echo "  + $tool"
     else
