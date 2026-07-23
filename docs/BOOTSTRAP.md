@@ -25,7 +25,7 @@ Reboot if prompted, then launch Ubuntu and create your UNIX user.
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y git curl wget unzip build-essential fontconfig bash-completion
+sudo apt install -y git curl wget unzip build-essential fontconfig bash-completion ripgrep
 ```
 
 ## 3. GitHub access

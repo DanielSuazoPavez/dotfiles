@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Notes
+- Bootstrap docs now install `ripgrep`: added to the `apt` base-packages line in `docs/BOOTSTRAP.md` (WSL/Ubuntu) and the `zypper in` dev-tools line in `docs/DUAL-BOOT-TUMBLEWEED.md` (openSUSE, plus `ripgrep-bash-completion`). It was an undocumented dependency — the repo's bash guard enforces `rg` over `grep -r` and nvim's telescope live-grep needs it.
+
 ## [0.1.4] - 2026-07-23
 
 ### Added
