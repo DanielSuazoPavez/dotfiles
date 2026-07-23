@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.5] - 2026-07-23
+
+### Added
+- `install.sh` now installs the tool roster, not just symlinks configs. Distro detection (zypper on Tumbleweed, apt on Ubuntu/WSL) drives install-if-missing per category: core CLI (starship, zellij, neovim, zoxide, ripgrep, broot), GUI (ghostty, Nerd Fonts), runtimes (uv, node, docker), and optionally Claude Code (+ playwright chromium). Already-installed tools skip straight to linking (idempotent). A root-guard refuses `sudo ./install.sh` so user-space installs land in `$HOME`; `sudo` is invoked inline only where root is needed, and a failure is recorded and reported rather than aborting the run. rust/go stay doc-only.
+
+### Fixed
+- `alias cd='z'` is now guarded behind `command -v zoxide` — without zoxide installed, `cd` no longer breaks on a fresh machine.
+- Go env in `.bashrc` (`GOROOT`/`GOPATH`/PATH) guarded behind `/usr/local/go` existence.
+
+### Changed
+- Docs realigned with the installed roster: identity's clone-and-run trait names the tiers and the settled roster (stale "Open Tasks" removed); `docs/BOOTSTRAP.md` retitled as Ubuntu/WSL pre-steps and no longer claims install.sh "only symlinks configs"; `docs/DUAL-BOOT-TUMBLEWEED.md` Phase 4 trimmed to prerequisites + `./install.sh`; README documents the roster tiers and install-if-missing behavior.
 
 ### Notes
 - Bootstrap docs now install `ripgrep`: added to the `apt` base-packages line in `docs/BOOTSTRAP.md` (WSL/Ubuntu) and the `zypper in` dev-tools line in `docs/DUAL-BOOT-TUMBLEWEED.md` (openSUSE, plus `ripgrep-bash-completion`). It was an undocumented dependency — the repo's bash guard enforces `rg` over `grep -r` and nvim's telescope live-grep needs it.
