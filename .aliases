@@ -42,6 +42,9 @@ proj() {
 #   - Outside zellij: defer to `proj` (a project gets its own session).
 #   - Inside zellij:  focus the tab if it already exists, else create it.
 # Run after cd-ing into the repo.
+# Note: running projtab again for the same repo has occasionally produced a
+# duplicate tab instead of focusing the existing one; cause not pinned down
+# (not worth chasing — a stray tab is cheap to close).
 projtab() {
     local name
     name="$(basename "$PWD")"
