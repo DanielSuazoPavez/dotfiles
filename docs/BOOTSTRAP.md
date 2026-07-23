@@ -109,5 +109,4 @@ cd ~/projects/personal/dotfiles
 source ~/.bashrc
 ```
 
-Done. See [dotfiles-setup-guide.md](../dotfiles-setup-guide.md) for the general
-dotfiles methodology, and the README for day-to-day usage.
+Done. See the README for day-to-day usage.
