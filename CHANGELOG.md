@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-07-23
+
+### Added
+- Buffer tabs in nvim (VS Code style) via `bufferline.nvim` with catppuccin/Monokai highlights: `Tab`/`Shift+Tab` cycle buffers, `Ctrl+1`..`Ctrl+9` jump by position, `<leader>bd` closes and `<leader>bp` pins. The catppuccin highlight lookup is guarded with `pcall` so config survives load-order shifts, and neo-tree gets an offset so tabs don't overlap the sidebar.
+
+### Changed
+- neo-tree sidebar toggle moved from `Ctrl+e`/`Ctrl+n` to `<leader>e`, freeing `Ctrl+e` (zellij move) and `Ctrl+n` (zellij resize) from collision. `Alt+e` was considered but rejected — Alt-as-modifier is unreliable across terminals.
+
 ## [0.1.3] - 2026-07-23
 
 ### Fixed
