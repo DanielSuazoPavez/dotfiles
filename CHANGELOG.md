@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-07-23
+
+### Fixed
+- `proj` never created a new session — `zellij --layout X --session NAME` errors "session not found" when NAME doesn't exist instead of creating it. Now uses `zellij --layout project attach "$name" -c` (create-or-attach). Pre-existing bug from 0.1.1, exposed while testing the create path.
+
+### Added
+- Floating "scratch" terminal in the project layout — a quick shell toggled with `Alt+f` over the nvim+Claude panes, persists across toggles
+- `projtab` shell function: opens the current repo as a project *tab* in the running zellij session (focus-if-exists), and defers to `proj` when outside zellij — giving a two-scope model (`proj` = session per project, `projtab` = tab in the current session)
+- Project launch opens `BACKLOG.md` with the neo-tree sidebar when the repo has one, else opens the directory (shared by `proj` and `projtab`)
+- `Alt+1`..`Alt+9` jump directly to tabs without entering tab mode
+- `scripts/check-keybind-collisions.py`: reports chords bound in both ghostty and zellij (normalizes modifier spelling), separating global from mode-local collisions
+
+### Changed
+- zellij mode entry aligned to the `Ctrl+*` convention: lock on `Ctrl+g` (symmetric with the `Ctrl+g` that exits lock), move on `Ctrl+e` — reverses the `Alt+m` move binding from 0.1.2
+- Project layout panes named (`nvim`, `claude-code`, `scratch`) and `pane_frames` re-enabled so the focused pane and names are visible — reverses the `pane_frames` disable from 0.1.2
+- Project layout restructured with a `default_tab_template` so tabs created via `new-tab` keep their tab-bar/status-bar (without it, `projtab` tabs rendered bare)
+
+### Notes
+- Keybind policy recorded: zellij (and what runs inside it) owns keybinds; ghostty stays out of the way, and on friction the ghostty binding is removed (`shift+enter` kept). Backlog `keybind-mnemonics` (P2) added to later normalize the *meaning* of mnemonic letters across tools
+- Known: `projtab` has occasionally duplicated a tab instead of focusing the existing one; cause not pinned down, left as-is (a stray tab is cheap to close)
+
 ## [0.1.2] - 2026-07-23
 
 ### Fixed

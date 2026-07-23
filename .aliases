@@ -26,14 +26,33 @@ alias zjl='zellij list-sessions'
 alias zjk='zellij kill-session'
 alias zjka='zellij kill-all-sessions'
 # Open the current directory as a project: nvim (2/3) + Claude Code (1/3),
-# in a zellij session named after the directory. Attaches if it already exists.
+# in a zellij session named after the directory. Creates it with the project
+# layout if missing, attaches if it already exists.
+# Note: `zellij attach -c` does create-or-attach in one step; the `--session`
+# flag does NOT create a new session (it errors "not found"), so we don't use it.
 proj() {
     local name
     name="$(basename "$PWD")"
-    if zellij list-sessions -s -n 2>/dev/null | grep -qx "$name"; then
-        zellij attach "$name"
+    zellij --layout project attach "$name" -c
+}
+
+# Open the current repo as a project TAB in the current zellij session
+# (project layout: nvim + Claude Code + scratch), named after the dir.
+#   - Outside zellij: defer to `proj` (a project gets its own session).
+#   - Inside zellij:  focus the tab if it already exists, else create it.
+# Run after cd-ing into the repo.
+# Note: running projtab again for the same repo has occasionally produced a
+# duplicate tab instead of focusing the existing one; cause not pinned down
+# (not worth chasing — a stray tab is cheap to close).
+projtab() {
+    local name
+    name="$(basename "$PWD")"
+    if [ -z "$ZELLIJ" ]; then
+        proj
+    elif zellij action query-tab-names 2>/dev/null | grep -qx "$name"; then
+        zellij action go-to-tab-name "$name"
     else
-        zellij --layout project --session "$name"
+        zellij action new-tab --layout project --cwd "$PWD" --name "$name"
     fi
 }
 

@@ -1,13 +1,46 @@
-// Per-project layout: nvim (2/3) + Claude Code (1/3), side by side.
-// Launch from a project root with:  zellij --layout project
+// Per-project layout: nvim (2/3) + Claude Code (1/3), side by side,
+// plus a hidden floating "scratch" terminal for quick commands.
+//
+// Two ways to use it:
+//   - New session:  zellij --layout project      (the `proj` shell fn)
+//   - New tab:      zellij action new-tab -l project --cwd "$PWD"  (`projtab`)
+//
+// The default_tab_template wraps EVERY tab (session-start and new-tab alike)
+// with the tab-bar / status-bar plugin panes, so `projtab` tabs keep their
+// top tab list and bottom status bar instead of rendering bare.
+//
+// Quick terminal: press  Alt f  to toggle the floating scratch shell
+// on/off over the nvim+cc panes. It persists across toggles.
 layout {
-    pane split_direction="vertical" {
-        pane size="67%" {
-            command "nvim"
-            args "."
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
         }
-        pane size="33%" {
-            command "claude"
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab {
+        pane split_direction="vertical" {
+            // If the project has a BACKLOG.md, open it with the neo-tree
+            // sidebar toggled (same as Ctrl-e); else just open the directory.
+            // Runs in the pane's cwd (project root), so the path resolves.
+            pane name="nvim" size="67%" {
+                command "bash"
+                args "-c" "[ -f BACKLOG.md ] && exec nvim BACKLOG.md -c 'Neotree filesystem reveal toggle left' || exec nvim ."
+            }
+            pane name="claude-code" size="33%" {
+                command "claude"
+            }
+        }
+        floating_panes {
+            pane name="scratch" {
+                width "70%"
+                height "60%"
+                x "15%"
+                y "20%"
+            }
         }
     }
 }
