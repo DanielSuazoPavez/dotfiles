@@ -199,6 +199,17 @@ install_ripgrep() {
     pkg_install ripgrep   # packaged on both distros
 }
 
+install_bat() {
+    command -v bat &> /dev/null && return 0
+    echo "  Installing bat..."
+    pkg_install bat   # packaged on both distros
+    # Debian/Ubuntu ship the binary as `batcat`; expose it as `bat`
+    if ! command -v bat &> /dev/null && command -v batcat &> /dev/null; then
+        mkdir -p "$HOME/.local/bin"
+        ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"
+    fi
+}
+
 install_broot() {
     command -v broot &> /dev/null && return 0
     echo "  Installing broot..."
@@ -354,7 +365,7 @@ if prompt_category "zoxide (smarter cd)" "y"; then
     INSTALL_ZOXIDE=true
 fi
 
-if prompt_category "CLI extras (ripgrep, broot)" "y"; then
+if prompt_category "CLI extras (ripgrep, broot, bat)" "y"; then
     INSTALL_RIPGREP=true
     INSTALL_BROOT=true
 fi
@@ -436,6 +447,14 @@ if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
     echo "Installing CLI extras..."
     run_install install_ripgrep
     run_install install_broot
+    run_install install_bat
+fi
+
+# broot config + br shell function (sourced by .bashrc)
+if [ "$INSTALL_BROOT" = true ]; then
+    link_file "$DOTFILES_DIR/.config/broot/conf.hjson" "$HOME/.config/broot/conf.hjson"
+    link_file "$DOTFILES_DIR/.config/broot/launcher/bash/br" "$HOME/.config/broot/launcher/bash/br"
+    link_file "$DOTFILES_DIR/.config/broot/launcher/installed-v4" "$HOME/.config/broot/launcher/installed-v4"
 fi
 
 # Runtimes
@@ -479,13 +498,15 @@ verify_symlink "$HOME/.gitignore_global"
 [ "$INSTALL_ZELLIJ" = true ] && verify_symlink "$HOME/.config/zellij/config.kdl"
 [ "$INSTALL_ZELLIJ" = true ] && verify_symlink "$HOME/.config/zellij/layouts/project.kdl"
 [ "$INSTALL_GHOSTTY" = true ] && verify_symlink "$HOME/.config/ghostty/config"
+[ "$INSTALL_BROOT" = true ] && verify_symlink "$HOME/.config/broot/conf.hjson"
+[ "$INSTALL_BROOT" = true ] && verify_symlink "$HOME/.config/broot/launcher/bash/br"
 
 echo
 echo "Verifying tools..."
 # curl installers drop binaries in ~/.local/bin, which may not be on the
 # script's PATH yet on a fresh machine
 PATH="$HOME/.local/bin:$PATH"
-for tool in starship zellij nvim zoxide rg broot; do
+for tool in starship zellij nvim zoxide rg broot bat; do
     if command -v "$tool" &> /dev/null; then
         echo "  + $tool"
     else

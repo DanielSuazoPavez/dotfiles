@@ -38,14 +38,15 @@
     {
       "id": "nvim-lazygit",
       "priority": "P2",
-      "title": "Try lazygit integration in nvim",
+      "title": "Install lazygit + wire into nvim and broot",
       "scope": [
-        "config"
+        "config",
+        "install"
       ],
       "status": "idea",
       "created_at": "2026-07-22",
       "updated_at": "2026-07-23",
-      "notes": "Researched 2026-07-23. Narrowed value: interactive rebase, partial staging, history browse/cherry-pick \u2014 everything else already covered by alt+f/delegation. LIGHT scope (plugin file + install_lazygit). Deferred for now. See references.",
+      "notes": "Researched 2026-07-23. Two consumers: (1) nvim plugin \u2014 value narrowed to interactive rebase, partial staging, history browse/cherry-pick; everything else covered by alt+f/delegation. (2) broot: conf.hjson already defines a Ctrl-g verb ('lazygit --path {directory}') that errors harmlessly until lazygit is installed. Shared prereq: add install_lazygit to CLI-extras (packaged on zypper; Ubuntu needs a release binary/PPA). LIGHT scope. Deferred for now. See references.",
       "references": [
         "output/claude-toolkit/analysis/20260723T1326__research-task__nvim-lazygit.md"
       ]

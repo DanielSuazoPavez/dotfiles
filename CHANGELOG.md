@@ -5,9 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.6] - 2026-07-23
 
 ### Added
+- broot file navigator wired in: the `br` shell function (sourced by `.bashrc`) so quitting can `cd` your shell, a committed `conf.hjson` with custom verbs (`Ctrl-e` edit in nvim, `Ctrl-g` lazygit, `Ctrl-v` bat preview) and git-status-by-default, and an `installed-v4` marker so broot never prompts to self-install. All symlinked by `install.sh`. See `docs/BROOT-REFERENCE.md`.
+- `bat` added to the CLI-extras install category (with a `batcat`→`bat` shim for Debian/Ubuntu, where the package ships under the other name).
 - Neovim telescope pickers beyond find-files/live-grep: buffers, help tags, resume, recent files, keymaps, document symbols, diagnostics, and LSP references (`gr`). All grouped under the `<leader>f` "find" prefix.
 - `docs/NVIM-REFERENCE.md` and `docs/ZELLIJ-REFERENCE.md` — keybind/usage refreshers, linked from the README's Editor and Multiplexer entries.
 
@@ -19,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Telescope find-files rebound from `Ctrl-p` to `<leader>ff` (zellij owns `Ctrl-p` for pane mode).
 
 ### Notes
+- Backlog: renamed `nvim-lazygit` → "Install lazygit + wire into nvim and broot" (P2). broot's `Ctrl-g` verb already calls lazygit; the task now covers the shared `install_lazygit` prereq for both consumers.
 - Backlog: added `telescope-fzf-native` (P3) — consider the C-compiled sorter for faster fuzzy filtering.
 - Scope cleanup per `docs/agent/identity.md`: removed out-of-scope files that don't help a fresh machine reach working state — `dotfiles-setup-guide.md` (stray root doc), `docs/analysis`/`docs/plans`/`docs/sessions` (session and planning history), and `templates/pre-commit-config-python.yaml` (belongs in `python-template`). Fixed the dangling `dotfiles-setup-guide.md` link in `docs/BOOTSTRAP.md`, dropped the now-moot `.gitignore` entries, and refreshed the out-of-scope examples in `identity.md`.
 
