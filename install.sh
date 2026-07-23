@@ -31,6 +31,7 @@ done
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 BACKUP_DIR="$HOME/dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 FAILED_LINKS=()
+FAILED_INSTALLS=()
 
 # Package manager detection (Tumbleweed vs Ubuntu/Debian)
 PKG=""
@@ -107,13 +108,26 @@ prompt_category() {
 }
 
 # Run a command with sudo; on failure print it for manual execution and
-# continue (best-effort — user-space tools still install without root).
+# return 1 (callers run via run_install, which records the failure and
+# continues — best-effort: user-space tools still install without root).
 try_sudo() {
     if sudo "$@"; then
         return 0
     else
         echo "  ! sudo failed. Run manually: sudo $*"
         return 1
+    fi
+}
+
+# Run an installer function best-effort: a failure is recorded and reported
+# in the summary instead of aborting the whole run under set -e.
+run_install() {
+    local fn=$1
+    if "$fn"; then
+        return 0
+    else
+        FAILED_INSTALLS+=("${fn#install_}")
+        return 0
     fi
 }
 
@@ -159,10 +173,13 @@ install_neovim() {
         pkg_install neovim
     else
         # apt neovim is stale; official tarball to /opt
-        curl -sLo /tmp/nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-        try_sudo tar -C /opt -xzf /tmp/nvim.tar.gz \
-            && try_sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+        local ok=0
+        curl -fsLo /tmp/nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
+            && try_sudo tar -C /opt -xzf /tmp/nvim.tar.gz \
+            && try_sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim \
+            || ok=1
         rm -f /tmp/nvim.tar.gz
+        return "$ok"
     fi
 }
 
@@ -189,7 +206,7 @@ install_broot() {
         pkg_install broot
     else
         # not in Ubuntu repos; prebuilt binary from dystroy.org
-        curl -sLo /tmp/broot https://dystroy.org/broot/download/x86_64-linux/broot
+        curl -fsLo /tmp/broot https://dystroy.org/broot/download/x86_64-linux/broot
         chmod +x /tmp/broot && try_sudo mv /tmp/broot /usr/local/bin/broot
     fi
 }
@@ -220,11 +237,16 @@ install_node() {
         pkg_install nodejs24
     else
         # apt node is stale; use nvm
-        curl -so- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+        curl -fso- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
         export NVM_DIR="$HOME/.nvm"
         # shellcheck source=/dev/null
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        nvm install --lts
+        if command -v nvm &> /dev/null; then
+            nvm install --lts
+        else
+            echo "  ! nvm install failed; install node manually: https://github.com/nvm-sh/nvm"
+            return 1
+        fi
     fi
 }
 
@@ -377,21 +399,21 @@ fi
 # Starship
 if [ "$INSTALL_STARSHIP" = true ]; then
     echo "Installing Starship..."
-    install_starship
+    run_install install_starship
     link_file "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
 fi
 
 # Neovim
 if [ "$INSTALL_NEOVIM" = true ]; then
     echo "Installing Neovim..."
-    install_neovim
+    run_install install_neovim
     link_file "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
 fi
 
 # Zellij
 if [ "$INSTALL_ZELLIJ" = true ]; then
     echo "Installing Zellij..."
-    install_zellij
+    run_install install_zellij
     link_file "$DOTFILES_DIR/.config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
     link_file "$DOTFILES_DIR/.config/zellij/layouts/project.kdl" "$HOME/.config/zellij/layouts/project.kdl"
 fi
@@ -399,35 +421,35 @@ fi
 # Ghostty (GUI only)
 if [ "$INSTALL_GHOSTTY" = true ]; then
     echo "Installing Ghostty..."
-    install_ghostty || true
+    run_install install_ghostty
     link_file "$DOTFILES_DIR/.config/ghostty/config" "$HOME/.config/ghostty/config"
 fi
 
 # zoxide
 if [ "$INSTALL_ZOXIDE" = true ]; then
     echo "Installing zoxide..."
-    install_zoxide
+    run_install install_zoxide
 fi
 
 # CLI extras
 if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
     echo "Installing CLI extras..."
-    install_ripgrep
-    install_broot
+    run_install install_ripgrep
+    run_install install_broot
 fi
 
 # Runtimes
 if [ "$INSTALL_RUNTIMES" = true ]; then
     echo "Installing runtimes..."
-    install_uv
-    install_node
-    install_docker
+    run_install install_uv
+    run_install install_node
+    run_install install_docker
 fi
 
 # Claude Code
 if [ "$INSTALL_CLAUDE" = true ]; then
     echo "Installing Claude Code..."
-    install_claude
+    run_install install_claude
 fi
 
 # Nerd Fonts (GUI only)
@@ -460,6 +482,9 @@ verify_symlink "$HOME/.gitignore_global"
 
 echo
 echo "Verifying tools..."
+# curl installers drop binaries in ~/.local/bin, which may not be on the
+# script's PATH yet on a fresh machine
+PATH="$HOME/.local/bin:$PATH"
 for tool in starship zellij nvim zoxide rg broot; do
     if command -v "$tool" &> /dev/null; then
         echo "  + $tool"
@@ -474,12 +499,15 @@ echo
 # Summary
 # ============================================================================
 
-if [ ${#FAILED_LINKS[@]} -eq 0 ]; then
+if [ ${#FAILED_LINKS[@]} -eq 0 ] && [ ${#FAILED_INSTALLS[@]} -eq 0 ]; then
     echo "Dotfiles installed successfully!"
 else
     echo "Installation completed with errors:"
     for link in "${FAILED_LINKS[@]}"; do
-        echo "  - $link"
+        echo "  - broken symlink: $link"
+    done
+    for tool in "${FAILED_INSTALLS[@]}"; do
+        echo "  - install failed: $tool"
     done
 fi
 
