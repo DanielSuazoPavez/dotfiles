@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.3] - 2026-07-23
 
+### Fixed
+- `proj` never created a new session — `zellij --layout X --session NAME` errors "session not found" when NAME doesn't exist instead of creating it. Now uses `zellij --layout project attach "$name" -c` (create-or-attach). Pre-existing bug from 0.1.1, exposed while testing the create path.
+
 ### Added
 - Floating "scratch" terminal in the project layout — a quick shell toggled with `Alt+f` over the nvim+Claude panes, persists across toggles
 - `projtab` shell function: opens the current repo as a project *tab* in the running zellij session (focus-if-exists), and defers to `proj` when outside zellij — giving a two-scope model (`proj` = session per project, `projtab` = tab in the current session)
