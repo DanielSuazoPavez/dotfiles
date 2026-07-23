@@ -23,11 +23,11 @@ layout {
     }
     tab {
         pane split_direction="vertical" {
-            pane size="67%" {
+            pane name="nvim" size="67%" {
                 command "nvim"
                 args "."
             }
-            pane size="33%" {
+            pane name="claude-code" size="33%" {
                 command "claude"
             }
         }
