@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-07-23
+
+### Fixed
+- lualine theme set to `catppuccin-mocha` (the bare `catppuccin` theme does not exist, only flavor-specific ones) and declares catppuccin as a dependency so load order is correct
+- treesitter migrated to the `main` branch for Neovim 0.12 compatibility — the pinned `v0.9.2` tag threw `attempt to call method 'range'` on 0.12; highlight/indent now enabled via a `FileType` autocmd
+
+### Changed
+- Dropped the `sqls` SQL LSP from `mason-lspconfig` and lsp-config (it requires a Go toolchain, which isn't installed, so Mason failed to build it)
+- treesitter manages `bash` in addition to `lua`/`python`/`markdown`; removed the orphan `diff` parser that broke `:TSUpdate`
+- neo-tree sidebar toggle bound to `Ctrl+e` with width 35
+- zellij move-mode moved off `Ctrl+h` to `Alt+m` so `Ctrl+h/j/k/l` reach Neovim splits; `pane_frames` disabled
+
+### Removed
+- Stale `.claude-sync-ignore` (referenced a non-existent `skills/wrap-up/` path)
+
 ### Notes
 - Added `docs/BOOTSTRAP.md` §6 keyboard-layout guidance: use `us(altgr-intl)` on native desktops so `'`/`"` type instantly (no dead keys) while Spanish accents stay on AltGr; `setxkbmap` test + `localectl` persist commands
 
