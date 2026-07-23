@@ -46,10 +46,6 @@ output/claude-toolkit/
 !templates/claude-project/.claude
 !templates/claude-project/.claude/**
 
-# Session/planning docs (project-specific, not tracked)
-docs/sessions/
-docs/plans/
-
 # VS Code (except template)
 .vscode/
 !templates/claude-project/.vscode

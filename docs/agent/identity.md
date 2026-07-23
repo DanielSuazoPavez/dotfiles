@@ -21,8 +21,8 @@ A bootstrap kit for a fresh Linux/WSL machine. Clone, run `./install.sh`, and th
 - `docs/agent/identity.md` and repo-serving docs only
 
 **Out of scope**
-- Session logs, planning docs, analysis history → delete or move to personal notes (`docs/plans`, `docs/sessions`, `docs/analysis`, stray root `.md` files)
-- Project scaffolds/templates → `python-template` (`templates/pre-commit-config-python.yaml`)
+- Session logs, planning docs, analysis history → delete or move to personal notes (no `docs/plans`, `docs/sessions`, `docs/analysis`, or stray root `.md` files)
+- Project scaffolds/templates → `python-template` (no `templates/` dir here)
 - Claude skills/agents/hooks → `claude-toolkit` (`.claude/` stays minimal repo config, toolkit-synced)
 - macOS/Windows support
 
