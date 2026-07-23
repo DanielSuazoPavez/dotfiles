@@ -29,9 +29,9 @@
       ],
       "status": "idea",
       "created_at": "2026-07-22",
-      "updated_at": "2026-07-22",
+      "updated_at": "2026-07-23",
       "source": "identity",
-      "notes": "Remove stray root docs (20260107_neovim_status.md, dotfiles-setup-guide.md), docs/plans|sessions|analysis, templates/ (move python pre-commit to python-template)"
+      "notes": "Remove stray root docs (dotfiles-setup-guide.md), docs/plans|sessions|analysis, templates/ (move python pre-commit to python-template). Done 2026-07-22: 20260107_neovim_status.md removed."
     },
     {
       "id": "zellij-config",
