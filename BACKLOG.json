@@ -8,29 +8,6 @@
   "current_goal": "Bootstrap kit for a fresh Linux/WSL machine: clone, run install.sh, done.",
   "tasks": [
     {
-      "id": "zellij-config",
-      "priority": "P2",
-      "title": "Dig deeper into zellij configurations",
-      "scope": [
-        "config"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-22",
-      "updated_at": "2026-07-23",
-      "notes": "Branch feat/zellij-quick-terminal-and-mode-alignment delivered: floating scratch terminal (Alt f) in project layout, projtab (per-project tabs in current session) with default_tab_template fix, lock/move mode entry aligned to Ctrl-* (Ctrl g / Ctrl e), named panes + pane_frames, ghostty/zellij collision checker. Follow-up split to keybind-mnemonics."
-    },
-    {
-      "id": "nvim-lazygit",
-      "priority": "P2",
-      "title": "Try lazygit integration in nvim",
-      "scope": [
-        "config"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-22",
-      "updated_at": "2026-07-22"
-    },
-    {
       "id": "distro-probe",
       "priority": "P2",
       "title": "Probe openSUSE Tumbleweed (then Fedora) via dual-boot",
@@ -45,7 +22,7 @@
     },
     {
       "id": "keybind-mnemonics",
-      "priority": "P2",
+      "priority": "P1",
       "title": "Normalize keybind mnemonics across zellij/nvim/inner tools",
       "scope": [
         "config"
@@ -56,6 +33,21 @@
       "notes": "Semantic consistency of the mnemonic letter, not just collision-avoidance: a given letter should mean the same verb everywhere (e.g. m=move in zellij, not 'mark' elsewhere). Goal: lower cognitive load. Follow-up from the zellij quick-terminal/mode-alignment branch. Collision checker exists (scripts/check-keybind-collisions.py); this is about meaning, not overlap. Also revisit nvim-vs-zellij/ghostty collisions (nvim maps only apply in-pane; zellij globals shadow them).",
       "relates_to": [
         "zellij-config:relates-to"
+      ]
+    },
+    {
+      "id": "nvim-lazygit",
+      "priority": "P2",
+      "title": "Try lazygit integration in nvim",
+      "scope": [
+        "config"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-22",
+      "updated_at": "2026-07-23",
+      "notes": "Researched 2026-07-23. Narrowed value: interactive rebase, partial staging, history browse/cherry-pick \u2014 everything else already covered by alt+f/delegation. LIGHT scope (plugin file + install_lazygit). Deferred for now. See references.",
+      "references": [
+        "output/claude-toolkit/analysis/20260723T1326__research-task__nvim-lazygit.md"
       ]
     }
   ]
