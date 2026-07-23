@@ -49,6 +49,18 @@
       "references": [
         "output/claude-toolkit/analysis/20260723T1326__research-task__nvim-lazygit.md"
       ]
+    },
+    {
+      "id": "telescope-fzf-native",
+      "priority": "P3",
+      "title": "Consider telescope-fzf-native for faster fuzzy sorting",
+      "scope": [
+        "config"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23",
+      "notes": "C-compiled sorter (needs 'make' at build time); enables fzf syntax ('exact, ^prefix, suffix$). Nice-to-have speed boost over default Lua sorter; evaluate if telescope filtering feels slow."
     }
   ]
 }
