@@ -25,6 +25,17 @@ alias zja='zellij attach'
 alias zjl='zellij list-sessions'
 alias zjk='zellij kill-session'
 alias zjka='zellij kill-all-sessions'
+# Open the current directory as a project: nvim (2/3) + Claude Code (1/3),
+# in a zellij session named after the directory. Attaches if it already exists.
+proj() {
+    local name
+    name="$(basename "$PWD")"
+    if zellij list-sessions -s -n 2>/dev/null | grep -qx "$name"; then
+        zellij attach "$name"
+    else
+        zellij --layout project --session "$name"
+    fi
+}
 
 # Zoxide (smarter cd)
 alias cd='z'

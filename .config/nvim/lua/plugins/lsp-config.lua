@@ -9,7 +9,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "yamlls", "jsonls" }
+        ensure_installed = { "lua_ls", "yamlls", "jsonls", "basedpyright", "ruff", "sqls" }
       })
     end
   },
@@ -63,6 +63,14 @@ return {
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
       vim.keymap.set({ 'n' }, '<leader>ca', vim.lsp.buf.code_action, {})
+
+      -- Format on save
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        pattern = '*',
+        callback = function()
+          vim.lsp.buf.format({ async = false })
+        end,
+      })
     end
   }
 }

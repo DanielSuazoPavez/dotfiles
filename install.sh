@@ -142,7 +142,6 @@ INSTALL_STARSHIP=false
 INSTALL_NEOVIM=false
 INSTALL_ZELLIJ=false
 INSTALL_GHOSTTY=false
-INSTALL_VSCODE=false
 INSTALL_FONTS=false
 
 if prompt_category "Starship prompt" "y"; then
@@ -160,10 +159,6 @@ fi
 if [ "$HEADLESS" = false ]; then
     if prompt_category "Ghostty" "y"; then
         INSTALL_GHOSTTY=true
-    fi
-
-    if prompt_category "VS Code" "y"; then
-        INSTALL_VSCODE=true
     fi
 
     if prompt_category "Nerd Fonts" "y"; then
@@ -206,19 +201,13 @@ fi
 if [ "$INSTALL_ZELLIJ" = true ]; then
     echo "Installing Zellij config..."
     link_file "$DOTFILES_DIR/.config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
+    link_file "$DOTFILES_DIR/.config/zellij/layouts/project.kdl" "$HOME/.config/zellij/layouts/project.kdl"
 fi
 
 # Ghostty (GUI only)
 if [ "$INSTALL_GHOSTTY" = true ]; then
     echo "Installing Ghostty config..."
     link_file "$DOTFILES_DIR/.config/ghostty/config" "$HOME/.config/ghostty/config"
-fi
-
-# VS Code (GUI only)
-if [ "$INSTALL_VSCODE" = true ]; then
-    echo "Installing VS Code config..."
-    link_file "$DOTFILES_DIR/.config/Code/User/settings.json" "$HOME/.config/Code/User/settings.json"
-    link_file "$DOTFILES_DIR/.config/Code/User/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
 fi
 
 # Nerd Fonts (GUI only)
@@ -246,11 +235,8 @@ verify_symlink "$HOME/.gitignore_global"
 [ "$INSTALL_STARSHIP" = true ] && verify_symlink "$HOME/.config/starship.toml"
 [ "$INSTALL_NEOVIM" = true ] && verify_symlink "$HOME/.config/nvim"
 [ "$INSTALL_ZELLIJ" = true ] && verify_symlink "$HOME/.config/zellij/config.kdl"
+[ "$INSTALL_ZELLIJ" = true ] && verify_symlink "$HOME/.config/zellij/layouts/project.kdl"
 [ "$INSTALL_GHOSTTY" = true ] && verify_symlink "$HOME/.config/ghostty/config"
-if [ "$INSTALL_VSCODE" = true ]; then
-    verify_symlink "$HOME/.config/Code/User/settings.json"
-    verify_symlink "$HOME/.config/Code/User/keybindings.json"
-fi
 
 echo
 

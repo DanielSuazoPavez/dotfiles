@@ -25,10 +25,10 @@ Install these tools before running `install.sh`:
 | zellij | [zellij.dev](https://zellij.dev) | Multiplexer |
 | neovim | `sudo apt install neovim` (or [neovim.io](https://neovim.io)) | Editor |
 | zoxide | `cargo install zoxide` | Smarter cd |
+| uv | [astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/) | Python tooling |
 
 GUI tools (optional, skipped on headless):
 - ghostty
-- VS Code
 
 ## What's Included
 
@@ -37,7 +37,7 @@ GUI tools (optional, skipped on headless):
 - **Prompt**: Starship configuration
 - **Terminal**: Ghostty settings
 - **Multiplexer**: Zellij layouts and config
-- **Editors**: Neovim and VS Code settings
+- **Editor**: Neovim (lazy.nvim, LSP, completion)
 
 ## Related Projects
 
@@ -57,7 +57,6 @@ dotfiles/
 │   ├── ghostty/          # Terminal
 │   ├── zellij/           # Multiplexer
 │   └── nvim/             # Editor
-├── .vscode/              # VS Code settings
 └── install.sh            # Installation script
 ```
 

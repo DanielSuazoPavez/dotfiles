@@ -25,7 +25,7 @@ make install              # Alternative
 - Prompt (Starship)
 - Terminal (Ghostty)
 - Multiplexer (Zellij)
-- Editors (Neovim, VS Code)
+- Editor (Neovim)
 
 ## Structure
 
@@ -33,7 +33,6 @@ make install              # Alternative
 dotfiles/
 ├── .bashrc, .aliases      # Shell config
 ├── .config/               # XDG configs (starship, ghostty, zellij, nvim)
-├── .vscode/               # VS Code settings
 ├── scripts/               # Utility scripts
 ├── install.sh             # Main installer
 └── .claude/               # Claude Code config for this repo
