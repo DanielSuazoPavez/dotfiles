@@ -62,6 +62,18 @@
       "created_at": "2026-07-23",
       "updated_at": "2026-07-23",
       "notes": "C-compiled sorter (needs 'make' at build time); enables fzf syntax ('exact, ^prefix, suffix$). Nice-to-have speed boost over default Lua sorter; evaluate if telescope filtering feels slow."
+    },
+    {
+      "id": "nvim-render-markdown",
+      "priority": "P3",
+      "title": "Consider render-markdown.nvim for styled in-buffer markdown",
+      "scope": [
+        "config"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-27",
+      "updated_at": "2026-07-27",
+      "notes": "Concealed syntax, styled headings/tables/checkboxes for reading markdown in nvim. Natural follow-up to treesitter-context + heading-anchor keymaps (added in 0.1.8, 2026-07-27)."
     }
   ]
 }
