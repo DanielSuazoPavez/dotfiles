@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9] - 2026-07-27
+
+### Fixed
+- `.gitconfig`: `core.excludesfile` used a hardcoded `/home/hata/...` path, breaking on machines with a different username. Now `~/.gitignore_global`.
+
+### Security
+- `.gitconfig`: dropped `credential.helper = store`, which persists credentials in plaintext to `~/.git-credentials` and took precedence over `cache` for any host without a more specific block. GitHub and gist were already delegating to `gh auth git-credential` and were unaffected; other hosts (GitLab, self-hosted) now fall through to `cache` only.
+
 ## [0.1.8] - 2026-07-27
 
 ### Added

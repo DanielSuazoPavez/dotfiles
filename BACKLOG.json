@@ -49,6 +49,50 @@
       "created_at": "2026-07-23",
       "updated_at": "2026-07-23",
       "notes": "C-compiled sorter (needs 'make' at build time); enables fzf syntax ('exact, ^prefix, suffix$). Nice-to-have speed boost over default Lua sorter; evaluate if telescope filtering feels slow."
+    },
+    {
+      "id": "s3drive-eval",
+      "priority": "P0",
+      "title": "Check S3Drive as Cyberduck-like S3 GUI client",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-27",
+      "updated_at": "2026-07-27",
+      "notes": "Evaluate S3Drive (https://s3drive.app/) to fill the 'S3/cloud storage GUI' slot in the new-machine tool list. Flatpak on flathub. Freemium - browsing/transfers free, encryption + some sync paid. Alternatives: FileZilla Pro (~$20 one-time, adds S3/GCS/Azure to FTP/SFTP core), rclone web GUI (free, all backends, rougher UI). Category is a standing want; no incumbent picked yet."
+    },
+    {
+      "id": "new-machine-tools",
+      "priority": "P1",
+      "title": "Document GUI/desktop tools wanted on every new machine",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-27",
+      "updated_at": "2026-07-27",
+      "notes": "Gap between 'configs symlinked' and 'machine actually ready'. Start as docs/tools.md (tool, why, install command per package manager) rather than install.sh logic - package names differ across zypper/apt/pacman, flatpak-vs-native is a per-machine call, and install.sh assuming a package manager cuts against the minimal-dependencies principle. Promote into the installer later if the list stabilizes. Known entries: DBeaver (settled - go-to SQL GUI, flatpak io.dbeaver.DBeaverCommunity), S3/cloud storage GUI (standing want, no incumbent - see s3drive-eval). Same shape as nvim-lazygit.",
+      "relates_to": [
+        "s3drive-eval:relates-to",
+        "nvim-lazygit:relates-to"
+      ]
+    },
+    {
+      "id": "machine-bootstrap",
+      "priority": "P1",
+      "title": "Split bootstrap into private repo depending on public dotfiles",
+      "scope": [
+        "repo",
+        "install"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-27",
+      "updated_at": "2026-07-27",
+      "notes": "Two repos along a privacy line, dependency points one way only: PUBLIC dotfiles (configs, symlinks, install.sh - self-contained, useful to a stranger, never learns bootstrap exists) <- PRIVATE bootstrap (clones dotfiles, runs ./install.sh, then packages + private repos + per-repo setup). Why this works: keeps dotfiles genuinely publishable rather than publishable-with-holes, and confines the non-idempotent cloning/setup-script mess to the private repo so install.sh keeps its symlink-only idempotency. Precedent set: bootstrap orchestrates dotfiles via its existing clean ./install.sh entrypoint - suggests other repos (claude-toolkit, claude-sessions, schema-smith) should expose the same, rather than bootstrap knowing their internals. Publishability checked 2026-07-27: no work identifiers, hardcoded home paths, or credential-shaped strings in tracked files; .gitconfig NOT reviewed (secrets-guard hook) - check it for email/signing key/includeIf before publishing. OPEN: does new-machine-tools go public (generic GUI tools) or private (if it accumulates work-specific tooling)?",
+      "relates_to": [
+        "new-machine-tools:relates-to"
+      ]
     }
   ]
 }
