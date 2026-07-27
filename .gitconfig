@@ -1,12 +1,11 @@
 [core]
-	excludesfile = /home/hata/.gitignore_global
+	excludesfile = ~/.gitignore_global
 [user]
 	name = Daniel Suazo Pavez
 	email = dsuazop@gmail.com
 [init]
 	defaultBranch = main
 [credential]
-	helper = store
 	helper = cache
 [credential "https://github.com"]
 	helper =
