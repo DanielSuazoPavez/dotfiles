@@ -153,6 +153,38 @@
       "created_at": "2026-07-28",
       "updated_at": "2026-07-28",
       "notes": "install.sh mixes pinning strategies with no stated rationale, and each new tool re-opens the question ad hoc.\n\nCurrent state as of 2026-07-28: Nerd Fonts pins a version (v3.2.1, with a hand-maintained 'check releases' comment that will go stale). nvm pins its installer (v0.40.1) but then installs node via 'nvm install --lts' (unpinned). starship, uv, docker, zoxide and Claude Code all pipe unpinned curl installers. neovim/zellij/broot fetch 'latest' release tarballs on the apt path. Native packages via pkg_install inherit whatever the distro ships.\n\nThe tension: pinning gives reproducible machines and guards against a bad upstream release, but goes stale and needs manual bumping - the Nerd Fonts comment is already evidence of that cost. Tracking latest is self-maintaining but means two machines built a month apart differ, and a broken upstream release breaks a fresh install.\n\nWanted: a stated default (probably 'track latest unless there is a reason to pin'), the criteria for the exception, and where the pin lives so it is bumpable in one place rather than scattered through installer functions. Then reconcile the existing inconsistencies to match. Surfaced during duckdb-setup research (duckdb would add another unpinned 'curl | sh')."
+    },
+    {
+      "id": "links-new-category-flow",
+      "priority": "P3",
+      "title": "Make 'one line in links.sh' true for a new category",
+      "scope": [
+        "install",
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "CLAUDE.md's 'When Adding New Configs' now says one `group:src:dest` line in links.sh covers linking, verification, and uninstall. That is exactly true for a config joining an EXISTING group, but a brand-new category still needs a gated `link_group <new>` block plus a matching `verify_group <new>` line in install.sh, because gating mirrors the INSTALL_* prompt flags. Flagged by goal-verifier on feat/uninstall-symlink-gaps (2026-07-28) as the one gap between the doc claim and reality.\n\nTwo ways out: (a) cheap \u2014 tighten the CLAUDE.md wording to say 'existing group' and document the extra install.sh step for a new category; (b) real \u2014 let links.sh carry the group->flag mapping so install.sh loops over groups generically and a new category is genuinely one registry edit. (b) subsumes (a) and kills the last hand-maintained list; (a) is a one-line doc edit if (b) is not worth it.\n\nNot urgent: all 14 current links live in existing groups, so nothing is broken today. Bites the first time a new tool category is added.",
+      "relates_to": [
+        "uninstall-symlink-gaps:split-from"
+      ]
+    },
+    {
+      "id": "install-script-testing",
+      "priority": "P2",
+      "title": "Test harness for install.sh / uninstall.sh / links.sh",
+      "scope": [
+        "install",
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "install.sh and uninstall.sh provision $HOME with no test backing. The Makefile test target is a stub running `bash -n install.sh` only \u2014 no shellcheck, no bats, no CI. The uninstall-symlink-gaps refactor (2026-07-28) was verified by throwaway scratch-HOME scripts; that should be a committed, re-runnable harness.\n\nCoverage, always against a mktemp -d HOME: install produces exactly the LINKS set, targets resolving into the repo; uninstall removes every managed link with zero residue; a foreign symlink at a managed path is skipped not deleted; a DANGLING link into the repo IS removed (the bug the refactor fixed); uninstall is idempotent (2nd run no-op, exit 0); links.sh invariants (no ':' in a path, every src exists, no dest collisions).\n\nBLOCKER first: install.sh runs `git config --global core.excludesfile` unconditionally (~line 422). Since ~/.gitconfig symlinks into this repo, git writes THROUGH it and dirties the tracked .gitconfig even when HOME points at a scratch dir. Hit twice during uninstall-symlink-gaps. Fix by guarding the call or setting GIT_CONFIG_GLOBAL.\n\nAlso decide: shellcheck in pre-commit, and whether the test target covers all three scripts.",
+      "relates_to": [
+        "uninstall-symlink-gaps:split-from"
+      ]
     }
   ]
 }
