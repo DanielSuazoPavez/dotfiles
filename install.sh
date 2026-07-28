@@ -28,7 +28,11 @@ done
 # Variables
 # ============================================================================
 
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+# The symlink list lives in links.sh, which also derives DOTFILES_DIR.
+# Sourced by script path so ./install.sh works from any cwd.
+# shellcheck source=links.sh
+source "$(cd "$(dirname "$0")" && pwd)/links.sh"
+
 BACKUP_DIR="$HOME/dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 FAILED_LINKS=()
 FAILED_INSTALLS=()
@@ -90,6 +94,29 @@ verify_symlink() {
         echo "  x $dest (broken)"
         FAILED_LINKS+=("$dest")
     fi
+}
+
+# Link every entry in a group. Resolves src against DOTFILES_DIR so links.sh
+# can stay repo-relative.
+link_group() {
+    local group=$1
+    local entries=() entry src dest
+    links_for_group "$group" entries
+    for entry in "${entries[@]}"; do
+        IFS=: read -r _ src dest <<< "$entry"
+        link_file "$DOTFILES_DIR/$src" "$dest"
+    done
+}
+
+# Verify every entry in a group
+verify_group() {
+    local group=$1
+    local entries=() entry dest
+    links_for_group "$group" entries
+    for entry in "${entries[@]}"; do
+        IFS=: read -r _ _ dest <<< "$entry"
+        verify_symlink "$dest"
+    done
 }
 
 # Prompt for category installation
@@ -412,11 +439,7 @@ echo
 
 # Shell basics (always installed)
 echo "Installing shell basics..."
-link_file "$DOTFILES_DIR/.bashrc" "$HOME/.bashrc"
-link_file "$DOTFILES_DIR/.aliases" "$HOME/.aliases"
-link_file "$DOTFILES_DIR/.hushlogin" "$HOME/.hushlogin"
-link_file "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
-link_file "$DOTFILES_DIR/.gitignore_global" "$HOME/.gitignore_global"
+link_group core
 
 # Set git global excludesfile
 if [ -f "$HOME/.gitignore_global" ]; then
@@ -427,29 +450,28 @@ fi
 if [ "$INSTALL_STARSHIP" = true ]; then
     echo "Installing Starship..."
     run_install install_starship
-    link_file "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
+    link_group starship
 fi
 
 # Neovim
 if [ "$INSTALL_NEOVIM" = true ]; then
     echo "Installing Neovim..."
     run_install install_neovim
-    link_file "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+    link_group nvim
 fi
 
 # Zellij
 if [ "$INSTALL_ZELLIJ" = true ]; then
     echo "Installing Zellij..."
     run_install install_zellij
-    link_file "$DOTFILES_DIR/.config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
-    link_file "$DOTFILES_DIR/.config/zellij/layouts/project.kdl" "$HOME/.config/zellij/layouts/project.kdl"
+    link_group zellij
 fi
 
 # Ghostty (GUI only)
 if [ "$INSTALL_GHOSTTY" = true ]; then
     echo "Installing Ghostty..."
     run_install install_ghostty
-    link_file "$DOTFILES_DIR/.config/ghostty/config" "$HOME/.config/ghostty/config"
+    link_group ghostty
 fi
 
 # zoxide
@@ -466,14 +488,12 @@ if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
     run_install install_bat
     run_install install_trash_cli
     run_install install_duckdb
-    link_file "$DOTFILES_DIR/.duckdbrc" "$HOME/.duckdbrc"
+    link_group cli-extras
 fi
 
 # broot config + br shell function (sourced by .bashrc)
 if [ "$INSTALL_BROOT" = true ]; then
-    link_file "$DOTFILES_DIR/.config/broot/conf.hjson" "$HOME/.config/broot/conf.hjson"
-    link_file "$DOTFILES_DIR/.config/broot/launcher/bash/br" "$HOME/.config/broot/launcher/bash/br"
-    link_file "$DOTFILES_DIR/.config/broot/launcher/installed-v4" "$HOME/.config/broot/launcher/installed-v4"
+    link_group broot
 fi
 
 # Runtimes
@@ -505,21 +525,17 @@ echo
 echo "Verifying symlinks..."
 
 # Shell basics
-verify_symlink "$HOME/.bashrc"
-verify_symlink "$HOME/.aliases"
-verify_symlink "$HOME/.hushlogin"
-verify_symlink "$HOME/.gitconfig"
-verify_symlink "$HOME/.gitignore_global"
+verify_group core
 
-# Optional configs
-[ "$INSTALL_STARSHIP" = true ] && verify_symlink "$HOME/.config/starship.toml"
-[ "$INSTALL_NEOVIM" = true ] && verify_symlink "$HOME/.config/nvim"
-[ "$INSTALL_ZELLIJ" = true ] && verify_symlink "$HOME/.config/zellij/config.kdl"
-[ "$INSTALL_ZELLIJ" = true ] && verify_symlink "$HOME/.config/zellij/layouts/project.kdl"
-[ "$INSTALL_GHOSTTY" = true ] && verify_symlink "$HOME/.config/ghostty/config"
-[ "$INSTALL_BROOT" = true ] && verify_symlink "$HOME/.config/broot/conf.hjson"
-[ "$INSTALL_BROOT" = true ] && verify_symlink "$HOME/.config/broot/launcher/bash/br"
-[ "$INSTALL_RIPGREP" = true ] && verify_symlink "$HOME/.duckdbrc"
+# Optional configs — gated by the same flags that linked them
+[ "$INSTALL_STARSHIP" = true ] && verify_group starship
+[ "$INSTALL_NEOVIM" = true ] && verify_group nvim
+[ "$INSTALL_ZELLIJ" = true ] && verify_group zellij
+[ "$INSTALL_GHOSTTY" = true ] && verify_group ghostty
+if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
+    verify_group cli-extras
+fi
+[ "$INSTALL_BROOT" = true ] && verify_group broot
 
 echo
 echo "Verifying tools..."

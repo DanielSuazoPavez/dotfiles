@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.14] - 2026-07-28
+
+### Fixed
+- `uninstall.sh`: removed only 9 of the 13 symlinks `install.sh` created, leaving `~/.config/zellij/layouts/project.kdl`, `~/.config/broot/conf.hjson`, `~/.config/broot/launcher/bash/br`, and `~/.config/broot/launcher/installed-v4` dangling into a repo the user may then delete. `br` is sourced by `.bashrc`, so that one kept a removed tool wired into the shell rather than sitting inert. All 14 managed links are now removable.
+- `uninstall.sh`: `DOTFILES_DIR` was hardcoded to `$HOME/dotfiles` — wrong for any checkout elsewhere. It was dead code before, but the new removal guard depends on it, so it now comes from `links.sh`. The closing message carried the same wrong path and now reports the real one.
+- `install.sh`: `.duckdbrc` was verified under `INSTALL_RIPGREP` alone while being linked under `INSTALL_RIPGREP || INSTALL_BROOT`, so declining ripgrep but accepting broot linked the file and then reported it missing. Both now use the same condition.
+- `install.sh`: `~/.config/broot/launcher/installed-v4` was linked but never verified — it had reached neither the verify list nor the uninstall list.
+
+### Changed
+- `links.sh` (new) is the single source of truth for every symlink. `install.sh` and `uninstall.sh` both source it and loop over `LINKS`; the three hand-maintained lists (link call-sites, verify call-sites, removal blocks) are gone. Adding a config to an existing group is now one line in one file. The three-list structure is what produced the gaps above — `installed-v4` had slipped out of two of them.
+- `uninstall.sh`: removal is target-checked. A symlink at a managed path pointing outside the repo is the user's own, so it is skipped and reported rather than deleted. The guard tests the raw `readlink` target, not a resolved one, so a link dangling into a deleted repo is still cleaned up — that being the case this fix exists for. `rm` is never `-r`/`-f`: `~/.config/nvim` is a symlink to a directory.
+- `uninstall.sh`: refuses to run as root, mirroring `install.sh`. Under `sudo`, `$HOME` is `/root`, every managed path misses, and the script would report success having removed nothing.
+
+### Notes
+- `links.sh` derives `DOTFILES_DIR` unconditionally rather than defaulting it, because that value decides what `uninstall.sh` may delete — an inherited environment variable must not be able to redirect it.
+- Two constraints now documented in `links.sh`: no path may contain a `:` (callers split on it), and a caller's array must not be named `out` (bash rejects a self-referencing nameref). Neither is reachable today.
+- Backlog: added `links-new-category-flow` (P3) and `install-script-testing` (P2), both split out of this work.
+
 ## [0.1.13] - 2026-07-28
 
 ### Added
