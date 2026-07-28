@@ -4,9 +4,15 @@
 
 # Resolved from this file's own location so both callers agree no matter
 # where the repo is checked out or which cwd they were invoked from.
-: "${DOTFILES_DIR:=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+# Assigned unconditionally, never defaulted: uninstall.sh's removal guard
+# trusts this value to decide what it may delete, so an inherited environment
+# variable must not be able to redirect it. Re-sourcing is harmless — the
+# derivation is deterministic.
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # group:src:dest — src is repo-relative, dest is absolute.
+# No path may contain a ':' — callers split on it with IFS=: and a colon in
+# src would silently truncate the path rather than fail.
 # Groups mirror install.sh's INSTALL_* category flags. The cli-extras/broot
 # split is load-bearing: one prompt sets both flags, but install.sh gates the
 # two branches separately.
@@ -29,7 +35,8 @@ LINKS=(
 
 # links_for_group <group> <out-array-name>
 # Populates the caller's array via nameref rather than echoing, so paths
-# containing spaces survive.
+# containing spaces survive. The caller's array must not be named 'out' —
+# bash rejects a nameref pointing at its own name.
 links_for_group() {
     local group=$1
     local -n out=$2
