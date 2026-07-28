@@ -26,7 +26,7 @@ inline where root is needed.
 
 | Tier | Tools |
 |------|-------|
-| Core (prompt, default Y) | starship, zellij, neovim, zoxide, ripgrep, broot, bat |
+| Core (prompt, default Y) | starship, zellij, neovim, zoxide, ripgrep, broot, bat, duckdb |
 | Core GUI (skipped if headless) | ghostty, Nerd Fonts (JetBrainsMono + FiraCode) |
 | Runtimes (prompt, default Y) | uv, node, docker |
 | Optional (prompt, default Y) | Claude Code (+ playwright chromium) |
@@ -41,6 +41,7 @@ inline where root is needed.
 - **Multiplexer**: Zellij layouts and config — [keybind reference](docs/ZELLIJ-REFERENCE.md)
 - **Editor**: Neovim (lazy.nvim, LSP, completion) — [keybind reference](docs/NVIM-REFERENCE.md)
 - **File navigator**: broot (`br` cd's your shell) — [reference](docs/BROOT-REFERENCE.md)
+- **Data CLI**: duckdb (csv/json/parquet/xlsx from the shell) — [reference](docs/DUCKDB-REFERENCE.md)
 
 ## Related Projects
 
