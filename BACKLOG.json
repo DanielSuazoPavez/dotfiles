@@ -51,18 +51,6 @@
       "notes": "C-compiled sorter (needs 'make' at build time); enables fzf syntax ('exact, ^prefix, suffix$). Nice-to-have speed boost over default Lua sorter; evaluate if telescope filtering feels slow."
     },
     {
-      "id": "s3drive-eval",
-      "priority": "P0",
-      "title": "Check S3Drive as Cyberduck-like S3 GUI client",
-      "scope": [
-        "repo"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-27",
-      "updated_at": "2026-07-27",
-      "notes": "Evaluate S3Drive (https://s3drive.app/) to fill the 'S3/cloud storage GUI' slot in the new-machine tool list. Flatpak on flathub. Freemium - browsing/transfers free, encryption + some sync paid. Alternatives: FileZilla Pro (~$20 one-time, adds S3/GCS/Azure to FTP/SFTP core), rclone web GUI (free, all backends, rougher UI). Category is a standing want; no incumbent picked yet."
-    },
-    {
       "id": "new-machine-tools",
       "priority": "P1",
       "title": "Document GUI/desktop tools wanted on every new machine",
@@ -71,10 +59,9 @@
       ],
       "status": "idea",
       "created_at": "2026-07-27",
-      "updated_at": "2026-07-27",
-      "notes": "Gap between 'configs symlinked' and 'machine actually ready'. Start as docs/tools.md (tool, why, install command per package manager) rather than install.sh logic - package names differ across zypper/apt/pacman, flatpak-vs-native is a per-machine call, and install.sh assuming a package manager cuts against the minimal-dependencies principle. Promote into the installer later if the list stabilizes. Known entries: DBeaver (settled - go-to SQL GUI, flatpak io.dbeaver.DBeaverCommunity), S3/cloud storage GUI (standing want, no incumbent - see s3drive-eval). Same shape as nvim-lazygit.",
+      "updated_at": "2026-07-28",
+      "notes": "Gap between 'configs symlinked' and 'machine actually ready'. Start as docs/tools.md (tool, why, install command per package manager) rather than install.sh logic - package names differ across zypper/apt/pacman, flatpak-vs-native is a per-machine call, and install.sh assuming a package manager cuts against the minimal-dependencies principle. Promote into the installer later if the list stabilizes. Same shape as nvim-lazygit.\n\nScope now covers CLI tools too, not just GUI/desktop - suggest two sections in docs/tools.md, since the CLI half is natively packaged and scriptable and could plausibly be promoted into install.sh, while GUI stays a per-machine judgment call.\n\nGUI entries: DBeaver (settled - go-to SQL GUI, flatpak io.dbeaver.DBeaverCommunity). S3/cloud storage GUI slot resolved as 'no GUI needed' - S3Drive evaluated and rejected (paywalled multi-file download, and unwilling to hand AWS creds to a freemium client); FileZilla Pro and Cyberduck/duck not pursued since aws-cli covers file moves and rclone covers the rest.\n\nCLI entries (all installed and working as of 2026-07-28): aws-vault v7.2.0 for credentials - NOT packaged for openSUSE, install the binary from GitHub releases; uses AWS_VAULT_BACKEND=file (encrypted store at ~/.awsvault/keys) rather than the KWallet/Secret Service default, so the creds stay isolated from the desktop keyring. rclone for S3 - configure the remote with env_auth=true so it reads from aws-vault instead of storing its own copy, and 'rclone mount --vfs-cache-mode full' makes the bucket a normal directory that any tool (duckdb included) can read. duckdb for parquet - see duckdb-setup.",
       "relates_to": [
-        "s3drive-eval:relates-to",
         "nvim-lazygit:relates-to"
       ]
     },
@@ -111,6 +98,51 @@
       ],
       "relates_to": [
         "machine-bootstrap:relates-to"
+      ]
+    },
+    {
+      "id": "duckdb-setup",
+      "priority": "P1",
+      "title": "Add duckdb setup + eventual configs",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "Settled as the parquet/analytics CLI - reads local files, globs, and s3:// directly via httpfs. Useful invocations: SUMMARIZE SELECT * FROM 'f.parquet' (types, nulls, min/max, approx distinct) as a better first look than SELECT *; DESCRIBE for schema. Config surface not yet explored - ~/.duckdbrc for defaults (.mode box, .maxrows), possibly shell helper functions for peek/schema/count. Deferred a pq()/pqs()/pqn() alias set until the raw commands prove tedious in practice.",
+      "relates_to": [
+        "new-machine-tools:relates-to"
+      ]
+    },
+    {
+      "id": "bitwarden-cli-setup",
+      "priority": "P1",
+      "title": "Set up Bitwarden CLI for personal credentials",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "Bitwarden is already the password manager in use on Windows and phone; this is about getting it usable from the Linux CLI. Open decision: official 'bw' (Node, npm install -g @bitwarden/cli or native binary from releases - check 'zypper se bitwarden', likely not in openSUSE repos) vs 'rbw' (unofficial Rust client, much faster, has an unlock agent so you are not re-entering the master password constantly; third-party client for the password vault, which is its own trust call). Official bw is required for anything touching org/admin operations. Session handling is the main friction: bw needs BW_SESSION exported and it expires - do NOT put it in .bashrc, it is a live vault-unlock token. Distinct from aws-vault, which stays as-is for AWS only.",
+      "relates_to": [
+        "new-machine-tools:relates-to"
+      ]
+    },
+    {
+      "id": "bitwarden-programmatic",
+      "priority": "P2",
+      "title": "Explore Bitwarden CLI for programmatic secret retrieval",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "Direction, not a settled plan: use the Bitwarden CLI as a general secret-retrieval layer in scripts instead of scattering tokens across dotfiles and .env files. Shape is 'bw get password NAME' / 'bw get item NAME | jq' inline at the point of use. Depends on bitwarden-cli-setup landing first (client choice + session/agent handling). Two habits worth establishing up front: never persist BW_SESSION in shell init, and prefer passing secrets inline to the single command that needs them over 'export TOKEN=$(bw get ...)', which exposes them to every child process - same reasoning as 'aws-vault exec'. Bitwarden could also be the source of truth for the AWS key (it syncs to phone/Windows, ~/.awsvault/keys never will), seeding 'aws-vault add' - but Bitwarden should NOT be in the hot path for AWS, since that would trade away aws-vault's short-lived STS sessions for a long-lived key in the environment.",
+      "relates_to": [
+        "bitwarden-cli-setup:relates-to"
       ]
     }
   ]

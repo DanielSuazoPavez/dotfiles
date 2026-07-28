@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] - 2026-07-28
+
+### Added
+- `.bashrc`: `AWS_VAULT_BACKEND=file`, so `aws-vault` stores credentials in its own encrypted file (`~/.awsvault/keys/`) instead of the KWallet-backed Secret Service default. KWallet's provider is global — pointing it at a project-specific wallet would make that wallet the catch-all for every app on the system, so the file backend is what actually gives per-use isolation. Without the export set, `aws-vault` silently falls back to KWallet and reports stored credentials as missing.
+
+### Changed
+- Backlog: `s3drive-eval` removed — S3Drive was evaluated and rejected (multi-file download is paywalled, and it wanted long-lived AWS credentials in a freemium client). The "S3/cloud storage GUI" slot it was filling resolved to "no GUI needed": `rclone mount --vfs-cache-mode full` exposes the bucket as a directory and `duckdb` reads parquet straight off it.
+- Backlog: `new-machine-tools` widened from GUI/desktop tools to cover CLI tools as well, with the S3 outcome and install gotchas recorded (`aws-vault` isn't packaged for openSUSE; `rclone` remotes want `env_auth = true` so they read from `aws-vault` rather than storing their own copy).
+- Backlog: added `duckdb-setup` (P1), `bitwarden-cli-setup` (P1), and `bitwarden-programmatic` (P2).
+
 ## [0.1.11] - 2026-07-28
 
 ### Added
