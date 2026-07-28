@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.15] - 2026-07-28
+
+### Added
+- `tests/`: a runnable harness for the scripts that provision `$HOME`. 28 assertions across three suites, run by `make test`. Previously the target printed "Testing would go here (manual verification recommended)" and syntax-checked `install.sh` only — the v0.1.14 symlink refactor was verified by scratch-`HOME` scripts that were written ad hoc and thrown away.
+  - `tests/test_links.sh` enforces what `links.sh` had only documented: no stray colon in any path (the `IFS=:` split truncates silently), every `src` exists, no duplicate `dest`, every `dest` under `$HOME`, and the nameref contract of `links_for_group`.
+  - `tests/test_install.sh` asserts the produced link set equals `LINKS` exactly in both directions, every link resolves into the repo, and the repo's tracked `.gitconfig` is untouched by a run.
+  - `tests/test_uninstall.sh` covers the four behaviors v0.1.14 introduced: total removal, a foreign link at a managed path skipped rather than deleted, a **dangling** link into the repo removed, and idempotence.
+- `.pre-commit-config.yaml`: a shellcheck hook. It uses the system binary via `repo: local` rather than `koalaman/shellcheck-precommit`, which ships only a `docker_image` hook that cannot read the working tree under rootless Docker. Scoped to the executable scripts — shell *config* (`.bashrc`, `.aliases`) is sourced into an interactive shell rather than run, so SC2148 and SC1090 describe what those files are, not defects.
+
+### Fixed
+- `scripts/extract-claude-configs.sh`: `${file#$src_dir/}` left `$src_dir` unquoted inside the expansion, so it was treated as a glob pattern — a path containing `[`, `*`, or `?` would strip the wrong prefix. Surfaced by the new shellcheck hook (SC2295).
+
+### Changed
+- `Makefile`: `test` now syntax-checks all three scripts and runs every `tests/test_*.sh`, propagating a failing suite instead of swallowing it.
+- `Makefile`, `uninstall.sh`: emoji removed from status output, matching `install.sh`, which never used any.
+
+### Notes
+- Test isolation rests on three mechanisms, each load-bearing. PATH stubs make the 15 `install_*` functions early-return on their `command -v` guard, so a run touches neither the network nor `sudo`. `GIT_CONFIG_GLOBAL` is required because `install.sh` runs `git config --global` and the real `~/.gitconfig` is a symlink into this repo — redirecting `HOME` alone is not enough, git follows the symlink and writes *through* it into the tracked file. Clearing `DISPLAY`/`WAYLAND_DISPLAY` forces headless, fixing the prompt count at 7 so the same input means the same thing on a GUI box and a headless one.
+- The harness answers `install.sh`'s prompts positionally, and that stream cannot self-detect a mismatch: on EOF `read` returns non-zero but leaves `REPLY` empty, and `prompt_category` treats empty as *yes*. A prompt added to `install.sh` would have been answered yes silently while the suite still passed. `test_install.sh` now pins the accepted categories so that fails loudly instead.
+- Backlog: added `dev-tooling-vs-bootstrap` (P3). `make lint` now hard-requires shellcheck, which `install.sh` does not install, so a fresh contributor hits "Executable shellcheck not found" on their first commit. Provisioning a new machine and developing this repo are different requirements and should be separated.
+
 ## [0.1.14] - 2026-07-28
 
 ### Fixed

@@ -156,19 +156,6 @@
       "notes": "CLAUDE.md's 'When Adding New Configs' now says one `group:src:dest` line in links.sh covers linking, verification, and uninstall. That is exactly true for a config joining an EXISTING group, but a brand-new category still needs a gated `link_group <new>` block plus a matching `verify_group <new>` line in install.sh, because gating mirrors the INSTALL_* prompt flags. Flagged by goal-verifier on feat/uninstall-symlink-gaps (2026-07-28) as the one gap between the doc claim and reality.\n\nTwo ways out: (a) cheap \u2014 tighten the CLAUDE.md wording to say 'existing group' and document the extra install.sh step for a new category; (b) real \u2014 let links.sh carry the group->flag mapping so install.sh loops over groups generically and a new category is genuinely one registry edit. (b) subsumes (a) and kills the last hand-maintained list; (a) is a one-line doc edit if (b) is not worth it.\n\nNot urgent: all 14 current links live in existing groups, so nothing is broken today. Bites the first time a new tool category is added."
     },
     {
-      "id": "install-script-testing",
-      "priority": "P2",
-      "title": "Test harness for install.sh / uninstall.sh / links.sh",
-      "scope": [
-        "install",
-        "repo"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-28",
-      "updated_at": "2026-07-28",
-      "notes": "install.sh and uninstall.sh provision $HOME with no test backing. The Makefile test target is a stub running `bash -n install.sh` only \u2014 no shellcheck, no bats, no CI. The uninstall-symlink-gaps refactor (2026-07-28) was verified by throwaway scratch-HOME scripts; that should be a committed, re-runnable harness.\n\nCoverage, always against a mktemp -d HOME: install produces exactly the LINKS set, targets resolving into the repo; uninstall removes every managed link with zero residue; a foreign symlink at a managed path is skipped not deleted; a DANGLING link into the repo IS removed (the bug the refactor fixed); uninstall is idempotent (2nd run no-op, exit 0); links.sh invariants (no ':' in a path, every src exists, no dest collisions).\n\nBLOCKER first: install.sh runs `git config --global core.excludesfile` unconditionally (~line 422). Since ~/.gitconfig symlinks into this repo, git writes THROUGH it and dirties the tracked .gitconfig even when HOME points at a scratch dir. Hit twice during uninstall-symlink-gaps. Fix by guarding the call or setting GIT_CONFIG_GLOBAL.\n\nAlso decide: shellcheck in pre-commit, and whether the test target covers all three scripts."
-    },
-    {
       "id": "backlog-notes-rule-missing",
       "priority": "P3",
       "title": "backlog validate cites a rule file this repo doesn't have",
@@ -192,6 +179,18 @@
       "created_at": "2026-07-28",
       "updated_at": "2026-07-28",
       "notes": "install.sh provisions a new machine; it is not the same requirement as being able to develop/test this repo. Conflating the two led to two concrete issues (2026-07-28):\n\n1. bats-core was rejected for the test harness on the grounds that 'this repo bootstraps a machine, so its tests must run on a bare one'. That reasoning is wrong: testing happens on an already-set-up dev machine, so a dev-time test dependency is fine. The plain-bash harness that shipped is good and not worth rewriting, but the constraint should not block future tooling choices.\n\n2. `make lint` now hard-requires shellcheck via a local pre-commit hook, and install.sh does NOT install shellcheck. A contributor on a fresh checkout gets 'Executable shellcheck not found' on their first commit, with nothing telling them why.\n\nDecide the model: either a separate `make dev-setup` / documented contributor prerequisites (shellcheck, and anything future tooling wants), or add dev tools to install.sh behind their own category prompt so they are opt-in rather than part of a minimal machine. Then document which is which in CONTRIBUTING or README.\n\nFixing #2 is the concrete deliverable; #1 is the principle that prevents it recurring."
+    },
+    {
+      "id": "shellcheck-shell-config-scope",
+      "priority": "P3",
+      "title": "Decide whether shell config should be shellcheck-linted",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "The shellcheck pre-commit hook (v0.1.15) is scoped by a files: regex to install.sh, uninstall.sh, links.sh, tests/ and scripts/. Shell config \u2014 .bashrc, .aliases \u2014 is excluded.\n\nRationale for excluding: those files are sourced into an interactive shell, not executed, so SC2148 (no shebang) and SC1090 (can't follow non-constant source) are inherent to what they are rather than defects. A repo-wide hook fails on them immediately.\n\nCaveat worth revisiting: when the exclusion was chosen, .bashrc could not be read in-session (a secrets guard blocks reading shell init files), so its 6 findings were never actually inspected \u2014 only 2 of the 6 were confirmed as the inherent SC2148/SC1090 kind from the hook's own output. The remaining 4 were SC1091 'not following' info for optional sourced files (cargo env, nvm, .local/bin/env), which look benign but were not verified line by line.\n\nOptions: (a) leave excluded and accept shell config is unlinted; (b) add  + targeted disable directives to .bashrc/.aliases and bring them into the hook; (c) lint them at a lower severity (-S warning) so the inherent findings drop out. Requires reading .bashrc, so it needs a session where that is permitted."
     }
   ]
 }
