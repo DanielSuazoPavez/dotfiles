@@ -17,3 +17,10 @@ end, { buffer = true, desc = "Next heading (anchored to top)" })
 vim.keymap.set("n", "[[", function()
   goto_heading(true)
 end, { buffer = true, desc = "Previous heading (anchored to top)" })
+
+-- Treesitter folding: zc/zo/za on a heading collapses that section and
+-- everything nested under it. Folds start open.
+vim.opt_local.foldmethod = "expr"
+vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt_local.foldlevel = 99
+vim.opt_local.foldcolumn = "1"
