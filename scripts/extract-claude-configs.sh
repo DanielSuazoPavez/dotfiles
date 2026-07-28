@@ -56,7 +56,7 @@ for source in "${SOURCES[@]}"; do
             # Find all files recursively
             while IFS= read -r -d '' file; do
                 # Get relative path from subdir
-                rel_path="${file#$src_dir/}"
+                rel_path="${file#"$src_dir"/}"
                 # Get filename without path
                 filename=$(basename "$file")
                 # Get subdirectory path if nested
