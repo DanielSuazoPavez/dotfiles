@@ -27,9 +27,11 @@ clean:  ## Clean backup directories older than 30 days
 	@find ~ -maxdepth 1 -name "dotfiles-backup-*" -type d -mtime +30 -exec rm -rf {} \;
 	@echo "✅ Cleanup complete"
 
-test:  ## Test install script in dry-run mode
-	@echo "🧪 Testing would go here (manual verification recommended)"
-	@bash -n install.sh && echo "✅ install.sh syntax OK"
+test:  ## Run the test harness against a scratch HOME
+	@bash -n install.sh && bash -n uninstall.sh && bash -n links.sh
+	@echo "🧪 Running tests..."
+	@for t in tests/test_*.sh; do echo "  → $$t"; bash "$$t" || exit 1; done
+	@echo "✅ All tests passed"
 
 backup:  ## Create manual backup of current configs
 	@BACKUP_DIR="$$HOME/dotfiles-manual-backup-$$(date +%Y%m%d-%H%M%S)"; \
