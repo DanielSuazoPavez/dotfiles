@@ -18,8 +18,8 @@ source "$(cd "$(dirname "$0")" && pwd)/links.sh"
 
 SKIPPED=()
 
-echo "🗑️  Uninstalling dotfiles..."
-echo "⚠️  This will remove all symlinks created by the install script."
+echo "Uninstalling dotfiles..."
+echo "This will remove all symlinks created by the install script."
 read -p "Continue? (y/n) " -n 1 -r
 echo
 
@@ -67,7 +67,7 @@ if [ ${#SKIPPED[@]} -gt 0 ]; then
 fi
 
 echo ""
-echo "✅ Dotfiles uninstalled successfully!"
+echo "Dotfiles uninstalled successfully!"
 echo ""
 echo "Your backup files (if any) are still in ~/dotfiles-backup-* directories."
 echo "The dotfiles repository is still in $DOTFILES_DIR (not deleted)."
