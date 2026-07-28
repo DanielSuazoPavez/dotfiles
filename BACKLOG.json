@@ -108,6 +108,9 @@
       "notes": "Repo is private, so real identities in tracked files are acceptable today. If it ever goes public: tracked .gitconfig holds user.email (dsuazop@gmail.com) and includeIf paths naming the raiz/blumar work trees; docs/gitconfig-conditional-includes.md additionally names all three GitHub accounts and both work email domains. Cheapest fix: move [user] out of the tracked .gitconfig into an untracked ~/.gitconfig-local pulled in via [include], mirroring how ~/.gitconfig-raiz and ~/.gitconfig-blumar already work \u2014 tracked file becomes structure only, no template/substitution step, symlink keeps working. The includeIf directory names (raiz/blumar) remain structural and can only be removed by untracking. Note .gitconfig is symlinked to ~/.gitconfig, so it cannot hold placeholders while also being the live config.",
       "references": [
         "docs/gitconfig-conditional-includes.md"
+      ],
+      "relates_to": [
+        "machine-bootstrap:relates-to"
       ]
     }
   ]
