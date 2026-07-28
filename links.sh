@@ -1,6 +1,7 @@
 # links.sh — single source of truth for every symlink install.sh creates
 # and uninstall.sh removes. Sourced by both; not executable, do not run it.
 # To add a config: add one line to LINKS. Nothing else needs editing.
+# shellcheck shell=bash  # sourced, so it intentionally has no shebang
 
 # Resolved from this file's own location so both callers agree no matter
 # where the repo is checked out or which cwd they were invoked from.

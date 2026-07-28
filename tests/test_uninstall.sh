@@ -22,7 +22,7 @@ run_install_sh
 assert_eq "$(link_set | wc -l)" "$(expected_dests | wc -l)" \
     "install produced the full managed link set"
 
-out=$(run_uninstall_sh)
+uninstall_out=$(run_uninstall_sh)
 uninstall_status=$?
 assert_eq "$uninstall_status" "0" "uninstall exits 0"
 assert_eq "$(link_set | wc -l)" "0" "every managed link removed"
@@ -33,8 +33,8 @@ run_install_sh
 mkdir -p "$SCRATCH/.config/ghostty"
 ln -sfn /etc/hostname "$SCRATCH/.config/ghostty/config"
 
-out=$(run_uninstall_sh)
-assert_contains "$out" "not ours, skipped" "foreign link reported as skipped"
+uninstall_out=$(run_uninstall_sh)
+assert_contains "$uninstall_out" "not ours, skipped" "foreign link reported as skipped"
 assert_link_present "$SCRATCH/.config/ghostty/config" "foreign link survives"
 assert_eq "$(readlink "$SCRATCH/.config/ghostty/config")" "/etc/hostname" \
     "foreign link still points where the user put it"
@@ -59,9 +59,9 @@ assert_link_absent "$SCRATCH/.config/broot/launcher/bash/br" \
     "dangling link into the repo IS removed"
 
 # --- case 4: idempotence (CLAUDE.md principle 1) --------------------------
-out=$(run_uninstall_sh)
+uninstall_out=$(run_uninstall_sh)
 second_status=$?
 assert_eq "$second_status" "0" "second uninstall exits 0"
-assert_not_contains "$out" "Removed symlink:" "second uninstall removes nothing"
+assert_not_contains "$uninstall_out" "Removed symlink:" "second uninstall removes nothing"
 
 finish
