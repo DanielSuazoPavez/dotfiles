@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.11] - 2026-07-28
+
+### Added
+- `.gitconfig`: multi-account routing by directory tree. `includeIf` stanzas point `~/projects/work/raiz/` and `~/projects/work/blumar/` at untracked identity files (`~/.gitconfig-raiz`, `~/.gitconfig-blumar`) carrying the per-account name, email, and `useConfigOnly = true`; each rewrites remotes to its own SSH host alias so the right key pushes. Personal repos rewrite `git@github.com:` to `git@github-hata:`. Auth and authorship are pinned separately because they fail independently.
+- `docs/gitconfig-conditional-includes.md` rewritten from a generic `includeIf` note into the actual three-account setup: key generation and upload, the `~/.ssh/config` host aliases (`IdentitiesOnly yes` is load-bearing), identity files, per-account verification, and the gotchas — `includeIf` can't apply during `clone`, and repos outside the mapped trees fall back to the personal identity silently.
+
+### Changed
+- `.gitconfig`: credential helpers call `gh` from `PATH` instead of a hardcoded `/usr/bin/gh`, which broke on machines where gh installs elsewhere (homebrew, nix).
+
 ## [0.1.10] - 2026-07-28
 
 ### Added
