@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.13] - 2026-07-28
+
+### Added
+- `install.sh`: `install_duckdb` joins the CLI extras group (prompt now reads "ripgrep, broot, bat, trash-cli, duckdb"). duckdb isn't packaged on zypper or apt, so the official installer is used unconditionally. It only symlinks into `~/.local/bin` when that directory already exists, so the function creates it first — without that, a fresh machine installs duckdb but never puts it on `PATH`.
+- `.duckdbrc`, symlinked to `~/.duckdbrc`, applying to `duckdb -c` as well as the REPL: `.startup_text none` (no banner), `.maxrows 20`, `.thousand_sep ,`, `.nullvalue NULL` so a real NULL is distinguishable from an empty string, and `.timer on`. `.startup_text none` must be the literal first line — anything before it, comments included, triggers a "should be on top" warning on every run. Dot-commands take the rest of the line as their argument, so comments sit on their own lines rather than trailing.
+- `docs/DUCKDB-REFERENCE.md`: `SUMMARIZE` as the opening move on an unfamiliar file, bare-path reads and globs for csv/tsv/ndjson/parquet, the `read_xlsx()` `header=false` default that yields columns named `A1`/`B1`, the Excel write path, and the `-no-init` escape hatch (there is no `-norc`).
+- `uninstall.sh`: removes the `~/.duckdbrc` symlink.
+
+### Fixed
+- `Makefile`: `check-secrets` ran `pre-commit run detect-secrets`, but no such hook is configured — the target failed with "No hook with id 'detect-secrets'". It now runs `gitleaks`, which is what `.pre-commit-config.yaml` actually declares. `.PHONY` also gained the missing `install-hooks` and `backup` targets.
+
+### Notes
+- Excel writes need the `excel` extension, but `.duckdbrc` ships the `INSTALL excel; LOAD excel;` pair **commented out** — writing xlsx isn't a primary use, and loading it on every invocation isn't worth the cost. Both lines are needed if enabled: `autoinstall_known_extensions` fires on *autoload*, not on an explicit `LOAD`, so a bare `LOAD excel;` exits 1 on a machine that hasn't cached the extension — and a failed init line aborts the whole file, which would break every duckdb invocation rather than just the Excel ones.
+- Backlog: added `uninstall-symlink-gaps` (P2) and `tool-version-pinning-policy` (P2), both surfaced by duckdb-setup research and deliberately kept out of its scope.
+
 ## [0.1.12] - 2026-07-28
 
 ### Added
