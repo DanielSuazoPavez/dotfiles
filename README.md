@@ -61,12 +61,14 @@ dotfiles/
 │   ├── ghostty/          # Terminal
 │   ├── zellij/           # Multiplexer
 │   └── nvim/             # Editor
-└── install.sh            # Installation script
+├── links.sh              # Symlink list (shared by install/uninstall)
+├── install.sh            # Installation script
+└── uninstall.sh          # Removes the symlinks
 ```
 
 ## Installation
 
-The `install.sh` script installs missing tools and symlinks configuration files to their expected locations. Run it after cloning:
+The `install.sh` script installs missing tools and symlinks configuration files to their expected locations. Which files get symlinked is defined in `links.sh`, which `uninstall.sh` reads too, so every link is removable. Run it after cloning:
 
 ```bash
 ./install.sh

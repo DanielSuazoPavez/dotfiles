@@ -41,7 +41,7 @@ dotfiles/
 ## When Adding New Configs
 
 1. Add the config file to this repo
-2. Update `install.sh` to symlink it
+2. Add one `group:src:dest` line to `LINKS` in `links.sh` — that single line covers linking, verification, and uninstall. Do not add `link_file` calls to `install.sh`.
 3. Document in README if it's a new tool
 
 ## Backlog
