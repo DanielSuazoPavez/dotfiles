@@ -179,6 +179,19 @@
       "created_at": "2026-07-28",
       "updated_at": "2026-07-28",
       "notes": "`claude-toolkit backlog validate` caps task notes at 1300 chars and directs you to externalize the overflow to output/claude-toolkit/backlog-notes/<id>.md, 'see .claude/rules/workflow/backlog.md'. That rule file does not exist in this repo, and neither does the backlog-notes/ directory, so the externalization format is unspecified locally.\n\nHit while adding install-script-testing (2026-07-28): trimmed the notes twice to fit rather than invent a format. new-machine-tools has carried the same violation since it was written (1640 chars) and is why validate currently exits 1.\n\nResolve by either syncing the rule file from claude-toolkit (claude-sync) if it exists upstream, or documenting the externalization convention here and fixing new-machine-tools so validate exits clean."
+    },
+    {
+      "id": "dev-tooling-vs-bootstrap",
+      "priority": "P3",
+      "title": "Separate contributor dev-tooling from new-machine bootstrap",
+      "scope": [
+        "install",
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "install.sh provisions a new machine; it is not the same requirement as being able to develop/test this repo. Conflating the two led to two concrete issues (2026-07-28):\n\n1. bats-core was rejected for the test harness on the grounds that 'this repo bootstraps a machine, so its tests must run on a bare one'. That reasoning is wrong: testing happens on an already-set-up dev machine, so a dev-time test dependency is fine. The plain-bash harness that shipped is good and not worth rewriting, but the constraint should not block future tooling choices.\n\n2. `make lint` now hard-requires shellcheck via a local pre-commit hook, and install.sh does NOT install shellcheck. A contributor on a fresh checkout gets 'Executable shellcheck not found' on their first commit, with nothing telling them why.\n\nDecide the model: either a separate `make dev-setup` / documented contributor prerequisites (shellcheck, and anything future tooling wants), or add dev tools to install.sh behind their own category prompt so they are opt-in rather than part of a minimal machine. Then document which is which in CONTRIBUTING or README.\n\nFixing #2 is the concrete deliverable; #1 is the principle that prevents it recurring."
     }
   ]
 }
