@@ -26,6 +26,14 @@ assert_eq "$install_status" "0" "install.sh exits 0"
 assert_contains "$log" "Headless environment detected" \
     "run was headless (prompt alignment holds)"
 
+# The answer stream is exact-fit: a short stream does not error, it silently
+# answers yes (prompt_category treats an empty REPLY from EOF as yes). Pin the
+# accepted categories so adding a prompt to install.sh fails here rather than
+# passing green with a misaligned stream.
+assert_eq "$(accepted_categories | tr '\n' ' ')" \
+    "CLI extras Claude Code Neovim Starship Zellij runtimes shell basics zoxide " \
+    "exactly the expected categories ran (answer stream still aligned)"
+
 # Exact set comparison, both directions: a missing link and an unexpected one
 # are equally wrong. Compared against LINKS, never a hardcoded count.
 diff_out=$(diff <(link_set) <(expected_dests) 2>&1)

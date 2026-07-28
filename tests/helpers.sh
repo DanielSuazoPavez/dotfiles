@@ -125,6 +125,12 @@ stub_path() {
 #                       prompted; that fixes the prompt count at 7 and keeps the
 #                       bare (un-run_install'd) install_nerd_fonts unreachable
 # Answers: starship, neovim, zellij, zoxide, cli-extras, runtimes, claude.
+#
+# The answer stream is EXACT-FIT and must be extended in lockstep if a prompt
+# is added to install.sh. It cannot self-detect a mismatch: on EOF `read`
+# returns non-zero but leaves REPLY empty, and prompt_category treats empty as
+# "yes" for every y-default prompt. A short stream therefore answers yes to
+# everything remaining instead of failing. assert_prompt_count guards this.
 run_install_sh() {
     env -u DISPLAY -u WAYLAND_DISPLAY \
         PATH="$STUB:$PATH" HOME="$SCRATCH" GIT_CONFIG_GLOBAL="$WORK/gitconfig" \
@@ -134,6 +140,18 @@ run_install_sh() {
 
 run_uninstall_sh() {
     printf 'y\n' | env HOME="$SCRATCH" "$REPO_ROOT/uninstall.sh" 2>&1
+}
+
+# Categories the last run actually entered, one per line, sorted.
+#
+# `read -p` writes its prompt only to a TTY, so with piped stdin the questions
+# never reach the log — the accepted categories are the observable proxy. Pin
+# this so a prompt added to install.sh shifts the answer stream and fails here,
+# rather than silently defaulting to yes (on EOF `read` leaves REPLY empty and
+# prompt_category treats empty as yes).
+accepted_categories() {
+    # LC_ALL=C so the ordering is machine-independent, not locale-dependent.
+    grep -oP '^Installing \K.*(?=\.\.\.$)' "$WORK/install.log" | LC_ALL=C sort
 }
 
 # Symlinks under the scratch HOME, as $HOME-relative paths, sorted.
