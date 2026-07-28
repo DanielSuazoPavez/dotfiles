@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10] - 2026-07-28
+
+### Added
+- Neovim: treesitter-based folding for JSON and markdown. `zc`/`zo`/`za` collapse a JSON object/array from its key line or a markdown section from its heading (nested headings fold with it); clicking the `+`/`-` in the fold column toggles the same folds. Folds start open (`foldlevel=99`) and the `json` parser joins the ensure-installed list.
+
+### Changed
+- Neo-tree sidebar narrowed from 35 to 30 columns.
+
 ## [0.1.9] - 2026-07-27
 
 ### Fixed

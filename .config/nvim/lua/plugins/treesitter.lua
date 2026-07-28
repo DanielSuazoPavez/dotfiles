@@ -8,6 +8,7 @@ return {
     -- Ensure the parsers we care about are installed.
     require("nvim-treesitter").install({
       "bash",
+      "json",
       "lua",
       "python",
       "markdown",
