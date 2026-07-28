@@ -21,8 +21,13 @@
 .timer on
 
 -- Excel writes are not a primary use here, so this stays off — loading the
--- extension on every invocation isn't worth it. Uncomment it, or run
--- `LOAD excel;` for the session, if you need to write xlsx: read_xlsx()
--- autoloads on demand, but COPY ... TO (FORMAT xlsx) does not, and without it
+-- extension on every invocation isn't worth it. read_xlsx() autoloads on
+-- demand, but COPY ... TO (FORMAT xlsx) does not, and without the extension
 -- writes fail with "Copy Function with name xlsx does not exist!".
+--
+-- Both lines are needed. A bare `LOAD excel;` exits 1 on a machine that hasn't
+-- cached the extension yet — autoinstall_known_extensions fires on *autoload*,
+-- not on an explicit LOAD — and a failed line aborts the whole init file,
+-- breaking every duckdb invocation. INSTALL is a no-op once cached.
+-- INSTALL excel;
 -- LOAD excel;
