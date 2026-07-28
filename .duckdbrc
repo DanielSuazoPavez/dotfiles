@@ -20,6 +20,9 @@
 -- override per-run: duckdb -c ".timer off" -c "..."
 .timer on
 
--- read_xlsx() autoloads on demand, but COPY ... TO (FORMAT xlsx) does not.
--- Without this, Excel writes fail with "Copy Function with name xlsx does not exist!".
-LOAD excel;
+-- Excel writes are not a primary use here, so this stays off — loading the
+-- extension on every invocation isn't worth it. Uncomment it, or run
+-- `LOAD excel;` for the session, if you need to write xlsx: read_xlsx()
+-- autoloads on demand, but COPY ... TO (FORMAT xlsx) does not, and without it
+-- writes fail with "Copy Function with name xlsx does not exist!".
+-- LOAD excel;

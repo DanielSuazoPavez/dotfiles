@@ -19,7 +19,7 @@ so scripts and one-liners get the same defaults.
 | `.thousand_sep ,` | `1234567` renders as `1,234,567` |
 | `.nullvalue NULL` | Distinguishes a genuine NULL from an empty string — with the default both render as blank |
 | `.timer on` | Prints query wall time |
-| `LOAD excel;` | Enables Excel *writes* — see [Excel writes](#excel-writes) |
+| `-- LOAD excel;` | Commented out. Uncomment to enable Excel *writes* — see [Excel writes](#excel-writes) |
 
 Dot-commands take the rest of the line as their argument, so a trailing
 `-- comment` is parsed as part of the value and errors out. Keep comments on
@@ -87,17 +87,24 @@ explicit `read_xlsx()` form for spreadsheets.
 ### Excel writes
 
 Read paths autoload on demand, but the `COPY … TO … (FORMAT xlsx)` *write* path
-does not. Without `LOAD excel;` it fails with a misleading error:
+does not. Out of the box it fails with a misleading error:
 
 ```
 Catalog Error: Copy Function with name xlsx does not exist! Did you mean "csv"?
 ```
 
-`.duckdbrc` carries `LOAD excel;` for exactly this reason, so writes just work:
+The error names `csv`, not the missing extension — so it reads like the format is
+unsupported rather than unloaded. The fix is `LOAD excel;`:
 
 ```sql
+LOAD excel;
 COPY (SELECT * FROM 'trips.csv') TO 'trips.xlsx' (FORMAT xlsx);
 ```
+
+`.duckdbrc` carries that line **commented out** — writing Excel isn't a primary
+use here, and loading the extension on every invocation isn't worth it. Run
+`LOAD excel;` for the session when you need it, or uncomment the line in
+`.duckdbrc` if it becomes routine.
 
 ## Escape hatches
 
