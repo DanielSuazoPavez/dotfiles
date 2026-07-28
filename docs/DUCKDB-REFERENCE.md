@@ -94,17 +94,24 @@ Catalog Error: Copy Function with name xlsx does not exist! Did you mean "csv"?
 ```
 
 The error names `csv`, not the missing extension — so it reads like the format is
-unsupported rather than unloaded. The fix is `LOAD excel;`:
+unsupported rather than unloaded. The fix:
 
 ```sql
+INSTALL excel;
 LOAD excel;
 COPY (SELECT * FROM 'trips.csv') TO 'trips.xlsx' (FORMAT xlsx);
 ```
 
-`.duckdbrc` carries that line **commented out** — writing Excel isn't a primary
-use here, and loading the extension on every invocation isn't worth it. Run
-`LOAD excel;` for the session when you need it, or uncomment the line in
-`.duckdbrc` if it becomes routine.
+Both lines matter. `autoinstall_known_extensions` fires on *autoload*, not on an
+explicit `LOAD` — so a bare `LOAD excel;` exits 1 on a machine that hasn't cached
+the extension. `INSTALL` is a no-op once it's cached, so it's safe to keep.
+
+`.duckdbrc` carries both **commented out** — writing Excel isn't a primary use
+here, and loading the extension on every invocation isn't worth it. That's also
+a safety property: a failed line aborts the *entire* init file, so an
+uninstallable extension would break every duckdb invocation, not just Excel
+ones. Run the two statements for the session when you need them, or uncomment
+them in `.duckdbrc` if it becomes routine.
 
 ## Escape hatches
 
