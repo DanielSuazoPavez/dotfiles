@@ -228,6 +228,16 @@ install_broot() {
     fi
 }
 
+install_duckdb() {
+    command -v duckdb &> /dev/null && return 0
+    echo "  Installing duckdb..."
+    # not packaged on zypper or apt; official installer puts the binary in
+    # ~/.duckdb/cli/<ver> and symlinks it into ~/.local/bin — but only if that
+    # dir already exists, so create it first.
+    mkdir -p "$HOME/.local/bin"
+    curl -fsSL https://install.duckdb.org | sh
+}
+
 install_ghostty() {
     command -v ghostty &> /dev/null && return 0
     echo "  Installing ghostty..."
@@ -371,7 +381,7 @@ if prompt_category "zoxide (smarter cd)" "y"; then
     INSTALL_ZOXIDE=true
 fi
 
-if prompt_category "CLI extras (ripgrep, broot, bat, trash-cli)" "y"; then
+if prompt_category "CLI extras (ripgrep, broot, bat, trash-cli, duckdb)" "y"; then
     INSTALL_RIPGREP=true
     INSTALL_BROOT=true
 fi
@@ -455,6 +465,8 @@ if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
     run_install install_broot
     run_install install_bat
     run_install install_trash_cli
+    run_install install_duckdb
+    link_file "$DOTFILES_DIR/.duckdbrc" "$HOME/.duckdbrc"
 fi
 
 # broot config + br shell function (sourced by .bashrc)
@@ -507,13 +519,14 @@ verify_symlink "$HOME/.gitignore_global"
 [ "$INSTALL_GHOSTTY" = true ] && verify_symlink "$HOME/.config/ghostty/config"
 [ "$INSTALL_BROOT" = true ] && verify_symlink "$HOME/.config/broot/conf.hjson"
 [ "$INSTALL_BROOT" = true ] && verify_symlink "$HOME/.config/broot/launcher/bash/br"
+[ "$INSTALL_RIPGREP" = true ] && verify_symlink "$HOME/.duckdbrc"
 
 echo
 echo "Verifying tools..."
 # curl installers drop binaries in ~/.local/bin, which may not be on the
 # script's PATH yet on a fresh machine
 PATH="$HOME/.local/bin:$PATH"
-for tool in starship zellij nvim zoxide rg broot bat trash; do
+for tool in starship zellij nvim zoxide rg broot bat trash duckdb; do
     if command -v "$tool" &> /dev/null; then
         echo "  + $tool"
     else

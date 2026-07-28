@@ -1,4 +1,4 @@
-.PHONY: help install update check-secrets lint clean test
+.PHONY: help install update check-secrets lint install-hooks clean test backup
 
 help:  ## Show this help message
 	@echo "Available commands:"
@@ -13,7 +13,7 @@ update:  ## Pull latest changes from git
 	@echo "✅ Updated! Restart terminal or run: source ~/.bashrc"
 
 check-secrets:  ## Run pre-commit secret detection
-	@pre-commit run detect-secrets --all-files
+	@pre-commit run gitleaks --all-files
 
 lint:  ## Run all pre-commit hooks
 	@pre-commit run --all-files

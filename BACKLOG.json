@@ -101,21 +101,6 @@
       ]
     },
     {
-      "id": "duckdb-setup",
-      "priority": "P1",
-      "title": "Add duckdb setup + eventual configs",
-      "scope": [
-        "repo"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-28",
-      "updated_at": "2026-07-28",
-      "notes": "Settled as the parquet/analytics CLI - reads local files, globs, and s3:// directly via httpfs. Useful invocations: SUMMARIZE SELECT * FROM 'f.parquet' (types, nulls, min/max, approx distinct) as a better first look than SELECT *; DESCRIBE for schema. Config surface not yet explored - ~/.duckdbrc for defaults (.mode box, .maxrows), possibly shell helper functions for peek/schema/count. Deferred a pq()/pqs()/pqn() alias set until the raw commands prove tedious in practice.",
-      "relates_to": [
-        "new-machine-tools:relates-to"
-      ]
-    },
-    {
       "id": "bitwarden-cli-setup",
       "priority": "P1",
       "title": "Set up Bitwarden CLI for personal credentials",
@@ -144,6 +129,30 @@
       "relates_to": [
         "bitwarden-cli-setup:relates-to"
       ]
+    },
+    {
+      "id": "uninstall-symlink-gaps",
+      "priority": "P2",
+      "title": "uninstall.sh misses symlinks that install.sh creates",
+      "scope": [
+        "install"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "uninstall.sh removes only a subset of what install.sh links, so a full uninstall leaves dangling symlinks behind. Known gaps as of 2026-07-28: ~/.config/broot/conf.hjson, ~/.config/broot/launcher/bash/br, ~/.config/broot/launcher/installed-v4, and ~/.config/zellij/layouts/project.kdl (uninstall handles zellij/config.kdl but not the layout). Any newly linked config inherits the same problem \u2014 .duckdbrc from duckdb-setup is the next one.\n\nRoot cause is structural: install.sh's link list and uninstall.sh's removal list are two hand-maintained sources of truth that drift. Worth considering a single shared list (array of src:dest pairs) both scripts consume, rather than patching the current gaps one by one and drifting again. Surfaced during duckdb-setup research; deliberately kept out of that task's scope."
+    },
+    {
+      "id": "tool-version-pinning-policy",
+      "priority": "P2",
+      "title": "Decide a policy on pinning vs tracking latest for installed tools",
+      "scope": [
+        "install"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-28",
+      "updated_at": "2026-07-28",
+      "notes": "install.sh mixes pinning strategies with no stated rationale, and each new tool re-opens the question ad hoc.\n\nCurrent state as of 2026-07-28: Nerd Fonts pins a version (v3.2.1, with a hand-maintained 'check releases' comment that will go stale). nvm pins its installer (v0.40.1) but then installs node via 'nvm install --lts' (unpinned). starship, uv, docker, zoxide and Claude Code all pipe unpinned curl installers. neovim/zellij/broot fetch 'latest' release tarballs on the apt path. Native packages via pkg_install inherit whatever the distro ships.\n\nThe tension: pinning gives reproducible machines and guards against a bad upstream release, but goes stale and needs manual bumping - the Nerd Fonts comment is already evidence of that cost. Tracking latest is self-maintaining but means two machines built a month apart differ, and a broken upstream release breaks a fresh install.\n\nWanted: a stated default (probably 'track latest unless there is a reason to pin'), the criteria for the exception, and where the pin lives so it is bumpable in one place rather than scattered through installer functions. Then reconcile the existing inconsistencies to match. Surfaced during duckdb-setup research (duckdb would add another unpinned 'curl | sh')."
     }
   ]
 }

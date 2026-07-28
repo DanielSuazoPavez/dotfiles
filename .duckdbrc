@@ -1,0 +1,33 @@
+.startup_text none
+-- ^ MUST be the literal first line of the file — a leading comment counts as
+-- content and duckdb then warns ".startup_text should be on top of your
+-- ~/.duckdbrc". Do not move this below the header comment.
+--
+-- duckdb shell defaults. Symlinked to ~/.duckdbrc by install.sh.
+-- Applies to `duckdb -c` too, not just the interactive REPL.
+--
+-- NOTE: dot-commands take the rest of the line as their argument — a trailing
+-- `-- comment` is parsed as part of the value and errors out. Keep comments on
+-- their own lines.
+
+-- Display
+-- default 40; fits a zellij pane
+.maxrows 20
+-- 1234567 -> 1,234,567
+.thousand_sep ,
+-- distinguishes a real NULL from an empty string
+.nullvalue NULL
+-- override per-run: duckdb -c ".timer off" -c "..."
+.timer on
+
+-- Excel writes are not a primary use here, so this stays off — loading the
+-- extension on every invocation isn't worth it. read_xlsx() autoloads on
+-- demand, but COPY ... TO (FORMAT xlsx) does not, and without the extension
+-- writes fail with "Copy Function with name xlsx does not exist!".
+--
+-- Both lines are needed. A bare `LOAD excel;` exits 1 on a machine that hasn't
+-- cached the extension yet — autoinstall_known_extensions fires on *autoload*,
+-- not on an explicit LOAD — and a failed line aborts the whole init file,
+-- breaking every duckdb invocation. INSTALL is a no-op once cached.
+-- INSTALL excel;
+-- LOAD excel;
