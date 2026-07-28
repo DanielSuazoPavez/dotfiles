@@ -93,3 +93,5 @@ export PLAYWRIGHT_BROWSER_PATH="$HOME/.cache/ms-playwright/chromium-1205/chrome-
 export EDITOR=nvim
 export VISUAL=nvim
 
+# AWS Vault - use encrypted file backend instead of KWallet
+export AWS_VAULT_BACKEND=file
