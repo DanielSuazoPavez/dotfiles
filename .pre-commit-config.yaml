@@ -31,8 +31,9 @@ repos:
         # via runtime variables, which shellcheck cannot resolve without it.
         entry: shellcheck -x
         types: [shell]
-        # Scoped to the executable scripts. Shell *config* (.bashrc, .aliases)
-        # is sourced into an interactive shell, not run: SC2148 "no shebang"
-        # and SC1090 "can't follow non-constant source" are inherent to what
-        # those files are, not defects to fix.
-        files: ^(install\.sh|uninstall\.sh|links\.sh|tests/.*\.sh|scripts/.*\.sh)$
+        # Covers executable scripts and shell *config* alike. Config is sourced,
+        # not run, so SC2148 "no shebang" and the SC1090/SC1091 source-following
+        # notices are inherent to what those files are; they're suppressed by
+        # `# shellcheck shell=bash` directives in the files themselves, the same
+        # way links.sh and tests/helpers.sh handle being sourced.
+        files: ^(install\.sh|uninstall\.sh|links\.sh|tests/.*\.sh|scripts/.*\.sh|\.bashrc|\.aliases)$
