@@ -1,4 +1,4 @@
-.PHONY: help install update check-secrets lint install-hooks clean test backup
+.PHONY: help install update dev-setup check-secrets lint install-hooks clean test backup
 
 help:  ## Show this help message
 	@echo "Available commands:"
@@ -11,6 +11,10 @@ update:  ## Pull latest changes from git
 	@echo "Updating dotfiles..."
 	@git pull origin main
 	@echo "Updated! Restart terminal or run: source ~/.bashrc"
+
+dev-setup:  ## Install dev tooling (shellcheck, pre-commit) + git hooks
+	@./scripts/dev-setup.sh
+	@$(MAKE) install-hooks
 
 check-secrets:  ## Run pre-commit secret detection
 	@pre-commit run gitleaks --all-files
