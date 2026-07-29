@@ -1,4 +1,8 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
+# shellcheck shell=bash  # sourced by interactive shells, no shebang by design
+# shellcheck disable=SC1090,SC1091  # every source here is an optional tool's own
+# init file (aliases, cargo, nvm, broot, git completions, .local/bin/env), each
+# guarded by a -f/-s/-d test and absent on machines without that tool.
 
 # If not running interactively, don't do anything
 case $- in

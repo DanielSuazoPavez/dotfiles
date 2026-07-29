@@ -1,9 +1,14 @@
 # ~/.aliases
 # Shell aliases sourced by .bashrc
+# shellcheck shell=bash  # sourced by .bashrc, no shebang by design
 
 # Enable color support of ls and grep
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    if [ -r ~/.dircolors ]; then
+        eval "$(dircolors -b ~/.dircolors)"
+    else
+        eval "$(dircolors -b)"
+    fi
     alias ls='ls --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'

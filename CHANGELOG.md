@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.18] - 2026-07-29
+
+### Changed
+- `.pre-commit-config.yaml`: the shellcheck hook now covers `.bashrc` and `.aliases`. Its `files:` regex had excluded shell *config* since v0.1.15 on the grounds that SC2148 (no shebang) and SC1090 (non-constant source) are inherent to a sourced file. That reasoning was sound but rested on unverified evidence — see Notes. Both files are now clean under the same hook that gates the scripts.
+- `.bashrc`, `.aliases`: carry `# shellcheck shell=bash`, matching how `links.sh` and `tests/helpers.sh` already declare themselves as sourced-not-executed.
+
+### Fixed
+- `.aliases`: the dircolors line used `test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"`, which is not if-then-else — the fallback `eval` also runs when the first one fails, not only when the file is unreadable. Rewritten as `if/then/else`. Benign in practice (falling back to default colors is the sane outcome either way), but it was a real finding that the hook exclusion had been hiding.
+
+### Notes
+- The exclusion's premise was correct; its evidence was not. When it was written, `.bashrc` could not be read in-session — a secrets guard blocks reading shell init files — so only 2 of its 6 findings were ever classified. The other 4 were assumed benign. Linting a file is not reading it, which is what made this resolvable: `shellcheck` produced a verdict on `.bashrc` without its contents entering the session. All 4 turned out to be SC1091 "not following" on optional tool init files (cargo, nvm ×2, `.local/bin/env`), each already guarded by a `-f`/`-s` test and absent by design on a machine without that tool.
+- `-S warning` was the tempting cheap fix and does not work: SC2148 is severity *error*, so it survives the filter and `.bashrc` still fails. It would also have dropped info-level checks on `install.sh` and `tests/`, trading existing coverage for new. Two comment lines were the smaller change.
+- `disable=SC1091` is file-level on `.bashrc`, which is blunter than ideal — the git-completions source (`/usr/share/bash-completion/completions/git`) is a constant, resolvable path, so a genuine breakage there now goes unreported. Accepted for now; the tighter alternative is per-line `# shellcheck source=/dev/null` on the four optional sources, left for if that path ever changes.
+- The two nvm lines use the same `&& \.` pattern rewritten in `.aliases`, and were left alone: they are upstream's installer output verbatim, and editing them means diverging from what nvm re-appends on reinstall.
+
 ## [0.1.17] - 2026-07-29
 
 ### Added

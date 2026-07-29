@@ -144,16 +144,16 @@
       "notes": "CLAUDE.md's 'When Adding New Configs' now says one `group:src:dest` line in links.sh covers linking, verification, and uninstall. That is exactly true for a config joining an EXISTING group, but a brand-new category still needs a gated `link_group <new>` block plus a matching `verify_group <new>` line in install.sh, because gating mirrors the INSTALL_* prompt flags. Flagged by goal-verifier on feat/uninstall-symlink-gaps (2026-07-28) as the one gap between the doc claim and reality.\n\nTwo ways out: (a) cheap \u2014 tighten the CLAUDE.md wording to say 'existing group' and document the extra install.sh step for a new category; (b) real \u2014 let links.sh carry the group->flag mapping so install.sh loops over groups generically and a new category is genuinely one registry edit. (b) subsumes (a) and kills the last hand-maintained list; (a) is a one-line doc edit if (b) is not worth it.\n\nNot urgent: all 14 current links live in existing groups, so nothing is broken today. Bites the first time a new tool category is added."
     },
     {
-      "id": "shellcheck-shell-config-scope",
-      "priority": "P3",
-      "title": "Decide whether shell config should be shellcheck-linted",
+      "id": "bashrc-sc1091-scope",
+      "priority": "P99",
+      "title": "Narrow .bashrc's file-level SC1091 suppression to the optional sources",
       "scope": [
         "repo"
       ],
       "status": "idea",
-      "created_at": "2026-07-28",
-      "updated_at": "2026-07-28",
-      "notes": "The shellcheck pre-commit hook (v0.1.15) is scoped by a files: regex to install.sh, uninstall.sh, links.sh, tests/ and scripts/. Shell config \u2014 .bashrc, .aliases \u2014 is excluded.\n\nRationale for excluding: those files are sourced into an interactive shell, not executed, so SC2148 (no shebang) and SC1090 (can't follow non-constant source) are inherent to what they are rather than defects. A repo-wide hook fails on them immediately.\n\nCaveat worth revisiting: when the exclusion was chosen, .bashrc could not be read in-session (a secrets guard blocks reading shell init files), so its 6 findings were never actually inspected \u2014 only 2 of the 6 were confirmed as the inherent SC2148/SC1090 kind from the hook's own output. The remaining 4 were SC1091 'not following' info for optional sourced files (cargo env, nvm, .local/bin/env), which look benign but were not verified line by line.\n\nOptions: (a) leave excluded and accept shell config is unlinted; (b) add  + targeted disable directives to .bashrc/.aliases and bring them into the hook; (c) lint them at a lower severity (-S warning) so the inherent findings drop out. Requires reading .bashrc, so it needs a session where that is permitted."
+      "created_at": "2026-07-29",
+      "updated_at": "2026-07-29",
+      "notes": "v0.1.18 brought .bashrc into the shellcheck hook using a file-level '# shellcheck disable=SC1090,SC1091'. That is blunter than the findings require.\n\nMost sources in .bashrc are optional tool init files resolved from runtime paths (cargo env, nvm x2, .local/bin/env, broot launcher) \u2014 SC1091 on those is correct to suppress, since the file is absent by design on a machine without that tool.\n\nBut /usr/share/bash-completion/completions/git (line ~84) is a constant, resolvable path. The file-level disable means a genuine breakage there \u2014 path moved, package reorganized \u2014 is silently unreported.\n\nTighter alternative: drop the file-level SC1091 and put per-line '# shellcheck source=/dev/null' on the optional sources only, leaving the git-completions line checked. Costs ~5 directive lines for real coverage on the one source that can meaningfully break.\n\nLow priority: the path is stable and the failure mode is a missing completion, not a broken shell. Worth doing if .bashrc's source list grows or that path ever changes."
     }
   ]
 }
