@@ -44,6 +44,20 @@ dotfiles/
 2. Add one `group:src:dest` line to `LINKS` in `links.sh` — that single line covers linking, verification, and uninstall. Do not add `link_file` calls to `install.sh`.
 3. Document in README if it's a new tool
 
+## Tool Versions
+
+**Track latest by default.** New tools fetch whatever upstream ships now — unpinned
+installer, `releases/latest/download/...`, or the distro package.
+
+Pin only when one of these holds, and record it inline as `# pinned: <reason>`:
+
+1. The artifact is content the configs reference by version (glyph codepoints, schemas, themes) — not a program that updates itself
+2. An upstream release broke a real install here (date the comment, say what broke)
+3. No self-update path *and* a known-bad release is in circulation
+
+A version with no reason is not a pin. Where upstream offers no `latest` URL the version
+is *forced*, not a policy pin — say so in the comment (see nvm in `install.sh`).
+
 ## Backlog
 
 - Managed via `claude-toolkit backlog` — do not hand-edit the rendered file.

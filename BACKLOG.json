@@ -131,18 +131,6 @@
       ]
     },
     {
-      "id": "tool-version-pinning-policy",
-      "priority": "P2",
-      "title": "Decide a policy on pinning vs tracking latest for installed tools",
-      "scope": [
-        "install"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-28",
-      "updated_at": "2026-07-28",
-      "notes": "install.sh mixes pinning strategies with no stated rationale, and each new tool re-opens the question ad hoc.\n\nCurrent state as of 2026-07-28: Nerd Fonts pins a version (v3.2.1, with a hand-maintained 'check releases' comment that will go stale). nvm pins its installer (v0.40.1) but then installs node via 'nvm install --lts' (unpinned). starship, uv, docker, zoxide and Claude Code all pipe unpinned curl installers. neovim/zellij/broot fetch 'latest' release tarballs on the apt path. Native packages via pkg_install inherit whatever the distro ships.\n\nThe tension: pinning gives reproducible machines and guards against a bad upstream release, but goes stale and needs manual bumping - the Nerd Fonts comment is already evidence of that cost. Tracking latest is self-maintaining but means two machines built a month apart differ, and a broken upstream release breaks a fresh install.\n\nWanted: a stated default (probably 'track latest unless there is a reason to pin'), the criteria for the exception, and where the pin lives so it is bumpable in one place rather than scattered through installer functions. Then reconcile the existing inconsistencies to match. Surfaced during duckdb-setup research (duckdb would add another unpinned 'curl | sh')."
-    },
-    {
       "id": "links-new-category-flow",
       "priority": "P3",
       "title": "Make 'one line in links.sh' true for a new category",

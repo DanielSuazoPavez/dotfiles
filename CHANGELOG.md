@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.16] - 2026-07-29
+
+### Changed
+- `install.sh`: Nerd Fonts now fetches `releases/latest/download/` rather than the pinned `v3.2.1`, dropping the hand-maintained "check releases" comment that was the pin's only upkeep mechanism. The fonts are gated on an `fc-list` check, so machines with 3.2.1 already installed do not re-fetch — this affects fresh installs only.
+- `CLAUDE.md`: added a **Tool Versions** section stating the default (track latest) and the three criteria that justify an exception, so each newly added tool no longer re-opens the question ad hoc.
+
+### Notes
+- Policy is *track latest; pin only for a stated reason, recorded inline as `# pinned: <reason>`*. The criteria: the artifact is content the configs reference by version (glyph codepoints, schemas, themes) rather than a self-updating program; an upstream release broke a real install here; or there is no self-update path and a known-bad release is in circulation. A version with no reason is not a pin.
+- The distinction that made the policy tractable is *forced* versus *policy* pin. `curl | sh` installers cannot be pinned without vendoring the script, and `releases/latest/download/...` is fully under our control — so the question "pin or track" only genuinely applies to the fetches we own. nvm sits in a third category: its installer is tag-only upstream with no `latest` URL, so `v0.40.1` is forced rather than chosen, and now says so inline to survive the next version audit.
+- Both pre-existing pins failed all three criteria on inspection. Nerd Fonts was simply the version current when fonts were added; nvm's was copied from upstream's README snippet, and is the weaker pin regardless since node itself installs via `nvm install --lts`. Net result is zero policy pins in the tree, which is why no `TOOL_VERSIONS` registry was introduced — a single forced version does not need one.
+
 ## [0.1.15] - 2026-07-28
 
 ### Added
