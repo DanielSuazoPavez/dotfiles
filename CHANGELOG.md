@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.20] - 2026-07-29
+
+### Changed
+- `links.sh`: carries a `GROUP_FLAGS` registry mapping each link group to the `INSTALL_*` flags that gate it, plus a `group_enabled` predicate. The group→flag mapping previously existed twice in `install.sh` — once as gated `link_group` calls, once as a gated `verify_group` line 40 lines away — and the two could drift. Adding a config category is now genuinely one `LINKS` line plus one `GROUP_FLAGS` entry, both in `links.sh`, with no `install.sh` edit.
+- `install.sh`: the six interleaved `link_group` calls, the broot-only link block, and the eight-line verify block are replaced by `link_groups` and `verify_groups`, which loop over groups in `LINKS` order and gate on the same predicate. Linking now runs once after all tool installers rather than interleaved with them; no `install_*` function reads a config that gets symlinked, which is what makes the move safe.
+- `CLAUDE.md`, `docs/agent/identity.md`: the "one line in `links.sh` covers everything" claim was true only for a config joining an existing group. Both now describe the new-category case accurately, and the prohibition on hand-written link calls in `install.sh` extends to `link_group`/`verify_group`.
+
+### Fixed
+- `install.sh`: `git config --global core.excludesfile` is guarded by `[ -f "$HOME/.gitignore_global" ]`, and that file is a `core` symlink. The guard now runs after linking. Previously it happened to pass because `link_group core` ran three lines earlier; with linking moved to the end of the install phase it would have silently no-opped on a first-ever install, while still passing on any re-install — the failure mode that hides from anyone testing on their own machine.
+- `install.sh`: dropped a latent `set -e` tripwire. `[ "$INSTALL_BROOT" = true ] && verify_group broot` was the last statement of the verify block and evaluated to rc=1 when the flag was false, surviving only because another `echo` followed it.
+
+### Notes
+- The refactor is provably link-set-preserving: `tests/test_install.sh` compares the produced symlinks against `LINKS` in both directions, and group iteration follows `LINKS` order so the link sequence is byte-identical to the old hand-written call order. Verification independently compared the new gating against the old inline gating across all 64 flag combinations × 7 groups with zero mismatches.
+- The flag coupling is now by string — `links.sh` names `INSTALL_*` variables resolved indirectly via `${!flag:-}`. Renaming a flag in `install.sh` would produce no error; the group would just silently stop linking. `tests/test_links.sh` mitigates this by asserting every `GROUP_FLAGS` flag appears in `install.sh`'s initializer block, and that `GROUP_FLAGS` keys match `LINKS` groups in both directions.
+- `group_enabled` fails closed: an unregistered group is never linked. Not-linking is recoverable by re-running; wrongly-linking is not, since `link_file` backs up and replaces real user files.
+- `uninstall.sh` is untouched and deliberately stays generic over `LINKS` — it removes every managed link regardless of which categories were installed, so `GROUP_FLAGS` is inert there.
+- `tests/helpers.sh` was deliberately not modified: `expected_dests` and `accepted_categories` are the regression signal, and changing them would have invalidated the evidence that the refactor is behavior-preserving.
+
 ## [0.1.19] - 2026-07-29
 
 ### Changed

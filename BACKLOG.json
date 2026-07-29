@@ -131,17 +131,29 @@
       ]
     },
     {
-      "id": "links-new-category-flow",
+      "id": "ghostty-gui-only-two-encodings",
       "priority": "P3",
-      "title": "Make 'one line in links.sh' true for a new category",
+      "title": "expected_dests hardcodes ghostty as GUI-only, duplicating GROUP_FLAGS gating",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-07-29",
+      "updated_at": "2026-07-29",
+      "notes": "tests/helpers.sh's expected_dests has a case arm skipping the ghostty group, because a headless run never prompts for it. Since v0.1.20 the runtime gates the same thing via GROUP_FLAGS in links.sh. Two independent encodings of 'ghostty is special' that agree today.\n\nAdding a second GUI-only group will need a matching case arm in helpers.sh and nothing will remind the author \u2014 the failure surfaces as a confusing link-set diff in test_install.sh rather than a clear message.\n\nDeliberately deferred during feat/links-new-category-flow: fixing it means teaching the test harness about headless-ness, which is a larger change than that task. Not urgent \u2014 ghostty is the only GUI-only group today."
+    },
+    {
+      "id": "links-flag-coupling-by-string",
+      "priority": "P3",
+      "title": "GROUP_FLAGS couples links.sh to install.sh flag names by string",
       "scope": [
         "install",
         "repo"
       ],
       "status": "idea",
-      "created_at": "2026-07-28",
-      "updated_at": "2026-07-28",
-      "notes": "CLAUDE.md's 'When Adding New Configs' now says one `group:src:dest` line in links.sh covers linking, verification, and uninstall. That is exactly true for a config joining an EXISTING group, but a brand-new category still needs a gated `link_group <new>` block plus a matching `verify_group <new>` line in install.sh, because gating mirrors the INSTALL_* prompt flags. Flagged by goal-verifier on feat/uninstall-symlink-gaps (2026-07-28) as the one gap between the doc claim and reality.\n\nTwo ways out: (a) cheap \u2014 tighten the CLAUDE.md wording to say 'existing group' and document the extra install.sh step for a new category; (b) real \u2014 let links.sh carry the group->flag mapping so install.sh loops over groups generically and a new category is genuinely one registry edit. (b) subsumes (a) and kills the last hand-maintained list; (a) is a one-line doc edit if (b) is not worth it.\n\nNot urgent: all 14 current links live in existing groups, so nothing is broken today. Bites the first time a new tool category is added."
+      "created_at": "2026-07-29",
+      "updated_at": "2026-07-29",
+      "notes": "Since v0.1.20, links.sh's GROUP_FLAGS names INSTALL_* variables that live in install.sh, resolved indirectly via ${!flag:-}. Renaming a flag in install.sh produces no error anywhere \u2014 the group just silently stops linking.\n\nMitigation in place: tests/test_links.sh asserts every GROUP_FLAGS flag matches a '^FLAG=false$' line in install.sh's initializer block. That works but is mildly brittle to reformatting of that block (e.g. switching to ': ${INSTALL_X:=false}' or one-lining the declarations would break the grep without any real defect).\n\nWorth revisiting only if the initializer block gets reformatted or the assertion produces a false failure. The alternative is accepting the silent-failure class, or moving to a single declaration site \u2014 but flags are prompt state owned by install.sh and meaningless to uninstall.sh, which sources the same links.sh."
     }
   ]
 }
