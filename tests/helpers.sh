@@ -109,22 +109,29 @@ scratch_home() {
 stub_path() {
     local t
     for t in starship zellij nvim zoxide rg broot bat trash duckdb \
-             uv node npm docker claude; do
+             uv node npm docker claude ghostty fc-list fc-cache unzip; do
         printf '#!/bin/sh\nexit 0\n' > "$STUB/$t"
         chmod +x "$STUB/$t"
     done
+
+    # fc-list must report the fonts present, not just exit 0: install_nerd_fonts
+    # early-returns on a match, and a silent stub would fall through to curl.
+    printf '#!/bin/sh\nprintf "%%s\\n" "JetBrainsMono Nerd Font" "FiraCode Nerd Font"\n' \
+        > "$STUB/fc-list"
+    chmod +x "$STUB/fc-list"
 }
 
-# Run install.sh fully isolated. Three mechanisms, each necessary:
-#   PATH stubs        - installers early-return instead of fetching/sudo-ing
+# Run install.sh fully isolated. Two mechanisms, each necessary:
+#   PATH stubs        - installers early-return instead of fetching/sudo-ing.
+#                       This covers the GUI installers too: ghostty guards on
+#                       `command -v ghostty`, and install_nerd_fonts early-returns
+#                       when the fc-list stub reports both fonts present.
 #   GIT_CONFIG_GLOBAL - install.sh runs `git config --global`, and because the
 #                       real ~/.gitconfig is a symlink into this repo, git
 #                       would otherwise write THROUGH it into the tracked file
 #                       even with HOME redirected
-#   env -u DISPLAY…   - forces HEADLESS=true, so Ghostty and Nerd Fonts are not
-#                       prompted; that fixes the prompt count at 7 and keeps the
-#                       bare (un-run_install'd) install_nerd_fonts unreachable
-# Answers: starship, neovim, zellij, zoxide, cli-extras, runtimes, claude.
+# Answers: starship, neovim, zellij, zoxide, cli-extras, runtimes, claude,
+# ghostty, fonts.
 #
 # The answer stream is EXACT-FIT and must be extended in lockstep if a prompt
 # is added to install.sh. It cannot self-detect a mismatch: on EOF `read`
@@ -132,9 +139,8 @@ stub_path() {
 # "yes" for every y-default prompt. A short stream therefore answers yes to
 # everything remaining instead of failing. assert_prompt_count guards this.
 run_install_sh() {
-    env -u DISPLAY -u WAYLAND_DISPLAY \
-        PATH="$STUB:$PATH" HOME="$SCRATCH" GIT_CONFIG_GLOBAL="$WORK/gitconfig" \
-        "$REPO_ROOT/install.sh" <<< $'y\ny\ny\ny\ny\ny\ny\n' \
+    env PATH="$STUB:$PATH" HOME="$SCRATCH" GIT_CONFIG_GLOBAL="$WORK/gitconfig" \
+        "$REPO_ROOT/install.sh" <<< $'y\ny\ny\ny\ny\ny\ny\ny\ny\n' \
         > "$WORK/install.log" 2>&1
 }
 
@@ -159,17 +165,13 @@ link_set() {
     find "$SCRATCH" -type l | sed "s|^$SCRATCH||" | sort
 }
 
-# The dests a headless all-yes run should produce, derived from LINKS so that
-# adding a config updates the expectation automatically. Ghostty is excluded:
-# headless means it is never prompted, so it is never linked.
+# The dests an all-yes run should produce, derived from LINKS so that adding a
+# config updates the expectation automatically. Every group is prompted, so every
+# LINKS entry is expected — no filtering.
 expected_dests() {
-    local entry group dest
+    local entry dest
     for entry in "${LINKS[@]}"; do
-        group=${entry%%:*}
         dest=${entry##*:}
-        case "$group" in
-            ghostty) continue ;;
-        esac
         echo "${dest#"$HOME"}"
     done | sort
 }

@@ -17,8 +17,8 @@ scratch_home || exit 1
 stub_path
 run_install_sh
 
-# Derived from LINKS, not hardcoded: the count differs between headless and
-# GUI runs, and a literal here would silently rot when a config is added.
+# Derived from LINKS, not hardcoded: a literal here would silently rot when a
+# config is added.
 assert_eq "$(link_set | wc -l)" "$(expected_dests | wc -l)" \
     "install produced the full managed link set"
 
@@ -28,9 +28,10 @@ assert_eq "$uninstall_status" "0" "uninstall exits 0"
 assert_eq "$(link_set | wc -l)" "0" "every managed link removed"
 
 # --- case 2: a link the user owns, at a path we manage ---------------------
+# uninstall only visits paths named in LINKS, so the probe must sit at a managed
+# path; what makes it foreign is the target, not the location. Install links
+# ghostty now, so this repoints an existing managed link outside the repo.
 run_install_sh
-# Headless never links ghostty, so its parent directory does not exist yet.
-mkdir -p "$SCRATCH/.config/ghostty"
 ln -sfn /etc/hostname "$SCRATCH/.config/ghostty/config"
 
 uninstall_out=$(run_uninstall_sh)
