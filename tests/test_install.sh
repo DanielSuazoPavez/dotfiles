@@ -56,4 +56,10 @@ assert_eq "$bad_target" "" "every link points into the repo"
 gitconfig_state=$(cd "$REPO_ROOT" && git diff --quiet -- .gitconfig && echo clean || echo dirty)
 assert_eq "$gitconfig_state" "clean" "repo .gitconfig untouched by the run"
 
+# core.excludesfile must be set against the scratch gitconfig. Pinned because
+# the guard at install.sh depends on .gitignore_global already being linked —
+# an ordering dependency nothing else asserts.
+excludes=$(GIT_CONFIG_GLOBAL="$WORK/gitconfig" git config --get core.excludesfile || true)
+assert_eq "$excludes" "$SCRATCH/.gitignore_global" "core.excludesfile was set"
+
 finish
