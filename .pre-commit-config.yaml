@@ -32,8 +32,12 @@ repos:
         entry: shellcheck -x
         types: [shell]
         # Covers executable scripts and shell *config* alike. Config is sourced,
-        # not run, so SC2148 "no shebang" and the SC1090/SC1091 source-following
-        # notices are inherent to what those files are; they're suppressed by
-        # `# shellcheck shell=bash` directives in the files themselves, the same
+        # not run, so SC2148 "no shebang" is inherent to what those files are;
+        # a `# shellcheck shell=bash` directive in each file settles it, the same
         # way links.sh and tests/helpers.sh handle being sourced.
+        #
+        # The SC1090/SC1091 source-following notices are handled separately, and
+        # per line: .bashrc marks its optional tool init files with
+        # `# shellcheck source=/dev/null` and leaves constant, package-owned
+        # paths checked, so one that moves upstream still gets reported.
         files: ^(install\.sh|uninstall\.sh|links\.sh|tests/.*\.sh|scripts/.*\.sh|\.bashrc|\.aliases)$

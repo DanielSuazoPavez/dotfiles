@@ -1,8 +1,10 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # shellcheck shell=bash  # sourced by interactive shells, no shebang by design
-# shellcheck disable=SC1090,SC1091  # every source here is an optional tool's own
-# init file (aliases, cargo, nvm, broot, git completions, .local/bin/env), each
-# guarded by a -f/-s/-d test and absent on machines without that tool.
+#
+# Optional tool init files are marked per-line with 'source=/dev/null': each is
+# guarded by a -f/-s test and absent by design on a machine without that tool.
+# Sources at constant, package-owned paths are deliberately left checked, so a
+# path that moves upstream gets reported instead of silently waived.
 
 # If not running interactively, don't do anything
 case $- in
@@ -36,6 +38,7 @@ shopt -s checkwinsize
 
 # Source aliases
 if [ -f ~/.aliases ]; then
+    # shellcheck source=/dev/null
     . ~/.aliases
 fi
 
@@ -45,6 +48,7 @@ fi
 
 # Rust (cargo)
 if [ -f "$HOME/.cargo/env" ]; then
+    # shellcheck source=/dev/null
     . "$HOME/.cargo/env"
 fi
 
@@ -58,7 +62,9 @@ fi
 
 # NVM (Node Version Manager)
 export NVM_DIR="$HOME/.nvm"
+# shellcheck source=/dev/null
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# shellcheck source=/dev/null
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Update PATH
@@ -81,6 +87,7 @@ fi
 
 # broot (better tree)
 if [ -f "$HOME/.config/broot/launcher/bash/br" ]; then
+    # shellcheck source=/dev/null
     source "$HOME/.config/broot/launcher/bash/br"
 fi
 
@@ -92,7 +99,8 @@ fi
 # Playwright browser path for MCP server
 export PLAYWRIGHT_BROWSER_PATH="$HOME/.cache/ms-playwright/chromium-1205/chrome-linux64/chrome"
 
-[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/share/../bin/env"
+# shellcheck source=/dev/null
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
 export EDITOR=nvim
 export VISUAL=nvim

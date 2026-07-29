@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.19] - 2026-07-29
+
+### Changed
+- `.bashrc`: the file-level `# shellcheck disable=SC1090,SC1091` from v0.1.18 is replaced by per-line `# shellcheck source=/dev/null` on the five optional tool init files (aliases, cargo, nvm ×2, `.local/bin/env`) plus broot. The git-completions source (`/usr/share/bash-completion/completions/git`) is a constant, package-owned path and is now left checked, so a path that moves upstream gets reported instead of silently waived. Closes the follow-up left open in v0.1.18's Notes.
+- `.pre-commit-config.yaml`: corrected the shellcheck hook's comment. It attributed SC1090/SC1091 suppression to `# shellcheck shell=bash`, which only settles SC2148 — the source notices came from the file-level `disable` this release removes. It also implied `.aliases` needed the same handling; `.aliases` has no `source` statements, so those notices never arise there.
+
+### Fixed
+- `.bashrc`: the `.local/bin/env` line tested `"$HOME/.local/bin/env"` but sourced `"$HOME/.local/share/../bin/env"`. Both resolve to the same file, so this is not a behavior change — the guard was never checking a different path than it sourced — but the mismatch read as a typo.
+
+### Notes
+- Coverage was verified rather than assumed: pointing the git-completions source at a nonexistent path makes SC1091 fire, confirming the line is genuinely checked and not passing by accident. The pre-commit hook runs `shellcheck -x`, matching how the check was verified.
+- Broot's launcher was the one source v0.1.18's Notes did not enumerate (it listed four optional sources; there are five, plus `~/.aliases`). It resolves from `$HOME` like the rest and gets the same per-line directive.
+- The two nvm lines still use upstream's `&& \.` pattern verbatim, unchanged for the reason given in v0.1.18: editing them means diverging from what nvm re-appends on reinstall.
+
 ## [0.1.18] - 2026-07-29
 
 ### Changed
