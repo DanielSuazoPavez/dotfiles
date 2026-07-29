@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.17] - 2026-07-29
+
+### Added
+- `scripts/dev-setup.sh` and `make dev-setup`: installs what working on this repo requires — `shellcheck` (the `language: system` pre-commit hook) and `pre-commit` (`make lint`, `make check-secrets`) — then chains into `make install-hooks`. Closes the gap noted in v0.1.15: a fresh clone hit `Executable shellcheck not found` on its first commit, because `install.sh` installs neither tool and no doc mentioned either. Idempotent; a run on a set-up machine is a no-op.
+
+### Changed
+- `CLAUDE.md`: added a **Bootstrap vs Dev Tooling** section. `install.sh` provisions a *machine*; `dev-setup.sh` provisions *this repo's tooling*. Key Principle 3 ("minimal dependencies") is now scoped to `install.sh`, since as written it was the exact sentence that would veto a dev-time dependency.
+- `.claude-toolkit-ignore`: un-ignores `.claude/rules/workflow/backlog.md` so `claude-sync` pulls it. Its absence was the whole of the `backlog-notes-rule-missing` task, now removed from the backlog.
+
+### Notes
+- The boundary is the point; `dev-setup.sh` is just the thing that makes it concrete. The missing distinction had already produced one bad argument: bats-core was rejected for the test harness because "this repo bootstraps a bare machine, so its tests must run on a bare one" — wrong, since tests run on an already-provisioned dev machine. That constraint binds `install.sh` alone. This release does not exercise the freedom it restores: the plain-bash harness stays.
+- The two scripts duplicate `try_sudo`, `pkg_install`, and their prompt rather than sharing a `lib/`. Deliberate — they are separate use cases and neither should break when the other changes, at a cost of ~25 duplicated lines. `install.sh` is untouched by this release, which is the test that the boundary holds.
+- `pre-commit` installs via `uv tool install`, keeping the repo's no-system-Python stance, so `uv` is a hard dependency and `dev-setup` prompts for it when missing. `prompt_yn` assumes the default when stdin is not a TTY, so the script cannot hang unattended.
+- `README.md` deliberately says nothing about any of this — it stays a machine-setup doc, and its "only `git` and `curl` up front" line remains correct for that audience. No `CONTRIBUTING.md`: one person works on this repo, so the principle lives in `CLAUDE.md` where future decisions actually read it.
+- The apt path (`shellcheck` lowercase, vs `ShellCheck` on zypper) is unverified — no Ubuntu machine here. First Ubuntu run is the real test.
+
 ## [0.1.16] - 2026-07-29
 
 ### Changed
