@@ -291,6 +291,8 @@ install_node() {
         pkg_install nodejs24
     else
         # apt node is stale; use nvm
+        # nvm's installer is tag-only upstream (no 'latest' URL), so this version
+        # is forced rather than a policy pin -- bump opportunistically.
         curl -fso- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
         export NVM_DIR="$HOME/.nvm"
         # shellcheck source=/dev/null
@@ -347,11 +349,10 @@ install_nerd_fonts() {
         fi
 
         echo "  Installing $font_name Nerd Font..."
-        local version="v3.2.1"  # Check https://github.com/ryanoasis/nerd-fonts/releases
         local zip_file="${font_name}.zip"
 
         curl -fLo "$zip_file" \
-            "https://github.com/ryanoasis/nerd-fonts/releases/download/${version}/${font_name}.zip"
+            "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font_name}.zip"
 
         unzip -q "$zip_file" -d "$font_dir/${font_name}NerdFont"
         rm "$zip_file"
