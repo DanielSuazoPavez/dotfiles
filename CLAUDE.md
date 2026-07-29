@@ -42,7 +42,7 @@ dotfiles/
 ## When Adding New Configs
 
 1. Add the config file to this repo
-2. Add one `group:src:dest` line to `LINKS` in `links.sh` — that single line covers linking, verification, and uninstall. Do not add `link_file` calls to `install.sh`.
+2. Register the symlink in `links.sh` — one `group:src:dest` line in `LINKS` covers linking, verification, and uninstall. A brand-new category also needs one `GROUP_FLAGS` entry naming the `INSTALL_*` flag that gates it (see that array's comment); both edits are in `links.sh`. Do not add `link_file`, `link_group`, or `verify_group` calls to `install.sh`.
 3. Document in README if it's a new tool
 
 ## Tool Versions

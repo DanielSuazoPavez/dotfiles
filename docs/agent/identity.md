@@ -10,7 +10,7 @@ A bootstrap kit for a fresh Linux/WSL machine. Clone, run `./install.sh`, and th
 - **Symlinks, not copies** — configs live here and link out; editing `~/.bashrc` edits the repo. No generated or templated configs.
 - **Idempotent by construction** — re-running `install.sh` after a pull is the update mechanism; there is no separate "update" path.
 - **Linux/WSL only** — no macOS branches, no Windows-native paths. Supported package managers: zypper (Tumbleweed) and apt (Ubuntu/WSL); no other OS-detection scaffolding beyond headless/GUI.
-- **One tool, one config, one symlink** — adding a tool means: config file in repo, install + symlink lines in `install.sh`, row in README. Nothing more.
+- **One tool, one config, one symlink** — adding a tool means: config file in repo, install line in `install.sh`, symlink registration in `links.sh`, row in README. Nothing more.
 
 ## Scope Boundary
 

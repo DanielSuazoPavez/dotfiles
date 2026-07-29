@@ -119,6 +119,51 @@ verify_group() {
     done
 }
 
+# Groups in LINKS order — not GROUP_FLAGS key order (an associative array
+# iterates in hash order, which puts broot before core and reshuffles on any key
+# insertion) and not sorted. LINKS order reproduces exactly the sequence the
+# hand-written per-group link calls ran in, which makes this refactor a provable
+# no-op on link sequencing rather than an argument that order shouldn't matter.
+groups_in_links_order() {
+    local -n _out=$1
+    _out=()
+    local entry group seen=" "
+    for entry in "${LINKS[@]}"; do
+        group=${entry%%:*}
+        [[ $seen == *" $group "* ]] && continue
+        seen="$seen$group "
+        _out+=("$group")
+    done
+}
+
+# Link every enabled group. Best-effort like run_install: a disabled group is
+# skipped silently, and the explicit `return 0` keeps a trailing disabled group
+# from tripping `set -e`.
+link_groups() {
+    local groups=() group
+    groups_in_links_order groups
+    for group in "${groups[@]}"; do
+        if group_enabled "$group"; then
+            link_group "$group"
+        fi
+    done
+    return 0
+}
+
+# Verify every enabled group — the same predicate that linked them, so the link
+# and verify phases cannot drift apart. That drift is the bug this refactor exists
+# to make impossible.
+verify_groups() {
+    local groups=() group
+    groups_in_links_order groups
+    for group in "${groups[@]}"; do
+        if group_enabled "$group"; then
+            verify_group "$group"
+        fi
+    done
+    return 0
+}
+
 # Prompt for category installation
 prompt_category() {
     local name=$1
@@ -438,41 +483,33 @@ echo
 # Installation
 # ============================================================================
 
-# Shell basics (always installed)
+# Shell basics (always installed). Nothing to install — the configs are
+# symlinked by link_groups below — but the echo is load-bearing: tests parse
+# the "Installing X..." lines to check the prompt answer stream is aligned.
 echo "Installing shell basics..."
-link_group core
-
-# Set git global excludesfile
-if [ -f "$HOME/.gitignore_global" ]; then
-    git config --global core.excludesfile ~/.gitignore_global
-fi
 
 # Starship
 if [ "$INSTALL_STARSHIP" = true ]; then
     echo "Installing Starship..."
     run_install install_starship
-    link_group starship
 fi
 
 # Neovim
 if [ "$INSTALL_NEOVIM" = true ]; then
     echo "Installing Neovim..."
     run_install install_neovim
-    link_group nvim
 fi
 
 # Zellij
 if [ "$INSTALL_ZELLIJ" = true ]; then
     echo "Installing Zellij..."
     run_install install_zellij
-    link_group zellij
 fi
 
 # Ghostty (GUI only)
 if [ "$INSTALL_GHOSTTY" = true ]; then
     echo "Installing Ghostty..."
     run_install install_ghostty
-    link_group ghostty
 fi
 
 # zoxide
@@ -489,12 +526,6 @@ if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
     run_install install_bat
     run_install install_trash_cli
     run_install install_duckdb
-    link_group cli-extras
-fi
-
-# broot config + br shell function (sourced by .bashrc)
-if [ "$INSTALL_BROOT" = true ]; then
-    link_group broot
 fi
 
 # Runtimes
@@ -517,6 +548,17 @@ if [ "$INSTALL_FONTS" = true ]; then
     install_nerd_fonts
 fi
 
+# Symlinks last: every enabled group in one pass, gated by GROUP_FLAGS in
+# links.sh. Safe after all installers because no install_* function reads a
+# config that gets symlinked — if one ever does, it must run after this call.
+link_groups
+
+# Must follow link_groups: .gitignore_global is a core symlink and this guard
+# uses -f, so on a first-ever install the file does not exist until linking runs.
+if [ -f "$HOME/.gitignore_global" ]; then
+    git config --global core.excludesfile ~/.gitignore_global
+fi
+
 echo
 
 # ============================================================================
@@ -525,18 +567,7 @@ echo
 
 echo "Verifying symlinks..."
 
-# Shell basics
-verify_group core
-
-# Optional configs — gated by the same flags that linked them
-[ "$INSTALL_STARSHIP" = true ] && verify_group starship
-[ "$INSTALL_NEOVIM" = true ] && verify_group nvim
-[ "$INSTALL_ZELLIJ" = true ] && verify_group zellij
-[ "$INSTALL_GHOSTTY" = true ] && verify_group ghostty
-if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
-    verify_group cli-extras
-fi
-[ "$INSTALL_BROOT" = true ] && verify_group broot
+verify_groups
 
 echo
 echo "Verifying tools..."
