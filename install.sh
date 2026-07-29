@@ -119,6 +119,51 @@ verify_group() {
     done
 }
 
+# Groups in LINKS order — not GROUP_FLAGS key order (an associative array
+# iterates in hash order, which puts broot before core and reshuffles on any key
+# insertion) and not sorted. LINKS order reproduces exactly the sequence the
+# hand-written link_group calls ran in, which makes this refactor a provable
+# no-op on link sequencing rather than an argument that order shouldn't matter.
+groups_in_links_order() {
+    local -n _out=$1
+    _out=()
+    local entry group seen=" "
+    for entry in "${LINKS[@]}"; do
+        group=${entry%%:*}
+        [[ $seen == *" $group "* ]] && continue
+        seen="$seen$group "
+        _out+=("$group")
+    done
+}
+
+# Link every enabled group. Best-effort like run_install: a disabled group is
+# skipped silently, and the explicit `return 0` keeps a trailing disabled group
+# from tripping `set -e`.
+link_groups() {
+    local groups=() group
+    groups_in_links_order groups
+    for group in "${groups[@]}"; do
+        if group_enabled "$group"; then
+            link_group "$group"
+        fi
+    done
+    return 0
+}
+
+# Verify every enabled group — the same predicate that linked them, so the link
+# and verify phases cannot drift apart. That drift is the bug this refactor exists
+# to make impossible.
+verify_groups() {
+    local groups=() group
+    groups_in_links_order groups
+    for group in "${groups[@]}"; do
+        if group_enabled "$group"; then
+            verify_group "$group"
+        fi
+    done
+    return 0
+}
+
 # Prompt for category installation
 prompt_category() {
     local name=$1
