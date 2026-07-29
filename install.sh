@@ -570,18 +570,7 @@ echo
 
 echo "Verifying symlinks..."
 
-# Shell basics
-verify_group core
-
-# Optional configs — gated by the same flags that linked them
-[ "$INSTALL_STARSHIP" = true ] && verify_group starship
-[ "$INSTALL_NEOVIM" = true ] && verify_group nvim
-[ "$INSTALL_ZELLIJ" = true ] && verify_group zellij
-[ "$INSTALL_GHOSTTY" = true ] && verify_group ghostty
-if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
-    verify_group cli-extras
-fi
-[ "$INSTALL_BROOT" = true ] && verify_group broot
+verify_groups
 
 echo
 echo "Verifying tools..."
