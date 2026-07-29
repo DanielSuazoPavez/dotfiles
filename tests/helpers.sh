@@ -137,7 +137,8 @@ stub_path() {
 # is added to install.sh. It cannot self-detect a mismatch: on EOF `read`
 # returns non-zero but leaves REPLY empty, and prompt_category treats empty as
 # "yes" for every y-default prompt. A short stream therefore answers yes to
-# everything remaining instead of failing. assert_prompt_count guards this.
+# everything remaining instead of failing. The accepted_categories assertion in
+# test_install.sh is the only guard against that.
 run_install_sh() {
     env PATH="$STUB:$PATH" HOME="$SCRATCH" GIT_CONFIG_GLOBAL="$WORK/gitconfig" \
         "$REPO_ROOT/install.sh" <<< $'y\ny\ny\ny\ny\ny\ny\ny\ny\n' \

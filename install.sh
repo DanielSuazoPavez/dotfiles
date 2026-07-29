@@ -388,7 +388,12 @@ install_nerd_fonts() {
     for font_name in "${fonts_to_install[@]}"; do
         fc-list | grep -qi "$font_name Nerd Font" || all_present=false
     done
-    [ "$all_present" = true ] && return 0
+    # `if` rather than `&& return 0`: as a non-final statement the latter would
+    # abort the whole script under set -e when all_present is false. run_install
+    # suspends set -e for the current caller, but the guard should not depend on it.
+    if [ "$all_present" = true ]; then
+        return 0
+    fi
 
     mkdir -p "$font_dir"
 
