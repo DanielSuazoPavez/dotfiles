@@ -5,8 +5,26 @@ Config lives in `.config/nvim/` (`vim-options.lua` + `lua/plugins/*.lua`),
 managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
 > Tip: forget a binding? Press `<leader>` (or any prefix like `<leader>f`) and
-> **pause** — which-key pops up the full list. Or `<leader>fk` for a searchable
-> keymap picker.
+> **pause** — which-key pops up the full list. `<leader>?` shows every keymap,
+> `<leader>fk` searches them by description.
+
+Still learning the setup? `docs/nvim-learning.md` has the active rotation,
+in-picker keys, and drills. `scripts/check-keymap-docs.py` verifies this file
+still matches what the config binds.
+
+## Discovery — which-key
+
+Press a prefix and pause; which-key lists what can follow it. Group labels are
+set for `<leader>f` (find), `h` (git hunk), `b` (buffer), `y` (yank path) and
+`c` (code). Built-in presets are on too, so `g`, `z`, `"` and `'` list their
+options — that covers vim itself, not just this config.
+
+| Key | Action |
+|---|---|
+| `<leader>?` | Popup of every keymap, grouped |
+
+Buffer-local keys (LSP, gitsigns) only appear where their plugin has attached —
+from the neo-tree sidebar or an empty buffer they're genuinely absent.
 
 ## Finding things — Telescope
 
