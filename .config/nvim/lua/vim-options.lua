@@ -42,6 +42,20 @@ vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
   command = "checktime",
 })
 
+-- Yank the current buffer's path (relative to cwd / absolute).
+-- clipboard=unnamedplus only redirects implicit yanks, so set + explicitly.
+local function yank_path(modifier)
+  return function()
+    local path = vim.fn.expand(modifier)
+    vim.fn.setreg('"', path)
+    vim.fn.setreg("+", path)
+    vim.notify(path, vim.log.levels.INFO, { title = "Yanked path" })
+  end
+end
+
+vim.keymap.set("n", "<leader>yp", yank_path("%:."), { desc = "Yank relative path" })
+vim.keymap.set("n", "<leader>yP", yank_path("%:p"), { desc = "Yank absolute path" })
+
 -- Split navigation keymaps
 vim.keymap.set("n", "<C-h>", "<C-w>h", {})
 vim.keymap.set("n", "<C-j>", "<C-w>j", {})

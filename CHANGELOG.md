@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.22] - 2026-08-02
+
+### Added
+- nvim: mappings that yank a file's path. `Y` (relative to cwd) and `gy` (absolute) in neo-tree, `<leader>yp` / `<leader>yP` for the current buffer. Each writes both `"` and `+` and echoes the path via `vim.notify`.
+- `docs/NVIM-REFERENCE.md`: the four new binds, under the neo-tree section and a new "Paths — current buffer" section.
+
+### Notes
+- Neo-tree ships no path-yank mapping at the pinned commit. Its `y` is `copy_to_clipboard`, which stages a node for `paste_from_clipboard` — a file operation, not a string yank — and `M.copy` is copy-to-destination. Neither produces a path, so this is new behavior rather than a rebind.
+- `clipboard=unnamedplus` does not cover these. It redirects *implicit* yanks (`y`, `dd`), not explicit `setreg()` calls, so the `+` register is written explicitly. Verified by seeding `+` with a sentinel and confirming all four mappings overwrite it.
+- `Y` on the tree's root row yields an absolute path: `fnamemodify(cwd, ":.")` cannot relativize cwd against itself and returns it unchanged. Nested nodes are relative as expected.
+- `Y` shadows builtin yank-line inside the neo-tree buffer only; the mapping is buffer-local, so `Y` is untouched in normal buffers.
+
 ## [0.1.21] - 2026-07-29
 
 ### Removed

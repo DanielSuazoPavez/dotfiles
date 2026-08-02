@@ -37,9 +37,27 @@ instead of the bare numbered list.
 | Key | Action |
 |---|---|
 | `<leader>e` | Toggle sidebar (reveals current file) |
+| `Y` | Yank path of node under cursor, relative to cwd |
+| `gy` | Yank absolute path of node under cursor |
 
 Sidebar closes itself if it would be the last window (no more full-screen
 neo-tree). Hides gitignored files and `.git`; shows other dotfiles.
+
+`Y`/`gy` are buffer-local to the tree — `Y` is still yank-line everywhere else.
+Neo-tree's own `y` is unrelated: it stages a node for `p` (a file copy), not a
+path yank. On the root row `Y` gives an absolute path, since cwd can't be made
+relative to itself.
+
+## Paths — current buffer
+
+| Key | Action |
+|---|---|
+| `<leader>yp` | Yank buffer's path, relative to cwd |
+| `<leader>yP` | Yank buffer's absolute path |
+
+All four path yanks write the system clipboard (`+`) as well as `"`, and echo
+what they copied. Built-in alternatives: `Ctrl-g` shows the relative path,
+`1 Ctrl-g` the absolute one.
 
 ## Buffers — Bufferline (VS Code-style tabs)
 
