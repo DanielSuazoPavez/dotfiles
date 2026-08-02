@@ -27,7 +27,7 @@ inline where root is needed.
 | Tier | Tools |
 |------|-------|
 | Core (prompt, default Y) | starship, zellij, neovim, zoxide, ripgrep, broot, bat, duckdb |
-| Core GUI (skipped if headless) | ghostty, Nerd Fonts (JetBrainsMono + FiraCode) |
+| Core GUI | ghostty, Nerd Fonts (JetBrainsMono + FiraCode) |
 | Runtimes (prompt, default Y) | uv, node, docker |
 | Optional (prompt, default Y) | Claude Code (+ playwright chromium) |
 | Doc-only (see [BOOTSTRAP.md](docs/BOOTSTRAP.md)) | rust, go |

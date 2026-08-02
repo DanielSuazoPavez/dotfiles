@@ -46,15 +46,6 @@ elif command -v apt-get &> /dev/null; then
 fi
 
 # ============================================================================
-# Headless Detection
-# ============================================================================
-
-HEADLESS=false
-if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
-    HEADLESS=true
-fi
-
-# ============================================================================
 # Helper Functions
 # ============================================================================
 
@@ -384,6 +375,26 @@ install_nerd_fonts() {
     local font_dir="$HOME/.local/share/fonts"
     local fonts_to_install=("JetBrainsMono" "FiraCode")
 
+    # fontconfig is a precondition, not a convenience: without it nothing can
+    # resolve an installed font, so downloading is wasted work.
+    if ! command -v fc-list &> /dev/null; then
+        echo "  ! fontconfig not found; install it to use Nerd Fonts"
+        return 1
+    fi
+
+    # Peer installers early-return on `command -v <tool>`; fonts have no binary,
+    # so presence is an fc-list query. All present = nothing to do.
+    local all_present=true font_name
+    for font_name in "${fonts_to_install[@]}"; do
+        fc-list | grep -qi "$font_name Nerd Font" || all_present=false
+    done
+    # `if` rather than `&& return 0`: as a non-final statement the latter would
+    # abort the whole script under set -e when all_present is false. run_install
+    # suspends set -e for the current caller, but the guard should not depend on it.
+    if [ "$all_present" = true ]; then
+        return 0
+    fi
+
     mkdir -p "$font_dir"
 
     for font_name in "${fonts_to_install[@]}"; do
@@ -415,12 +426,6 @@ install_nerd_fonts() {
 
 echo "Installing dotfiles from $DOTFILES_DIR"
 echo
-
-# Headless notification
-if [ "$HEADLESS" = true ]; then
-    echo "Headless environment detected - GUI tools will be skipped"
-    echo
-fi
 
 # ============================================================================
 # Category Prompts
@@ -467,14 +472,12 @@ if prompt_category "Claude Code (+ playwright)" "y"; then
     INSTALL_CLAUDE=true
 fi
 
-if [ "$HEADLESS" = false ]; then
-    if prompt_category "Ghostty" "y"; then
-        INSTALL_GHOSTTY=true
-    fi
+if prompt_category "Ghostty" "y"; then
+    INSTALL_GHOSTTY=true
+fi
 
-    if prompt_category "Nerd Fonts" "y"; then
-        INSTALL_FONTS=true
-    fi
+if prompt_category "Nerd Fonts" "y"; then
+    INSTALL_FONTS=true
 fi
 
 echo
@@ -506,7 +509,7 @@ if [ "$INSTALL_ZELLIJ" = true ]; then
     run_install install_zellij
 fi
 
-# Ghostty (GUI only)
+# Ghostty
 if [ "$INSTALL_GHOSTTY" = true ]; then
     echo "Installing Ghostty..."
     run_install install_ghostty
@@ -542,10 +545,10 @@ if [ "$INSTALL_CLAUDE" = true ]; then
     run_install install_claude
 fi
 
-# Nerd Fonts (GUI only)
+# Nerd Fonts
 if [ "$INSTALL_FONTS" = true ]; then
     echo "Installing Nerd Fonts..."
-    install_nerd_fonts
+    run_install install_nerd_fonts
 fi
 
 # Symlinks last: every enabled group in one pass, gated by GROUP_FLAGS in

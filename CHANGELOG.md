@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.21] - 2026-07-29
+
+### Removed
+- `install.sh`: `$DISPLAY`/`$WAYLAND_DISPLAY` headless detection, the "Headless environment detected" notice, and the `if [ "$HEADLESS" = false ]` gate around the Ghostty and Nerd Fonts prompts. Both are now unconditional prompts, and `GROUP_FLAGS` in `links.sh` is the sole encoding of group gating. `tests/helpers.sh`'s `expected_dests` no longer needs its `ghostty) continue` skip arm — it derives purely from `LINKS`.
+
+### Changed
+- `install_nerd_fonts` is now shaped like its 14 peers. It opens with a fontconfig precondition (missing `fc-list` reports a platform dead end and returns non-zero into `FAILED_INSTALLS`, rather than downloading fonts nothing can resolve) followed by a door-level idempotence check — an `fc-list` query standing in for the peers' `command -v <tool> && return 0`, since fonts have no binary to probe. It was also the only installer called bare; it now routes through `run_install`, so a failure is collected and reported instead of aborting the run.
+- `tests/helpers.sh`: the harness no longer forces headless via `env -u DISPLAY -u WAYLAND_DISPLAY`. GUI installers are neutralized the same way as every other installer — PATH stubs — with `ghostty`, `fc-list`, `fc-cache`, and `unzip` added. The `fc-list` stub reports both fonts present rather than exiting silently; a bare `exit 0` stub would leave `grep -qi` unmatched and fall through to `curl`.
+- `docs/agent/identity.md`, `README.md`: supported package managers are now described as the only OS detection the repo does. An environment-specific need is an explicit flag, never sniffed from the environment.
+
+### Notes
+- This is a coverage fix as much as a de-duplication. The suite forced headless, so it tested a branch no real install takes — since the move off WSL every install takes the GUI path, which left `install_ghostty`, `install_nerd_fonts`, and the ghostty symlink with zero coverage. `tests/test_install.sh` now asserts ghostty is linked like any other group.
+- Zero network calls, verified rather than assumed: the suite passes under `unshare --map-current-user -n`. The `fc-list` stub was independently confirmed to cause the early return — `install_nerd_fonts` returns 0 without creating `$HOME/.local/share/fonts`, whose `mkdir` precedes `curl`, so the download is unreachable. Note `unshare -rn` does not work for this: `-r` maps the uid to root and `install.sh` refuses to run as root, so it fails for an unrelated reason.
+- Accepted regression: an install over SSH on a display-less machine now prompts for and installs a terminal emulator and fonts. Deliberate — no headless install targets remain. If that changes, the replacement is an explicit `--headless` flag, not restored `$DISPLAY` sniffing.
+- `tests/test_uninstall.sh` case 2 plants a user-owned link at a path we manage. It used ghostty's path on the premise that install never linked it; that premise is now false, so it overwrites the managed ghostty link with `/etc/hostname` instead. The probe has to stay at a managed path — `uninstall.sh` only visits paths named in `LINKS`, so a link elsewhere is never seen and the case would go vacuous. What makes it foreign is the target, not the location.
+- `links.sh` and `tests/test_links.sh` are byte-unchanged. The goal was reached by deleting the competing encodings, not by adding a `GUI_ONLY_GROUPS` array to the file that owns symlinks.
+- Also dropped a latent `set -e` tripwire introduced mid-branch: the new guard's `[ "$all_present" = true ] && return 0` would have aborted the script when false, surviving only because `run_install` suspends `set -e` for its callee. It is an `if` now.
+
 ## [0.1.20] - 2026-07-29
 
 ### Changed

@@ -17,21 +17,15 @@ stub_path
 
 run_install_sh
 install_status=$?
-log=$(cat "$WORK/install.log")
 
 assert_eq "$install_status" "0" "install.sh exits 0"
-
-# If headless forcing failed, the prompt sequence shifted and every assertion
-# below is answering the wrong questions.
-assert_contains "$log" "Headless environment detected" \
-    "run was headless (prompt alignment holds)"
 
 # The answer stream is exact-fit: a short stream does not error, it silently
 # answers yes (prompt_category treats an empty REPLY from EOF as yes). Pin the
 # accepted categories so adding a prompt to install.sh fails here rather than
 # passing green with a misaligned stream.
 assert_eq "$(accepted_categories | tr '\n' ' ')" \
-    "CLI extras Claude Code Neovim Starship Zellij runtimes shell basics zoxide " \
+    "CLI extras Claude Code Ghostty Neovim Nerd Fonts Starship Zellij runtimes shell basics zoxide " \
     "exactly the expected categories ran (answer stream still aligned)"
 
 # Exact set comparison, both directions: a missing link and an unexpected one
@@ -39,8 +33,8 @@ assert_eq "$(accepted_categories | tr '\n' ' ')" \
 diff_out=$(diff <(link_set) <(expected_dests) 2>&1)
 assert_eq "$diff_out" "" "link set matches LINKS exactly"
 
-# Headless means Ghostty is never prompted, so it must never be linked.
-assert_absent "$SCRATCH/.config/ghostty/config" "ghostty not linked when headless"
+# Ghostty is an ordinary group now: prompted and linked like any other.
+assert_link_present "$SCRATCH/.config/ghostty/config" "ghostty linked like any other group"
 
 # Every link must resolve into the real repo, not into the scratch tree.
 bad_target=""

@@ -16,11 +16,8 @@
       ],
       "status": "idea",
       "created_at": "2026-07-23",
-      "updated_at": "2026-07-23",
-      "notes": "Semantic consistency of the mnemonic letter, not just collision-avoidance: a given letter should mean the same verb everywhere (e.g. m=move in zellij, not 'mark' elsewhere). Goal: lower cognitive load. Follow-up from the zellij quick-terminal/mode-alignment branch. Collision checker exists (scripts/check-keybind-collisions.py); this is about meaning, not overlap. Also revisit nvim-vs-zellij/ghostty collisions (nvim maps only apply in-pane; zellij globals shadow them).",
-      "relates_to": [
-        "zellij-config:relates-to"
-      ]
+      "updated_at": "2026-08-02",
+      "notes": "Semantic consistency of the mnemonic letter, not just collision-avoidance: a given letter should mean the same verb everywhere (e.g. m=move in zellij, not 'mark' elsewhere). Goal: lower cognitive load. Follow-up from the zellij quick-terminal/mode-alignment branch. Collision checker exists (scripts/check-keybind-collisions.py); this is about meaning, not overlap. Also revisit nvim-vs-zellij/ghostty collisions (nvim maps only apply in-pane; zellij globals shadow them)."
     },
     {
       "id": "nvim-lazygit",
@@ -59,8 +56,8 @@
       ],
       "status": "idea",
       "created_at": "2026-07-27",
-      "updated_at": "2026-07-28",
-      "notes": "Gap between 'configs symlinked' and 'machine actually ready'. Start as docs/tools.md (tool, why, install command per package manager) rather than install.sh logic - package names differ across zypper/apt/pacman, flatpak-vs-native is a per-machine call, and install.sh assuming a package manager cuts against the minimal-dependencies principle. Promote into the installer later if the list stabilizes. Same shape as nvim-lazygit.\n\nScope now covers CLI tools too, not just GUI/desktop - suggest two sections in docs/tools.md, since the CLI half is natively packaged and scriptable and could plausibly be promoted into install.sh, while GUI stays a per-machine judgment call.\n\nGUI entries: DBeaver (settled - go-to SQL GUI, flatpak io.dbeaver.DBeaverCommunity). S3/cloud storage GUI slot resolved as 'no GUI needed' - S3Drive evaluated and rejected (paywalled multi-file download, and unwilling to hand AWS creds to a freemium client); FileZilla Pro and Cyberduck/duck not pursued since aws-cli covers file moves and rclone covers the rest.\n\nCLI entries (all installed and working as of 2026-07-28): aws-vault v7.2.0 for credentials - NOT packaged for openSUSE, install the binary from GitHub releases; uses AWS_VAULT_BACKEND=file (encrypted store at ~/.awsvault/keys) rather than the KWallet/Secret Service default, so the creds stay isolated from the desktop keyring. rclone for S3 - configure the remote with env_auth=true so it reads from aws-vault instead of storing its own copy, and 'rclone mount --vfs-cache-mode full' makes the bucket a normal directory that any tool (duckdb included) can read. duckdb for parquet - see duckdb-setup.",
+      "updated_at": "2026-08-02",
+      "notes": "Gap between 'configs symlinked' and 'machine actually ready'. Start as docs/tools.md (tool, why, install command per package manager) rather than install.sh logic \u2014 package names differ across zypper/apt/pacman, flatpak-vs-native is a per-machine call, and install.sh assuming a package manager cuts against the minimal-dependencies principle. Promote into the installer later if the list stabilizes. Scope now covers CLI tools too, so suggest two sections: the CLI half is natively packaged and scriptable and could plausibly move into install.sh, while GUI stays a per-machine judgment call. GUI settled on DBeaver (flatpak) and resolved the S3 GUI slot as 'no GUI needed'. CLI half (aws-vault, rclone, duckdb) is installed and working as of 2026-07-28, with per-tool install and credential-isolation gotchas in the brief.\n\nSee: output/claude-toolkit/backlog-notes/new-machine-tools.md",
       "relates_to": [
         "nvim-lazygit:relates-to"
       ]
@@ -131,18 +128,6 @@
       ]
     },
     {
-      "id": "ghostty-gui-only-two-encodings",
-      "priority": "P3",
-      "title": "expected_dests hardcodes ghostty as GUI-only, duplicating GROUP_FLAGS gating",
-      "scope": [
-        "repo"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-29",
-      "updated_at": "2026-07-29",
-      "notes": "tests/helpers.sh's expected_dests has a case arm skipping the ghostty group, because a headless run never prompts for it. Since v0.1.20 the runtime gates the same thing via GROUP_FLAGS in links.sh. Two independent encodings of 'ghostty is special' that agree today.\n\nAdding a second GUI-only group will need a matching case arm in helpers.sh and nothing will remind the author \u2014 the failure surfaces as a confusing link-set diff in test_install.sh rather than a clear message.\n\nDeliberately deferred during feat/links-new-category-flow: fixing it means teaching the test harness about headless-ness, which is a larger change than that task. Not urgent \u2014 ghostty is the only GUI-only group today."
-    },
-    {
       "id": "links-flag-coupling-by-string",
       "priority": "P3",
       "title": "GROUP_FLAGS couples links.sh to install.sh flag names by string",
@@ -154,6 +139,19 @@
       "created_at": "2026-07-29",
       "updated_at": "2026-07-29",
       "notes": "Since v0.1.20, links.sh's GROUP_FLAGS names INSTALL_* variables that live in install.sh, resolved indirectly via ${!flag:-}. Renaming a flag in install.sh produces no error anywhere \u2014 the group just silently stops linking.\n\nMitigation in place: tests/test_links.sh asserts every GROUP_FLAGS flag matches a '^FLAG=false$' line in install.sh's initializer block. That works but is mildly brittle to reformatting of that block (e.g. switching to ': ${INSTALL_X:=false}' or one-lining the declarations would break the grep without any real defect).\n\nWorth revisiting only if the initializer block gets reformatted or the assertion produces a false failure. The alternative is accepting the silent-failure class, or moving to a single declaration site \u2014 but flags are prompt state owned by install.sh and meaningless to uninstall.sh, which sources the same links.sh."
+    },
+    {
+      "id": "headless-install-flag",
+      "priority": "P3",
+      "title": "Restore headless install support via explicit --headless flag",
+      "scope": [
+        "install"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-02",
+      "updated_at": "2026-08-02",
+      "source": "v0.1.21 accepted regression",
+      "notes": "v0.1.21 removed $DISPLAY/$WAYLAND_DISPLAY headless detection, so Ghostty and Nerd Fonts are now unconditional prompts \u2014 an install on a display-less machine (SSH, container, CI) installs a terminal emulator and fonts nothing can render. Accepted deliberately: no headless targets remain since the move off WSL, and the sniffing was a third encoding of group gating competing with GROUP_FLAGS. Revisit when a real headless target reappears; the fix is an explicit --headless flag or INSTALL_GUI=false, never restored environment sniffing (identity.md and README now state that as policy). Note the suite has no headless path anymore, so this costs a second prompt-stream fixture with its own accepted_categories assertion.\n\nSee: output/claude-toolkit/backlog-notes/headless-install-flag.md"
     }
   ]
 }

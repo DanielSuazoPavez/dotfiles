@@ -9,7 +9,7 @@ A bootstrap kit for a fresh Linux/WSL machine. Clone, run `./install.sh`, and th
 - **Clone-and-run** — a fresh machine reaches working state from one command. `install.sh` installs the roster: core CLI (starship, zellij, neovim, zoxide, ripgrep, broot), GUI (ghostty, Nerd Fonts), runtimes (uv, node, docker), and optionally Claude Code. rust/go stay doc-only.
 - **Symlinks, not copies** — configs live here and link out; editing `~/.bashrc` edits the repo. No generated or templated configs.
 - **Idempotent by construction** — re-running `install.sh` after a pull is the update mechanism; there is no separate "update" path.
-- **Linux/WSL only** — no macOS branches, no Windows-native paths. Supported package managers: zypper (Tumbleweed) and apt (Ubuntu/WSL); no other OS-detection scaffolding beyond headless/GUI.
+- **Linux/WSL only** — no macOS branches, no Windows-native paths. Supported package managers: zypper (Tumbleweed) and apt (Ubuntu/WSL) — that is the only OS detection the repo does. An environment-specific need is an explicit flag, never sniffed from the environment: `$DISPLAY`-based headless detection was removed for exactly this reason.
 - **One tool, one config, one symlink** — adding a tool means: config file in repo, install line in `install.sh`, symlink registration in `links.sh`, row in README. Nothing more.
 
 ## Scope Boundary
