@@ -28,9 +28,10 @@ from the neo-tree sidebar or an empty buffer they're genuinely absent.
 
 ## Finding things — Telescope
 
-Fuzzy pickers. Inside any picker: type to filter · `Ctrl-n`/`Ctrl-p` or arrows
+Fuzzy pickers. Inside any picker: type to filter · `Ctrl-j`/`Ctrl-k` or arrows
 to move · `Enter` open · `Ctrl-x` horizontal split · `Ctrl-v` vertical split ·
-`Ctrl-t` new tab · `Esc`/`Ctrl-c` close.
+`Ctrl-y` new tab · `Ctrl-a` send all results to quickfix · `Esc`/`Ctrl-c` close.
+`Ctrl-/` lists every key for the current picker.
 
 | Key | Action |
 |---|---|
@@ -44,7 +45,11 @@ to move · `Enter` open · `Ctrl-x` horizontal split · `Ctrl-v` vertical split 
 | `<leader>fs` | Document symbols (needs LSP) |
 | `<leader>fd` | Diagnostics — all errors/warnings (needs LSP) |
 
-> Note: `Ctrl-p` is **not** used — zellij owns it (pane mode).
+> Note: zellij owns `Ctrl-n`, `Ctrl-p`, `Ctrl-t` and `Ctrl-q` (resize, pane and
+> tab modes, and Quit) — they never reach nvim. Telescope's defaults for those
+> are remapped: navigation is `Ctrl-j`/`Ctrl-k`, new-tab is `Ctrl-y`, and
+> send-to-quickfix is `Ctrl-a` (`Alt-a` for selected only). Upstream telescope
+> docs will show the originals.
 
 **ui-select**: telescope also hijacks Neovim's generic selection menus, so
 prompts like code actions (`<leader>ca`) render as a nice telescope dropdown

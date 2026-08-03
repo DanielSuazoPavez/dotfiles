@@ -48,6 +48,22 @@ return {
             return true
           end,
         },
+        -- Zellij intercepts Ctrl-n/p/t/q before nvim ever sees them (resize,
+        -- pane and tab modes, and Quit), so telescope's defaults for those are
+        -- dead keys in this setup. Zellij owns the bind; telescope moves.
+        -- Ctrl-n/Ctrl-p need no replacement: Ctrl-j/Ctrl-k already navigate.
+        mappings = {
+          i = {
+            ["<C-y>"] = "select_tab",              -- was <C-t>
+            ["<C-a>"] = "send_to_qflist",          -- was <C-q>: open the full
+            ["<M-a>"] = "send_selected_to_qflist", -- list, then :cnext
+          },
+          n = {
+            ["<C-y>"] = "select_tab",
+            ["<C-a>"] = "send_to_qflist",
+            ["<M-a>"] = "send_selected_to_qflist",
+          },
+        },
       },
       extensions = {
         ["ui-select"] = {

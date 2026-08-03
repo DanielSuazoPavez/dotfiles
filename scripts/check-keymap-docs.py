@@ -52,9 +52,11 @@ NVIM_OWNED = {
     "keys.lua",
 }
 
-# Keys the doc documents but no `vim.keymap.set` call creates: neo-tree window
-# mappings live in its setup table, and cmp's are in its mapping preset.
-# Listing them here keeps them from being reported as stale forever.
+# Keys the doc documents but no `vim.keymap.set` call creates. Plugins that
+# take their mappings as setup-table config (neo-tree's window.mappings,
+# cmp's mapping preset, telescope's defaults.mappings for in-picker keys) are
+# invisible to the vim.keymap.set hook, so drift in those is NOT caught -- they
+# are listed here only to keep them from being reported stale forever.
 NVIM_NON_KEYMAP_SET = {
     "Y", "gy",              # neo-tree window mappings (its setup table)
     "Ctrl-Space", "Enter",  # nvim-cmp mapping preset

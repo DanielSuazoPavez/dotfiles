@@ -27,15 +27,22 @@ space. `Esc` first if you want normal-mode keys.
 
 | Key | Effect |
 |---|---|
-| `Ctrl-n` / `Ctrl-p` | next / previous result |
+| `Ctrl-j` / `Ctrl-k` | next / previous result |
 | `Enter` | open |
-| `Ctrl-x` / `Ctrl-v` / `Ctrl-t` | open in split / vsplit / tab |
+| `Ctrl-x` / `Ctrl-v` | open in split / vsplit |
+| `Ctrl-y` | open in a new tab |
 | `Ctrl-u` / `Ctrl-d` | scroll the **preview** — read without opening |
 | `Ctrl-/` | show all keys for this picker |
 | `Esc` | normal mode inside the picker (`j`/`k`, `q` quits) |
 | `Tab` / `Shift-Tab` | multi-select |
-| `Ctrl-q` | send **all** results to quickfix |
-| `Alt-q` | send **selected** to quickfix |
+| `Ctrl-a` | send **all** results to quickfix |
+| `Alt-a` | send **selected** to quickfix |
+
+> **Zellij owns `Ctrl-n`, `Ctrl-p`, `Ctrl-t` and `Ctrl-q`** (resize, pane and
+> tab modes, and Quit) — they never reach nvim, so telescope's defaults for
+> those are dead keys here. Navigation uses `Ctrl-j`/`Ctrl-k`; new-tab and
+> quickfix are remapped to `Ctrl-y` and `Ctrl-a`. Any telescope documentation
+> you read online will list the defaults.
 
 Quickfix follow-up: `:cnext` / `:cprev` walk hits, `:copen` shows the list.
 
@@ -80,7 +87,7 @@ Three to five keys a week; ignore the rest. That restraint is the method.
 | 2 | In-file movement | `f<char>`, `;`, `%`, `*` |
 | 3 | Text objects | `ciw`, `ci"`, `cib`, `dap` |
 | 4 | Telescope beyond ff/fg | `<leader>fr`, `<leader>fo`, `<leader>fb` |
-| 5 | Telescope → quickfix | `Ctrl-q`, `:cnext`, `:cprev`, `:copen` |
+| 5 | Telescope → quickfix | `Ctrl-a`, `:cnext`, `:cprev`, `:copen` |
 | 6 | Jumping | `Ctrl-o`, `Ctrl-i`, `gd`, `gr` |
 | 7 | Git in-buffer | `]c`, `[c`, `<leader>hp`, `<leader>hb` |
 | 8 | Splits & buffers | `Ctrl-w v`, `Ctrl-w s`, `Tab`, `<leader>bd` |
@@ -94,7 +101,7 @@ Against this repo. Each under a minute.
 
 1. **Resume** — `<leader>fg` for `keymap`, open a result, `<leader>fr`. Query
    and position come back; open the next hit.
-2. **Quickfix sweep** — `<leader>fg` for `vim.keymap.set`, `Ctrl-q`, then
+2. **Quickfix sweep** — `<leader>fg` for `vim.keymap.set`, `Ctrl-a`, then
    `:cnext` through every match.
 3. **Preview scroll** — `<leader>ff`, type `telescope`, `Ctrl-u`/`Ctrl-d` to
    read the preview without opening. Decide, then `Enter`.
