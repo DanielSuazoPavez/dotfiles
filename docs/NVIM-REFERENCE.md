@@ -5,14 +5,33 @@ Config lives in `.config/nvim/` (`vim-options.lua` + `lua/plugins/*.lua`),
 managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
 > Tip: forget a binding? Press `<leader>` (or any prefix like `<leader>f`) and
-> **pause** — which-key pops up the full list. Or `<leader>fk` for a searchable
-> keymap picker.
+> **pause** — which-key pops up the full list. `<leader>?` shows every keymap,
+> `<leader>fk` searches them by description.
+
+Still learning the setup? `docs/nvim-learning.md` has the active rotation,
+in-picker keys, and drills. `scripts/check-keymap-docs.py` verifies this file
+still matches what the config binds.
+
+## Discovery — which-key
+
+Press a prefix and pause; which-key lists what can follow it. Group labels are
+set for `<leader>f` (find), `h` (git hunk), `b` (buffer), `y` (yank path) and
+`c` (code). Built-in presets are on too, so `g`, `z`, `"` and `'` list their
+options — that covers vim itself, not just this config.
+
+| Key | Action |
+|---|---|
+| `<leader>?` | Popup of every keymap, grouped |
+
+Buffer-local keys (LSP, gitsigns) only appear where their plugin has attached —
+from the neo-tree sidebar or an empty buffer they're genuinely absent.
 
 ## Finding things — Telescope
 
-Fuzzy pickers. Inside any picker: type to filter · `Ctrl-n`/`Ctrl-p` or arrows
+Fuzzy pickers. Inside any picker: type to filter · `Ctrl-j`/`Ctrl-k` or arrows
 to move · `Enter` open · `Ctrl-x` horizontal split · `Ctrl-v` vertical split ·
-`Ctrl-t` new tab · `Esc`/`Ctrl-c` close.
+`Ctrl-y` new tab · `Ctrl-a` send all results to quickfix · `Esc`/`Ctrl-c` close.
+`Ctrl-/` lists every key for the current picker.
 
 | Key | Action |
 |---|---|
@@ -26,7 +45,11 @@ to move · `Enter` open · `Ctrl-x` horizontal split · `Ctrl-v` vertical split 
 | `<leader>fs` | Document symbols (needs LSP) |
 | `<leader>fd` | Diagnostics — all errors/warnings (needs LSP) |
 
-> Note: `Ctrl-p` is **not** used — zellij owns it (pane mode).
+> Note: zellij owns `Ctrl-n`, `Ctrl-p`, `Ctrl-t` and `Ctrl-q` (resize, pane and
+> tab modes, and Quit) — they never reach nvim. Telescope's defaults for those
+> are remapped: navigation is `Ctrl-j`/`Ctrl-k`, new-tab is `Ctrl-y`, and
+> send-to-quickfix is `Ctrl-a` (`Alt-a` for selected only). Upstream telescope
+> docs will show the originals.
 
 **ui-select**: telescope also hijacks Neovim's generic selection menus, so
 prompts like code actions (`<leader>ca`) render as a nice telescope dropdown

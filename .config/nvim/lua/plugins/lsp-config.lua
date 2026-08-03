@@ -57,9 +57,11 @@ return {
       vim.lsp.enable('yamlls')
       vim.lsp.enable('jsonls')
 
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-      vim.keymap.set({ 'n' }, '<leader>ca', vim.lsp.buf.code_action, {})
+      -- descs are load-bearing: they're what which-key and the <leader>fk
+      -- keymaps picker display. An undescribed map is an invisible one.
+      vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = "Hover docs" })
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = "Go to definition" })
+      vim.keymap.set({ 'n' }, '<leader>ca', vim.lsp.buf.code_action, { desc = "Code action" })
 
       -- Format on save
       vim.api.nvim_create_autocmd('BufWritePre', {

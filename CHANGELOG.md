@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.23] - 2026-08-02
+
+### Added
+- nvim: which-key group labels (`<leader>f` find, `h` git hunk, `b` buffer, `y` yank path, `c` code), a 300ms popup delay, and the built-in presets (`g`, `z`, registers, marks) so discovery covers vim itself rather than only this config's leader maps. `<leader>?` opens the full keymap view.
+- `scripts/check-keymap-docs.py`: reports drift between the keys the nvim config binds and the keys `docs/NVIM-REFERENCE.md` documents — `MISSING` (bound, undocumented) and `STALE` (documented, unbound). `--self-test` covers the doc's key notations without launching nvim.
+- `docs/nvim-learning.md`: in-picker behavior, motions, the operator + text-object grammar, a weekly rotation and drills — the material a keymap table can't carry.
+
+### Changed
+- nvim: telescope uses the `flex` layout strategy, flipping to a stacked vertical layout below 130 columns. The stock `preview_cutoff` of 120 crushes or drops the preview in a pane narrower than that, and a quarter-width pane on a wide monitor lands near 95 columns. Preview lines wrap instead of truncating; the float takes 98% of the pane.
+- nvim: `desc` added to the LSP, gitsigns and split-navigation maps. Descriptions are load-bearing beyond documentation — which-key and the `<leader>fk` picker both render them, so an undescribed map is an invisible one.
+
+### Fixed
+- nvim: telescope's `<C-n>`/`<C-p>`/`<C-t>`/`<C-q>` never reached nvim. Zellij binds them in `shared_except` blocks, which apply in normal mode (resize, pane and tab modes, and Quit). Navigation moves to `<C-j>`/`<C-k>`, new-tab to `<C-y>`, send-to-quickfix to `<C-a>` (`<M-a>` for selected only). `<C-q>` was the costly one: it is the entry point to the quickfix sweep.
+
+### Notes
+- The drift check does not rewrite the reference doc. Its hand-written descriptions are richer than the config's `desc` strings ("Find files (incl. hidden, excludes `.git`)" vs "Find files") and worth keeping; what rots is the key *set*, so that is what is compared.
+- Keymap attribution is by definition site, captured by wrapping `vim.keymap.set` before `init.lua` loads. `debug.getinfo` on the callback reports where the *handler* was written, so `set("n", "gr", builtin.lsp_references)` would be blamed on telescope's `actions.lua` rather than the file that bound the key.
+- The dump opens a real file and fires `User VeryLazy` by hand. Buffer-local maps (LSP, gitsigns) do not exist in a bare instance, and lazy.nvim triggers `VeryLazy` off `UIEnter`, which never fires under `--headless` — which-key and its `<leader>?` stayed unloaded and looked unbound. That gap was real: `<leader>?` was undocumented until the check caught it.
+- Plugins taking mappings as setup config (neo-tree's `window.mappings`, cmp's preset, telescope's `defaults.mappings`) are invisible to the check — see `keymap-check-setup-tables`.
+- `docs/nvim-learning.md` is deliberately excluded from the check: most of its keys are nvim built-ins this config never binds, so every one would report `STALE`.
+
 ## [0.1.22] - 2026-08-02
 
 ### Added

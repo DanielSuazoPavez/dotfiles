@@ -152,6 +152,30 @@
       "updated_at": "2026-08-02",
       "source": "v0.1.21 accepted regression",
       "notes": "v0.1.21 removed $DISPLAY/$WAYLAND_DISPLAY headless detection, so Ghostty and Nerd Fonts are now unconditional prompts \u2014 an install on a display-less machine (SSH, container, CI) installs a terminal emulator and fonts nothing can render. Accepted deliberately: no headless targets remain since the move off WSL, and the sniffing was a third encoding of group gating competing with GROUP_FLAGS. Revisit when a real headless target reappears; the fix is an explicit --headless flag or INSTALL_GUI=false, never restored environment sniffing (identity.md and README now state that as policy). Note the suite has no headless path anymore, so this costs a second prompt-stream fixture with its own accepted_categories assertion.\n\nSee: output/claude-toolkit/backlog-notes/headless-install-flag.md"
+    },
+    {
+      "id": "nvim-zellij-collision-check",
+      "priority": "P2",
+      "title": "Extend keybind collision checker to nvim vs zellij",
+      "scope": [
+        "config"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-03",
+      "updated_at": "2026-08-03",
+      "notes": "check-keybind-collisions.py covers ghostty<->zellij only. Zellij's shared_except blocks bind Ctrl-n/p/t/q in normal mode, so they never reach nvim -- this shadowed four telescope picker defaults (found by hand, not by tooling: remapped to Ctrl-j/k, Ctrl-y, Ctrl-a in v0.1.23). A zellij extractor parsing shared_except/normal blocks would catch the class. Note in-picker mappings live in telescope's defaults.mappings, not vim.keymap.set, so the nvim side needs setup-table parsing, not just the keymap dump used by check-keymap-docs.py."
+    },
+    {
+      "id": "keymap-check-setup-tables",
+      "priority": "P3",
+      "title": "check-keymap-docs.py misses plugin setup-table mappings",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-03",
+      "updated_at": "2026-08-03",
+      "notes": "The drift check hooks vim.keymap.set, so it only sees keys bound that way. Plugins taking mappings as setup config are invisible: neo-tree's window.mappings (Y/gy), nvim-cmp's mapping preset, telescope's defaults.mappings (in-picker keys). Those are currently listed in NVIM_NON_KEYMAP_SET purely to suppress false STALE reports -- drift in them is not detected. Fix would be per-plugin setup-table introspection after load, or reading the resolved config from each plugin's module."
     }
   ]
 }
