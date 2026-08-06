@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-08-05
+
+### Fixed
+- `.claude/settings.json`: the four grouped guard hooks pointed at `.claude/hooks/*.sh`, but upstream moved them to `.claude/hooks/dispatchers/`. `grouped-bash-guard`, `grouped-edit-guard`, `grouped-write-guard`, and `grouped-posttooluse-bash-scan` were all resolving to missing files and running as silent no-ops. The failure is invisible from the outside — a guard that never fires looks identical to a guard with nothing to complain about.
+- `.claude/settings.json`: `Bash(claude-toolkit:*)` in `permissions.allow` was broad enough to swallow `claude-toolkit sync`, which the template deliberately gates behind `ask`. Replaced with the seven granular subcommand allows (`backlog`, `docs`, `eval`, `lessons`, `send`, `version`, `version-main`) and moved `sync` to `ask`.
+
+### Added
+- `.claude/settings.json`: `CLAUDE_TOOLKIT_PROFILE` env var and `Bash(git restore:*)` permission, both from the toolkit template.
+- `.gitignore`: `output/plans/`.
+
+### Notes
+- `PROJECT_ROOT` is set in the gitignored `.claude/settings.local.json`, not the tracked `settings.json`. Claude Code passes `env` values through literally, so the template's `"$(pwd)"` never expands, and a resolved path in a tracked file would be wrong on every other clone of a repo whose whole purpose is cloning. Consequence: `setup-toolkit`'s check 8 will keep reporting `MISSING_ENV: PROJECT_ROOT` — it only reads `settings.json`.
+- Declined from the toolkit template: `.claude/mcp.json` (both servers ship `disabled: true`) and `.github/PULL_REQUEST_TEMPLATE.md`.
+
 ## [0.2.0] - 2026-08-05
 
 ### Added
