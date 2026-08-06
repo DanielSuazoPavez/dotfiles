@@ -442,6 +442,7 @@ INSTALL_RIPGREP=false
 INSTALL_BROOT=false
 INSTALL_RUNTIMES=false
 INSTALL_CLAUDE=false
+INSTALL_KDE=false
 
 if prompt_category "Starship prompt" "y"; then
     INSTALL_STARSHIP=true
@@ -478,6 +479,13 @@ fi
 
 if prompt_category "Nerd Fonts" "y"; then
     INSTALL_FONTS=true
+fi
+
+# Defaults to no: the only category that is desktop-only and writes system
+# state (localectl needs sudo). A headless box, WSL, or GNOME should not get
+# it by accepting every default.
+if prompt_category "KDE settings (dark theme, keyboard layout)" "n"; then
+    INSTALL_KDE=true
 fi
 
 echo
@@ -549,6 +557,15 @@ fi
 if [ "$INSTALL_FONTS" = true ]; then
     echo "Installing Nerd Fonts..."
     run_install install_nerd_fonts
+fi
+
+# KDE settings. Delegated to scripts/kde-setup.sh rather than inlined as an
+# install_* function: it configures a desktop rather than installing a tool,
+# and it stays runnable on its own to re-apply the theme after a Plasma reset.
+if [ "$INSTALL_KDE" = true ]; then
+    echo "Installing KDE settings..."
+    install_kde_settings() { "$DOTFILES_DIR/scripts/kde-setup.sh"; }
+    run_install install_kde_settings
 fi
 
 # Symlinks last: every enabled group in one pass, gated by GROUP_FLAGS in
