@@ -43,6 +43,7 @@ dotfiles-backup-*/
 !.claude/memories/*-project-*
 .claude-toolkit-version
 output/claude-toolkit/
+output/plans/
 !templates/claude-project/.claude
 !templates/claude-project/.claude/**
 

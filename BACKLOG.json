@@ -191,6 +191,19 @@
       "relates_to": [
         "machine-bootstrap:relates-to"
       ]
+    },
+    {
+      "id": "toolkit-project-root-drift-noise",
+      "priority": "P3",
+      "title": "setup-toolkit check 8 always flags PROJECT_ROOT as missing",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-06",
+      "updated_at": "2026-08-06",
+      "source": "wrap-up chore/claude-toolkit-update, 2026-08-05",
+      "notes": "PROJECT_ROOT is set in the gitignored .claude/settings.local.json because Claude Code passes env values through literally (the template's \"$(pwd)\" never expands) and a resolved path in the tracked settings.json would be wrong on every other clone. setup-toolkit-diagnose.py's check 8 only reads settings.json, so it reports MISSING_ENV: PROJECT_ROOT on every run. Recurring false positive that trains us to skim check 8. Fix is upstream in claude-toolkit: have the drift check merge settings.local.json env before diffing against the template, or let a project mark an env key as local-only."
     }
   ]
 }
