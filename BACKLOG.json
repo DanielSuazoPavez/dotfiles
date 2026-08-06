@@ -72,8 +72,8 @@
       ],
       "status": "idea",
       "created_at": "2026-07-27",
-      "updated_at": "2026-07-27",
-      "notes": "Two repos along a privacy line, dependency points one way only: PUBLIC dotfiles (configs, symlinks, install.sh - self-contained, useful to a stranger, never learns bootstrap exists) <- PRIVATE bootstrap (clones dotfiles, runs ./install.sh, then packages + private repos + per-repo setup). Why this works: keeps dotfiles genuinely publishable rather than publishable-with-holes, and confines the non-idempotent cloning/setup-script mess to the private repo so install.sh keeps its symlink-only idempotency. Precedent set: bootstrap orchestrates dotfiles via its existing clean ./install.sh entrypoint - suggests other repos (claude-toolkit, claude-sessions, schema-smith) should expose the same, rather than bootstrap knowing their internals. Publishability checked 2026-07-27: no work identifiers, hardcoded home paths, or credential-shaped strings in tracked files; .gitconfig NOT reviewed (secrets-guard hook) - check it for email/signing key/includeIf before publishing. OPEN: does new-machine-tools go public (generic GUI tools) or private (if it accumulates work-specific tooling)?",
+      "updated_at": "2026-08-06",
+      "notes": "Two repos along a privacy line, dependency points one way only: PUBLIC dotfiles (configs, symlinks, install.sh - self-contained, useful to a stranger, never learns bootstrap exists) <- PRIVATE bootstrap (clones dotfiles, runs ./install.sh, then packages + private repos + per-repo setup). Keeps dotfiles genuinely publishable rather than publishable-with-holes, and confines the non-idempotent cloning/setup mess to the private repo so install.sh keeps its symlink-only idempotency. Confirmed as the right home for machine-provisioning concerns (incl. gaming) by the 2026-08-05 Nitro build.\n\nSee: output/claude-toolkit/backlog-notes/machine-bootstrap.md",
       "relates_to": [
         "new-machine-tools:relates-to"
       ]
@@ -176,6 +176,21 @@
       "created_at": "2026-08-03",
       "updated_at": "2026-08-03",
       "notes": "The drift check hooks vim.keymap.set, so it only sees keys bound that way. Plugins taking mappings as setup config are invisible: neo-tree's window.mappings (Y/gy), nvim-cmp's mapping preset, telescope's defaults.mappings (in-picker keys). Those are currently listed in NVIM_NON_KEYMAP_SET purely to suppress false STALE reports -- drift in them is not detected. Fix would be per-plugin setup-table introspection after load, or reading the resolved config from each plugin's module."
+    },
+    {
+      "id": "dual-boot-preflight-check",
+      "priority": "P3",
+      "title": "Pre-flight hardware check before dual-boot installs",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-06",
+      "updated_at": "2026-08-06",
+      "notes": "DUAL-BOOT-TUMBLEWEED.md now has a VMD/RST pre-check (Phase -1), but it was written after losing an evening to it on the Nitro \u2014 the guide had no 'inspect the machine before you start' step at all. Worth a short scripted or checklist pre-flight covering the things that silently break an install: storage controller mode (VMD/RST), firmware boot mode, GPU vendor and whether the distro's kernel has a matching driver build, and free space. Script-first applies: this is deterministic inventory, and the same commands ran ad-hoc three times tonight. Blocked on nothing; low priority until a third machine is on the horizon.",
+      "relates_to": [
+        "machine-bootstrap:relates-to"
+      ]
     }
   ]
 }
