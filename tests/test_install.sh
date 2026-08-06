@@ -25,7 +25,7 @@ assert_eq "$install_status" "0" "install.sh exits 0"
 # accepted categories so adding a prompt to install.sh fails here rather than
 # passing green with a misaligned stream.
 assert_eq "$(accepted_categories | tr '\n' ' ')" \
-    "CLI extras Claude Code Ghostty Neovim Nerd Fonts Starship Zellij runtimes shell basics zoxide " \
+    "CLI extras Claude Code Ghostty KDE settings Neovim Nerd Fonts Starship Zellij runtimes shell basics zoxide " \
     "exactly the expected categories ran (answer stream still aligned)"
 
 # Exact set comparison, both directions: a missing link and an unexpected one

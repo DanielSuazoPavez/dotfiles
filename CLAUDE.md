@@ -45,6 +45,17 @@ dotfiles/
 2. Register the symlink in `links.sh` — one `group:src:dest` line in `LINKS` covers linking, verification, and uninstall. A brand-new category also needs one `GROUP_FLAGS` entry naming the `INSTALL_*` flag that gates it (see that array's comment); both edits are in `links.sh`. Do not add `link_file`, `link_group`, or `verify_group` calls to `install.sh`.
 3. Document in README if it's a new tool
 
+**Exception — app-owned configs.** Symlink only files *we* own. Where the app
+rewrites its own config (KDE/Plasma's `kdeglobals`, which regenerates on every
+settings change), a symlink makes the app write back into this repo. Apply those
+with an idempotent script instead — see `scripts/kde-setup.sh`, dispatched from
+`install.sh` behind an `INSTALL_*` prompt rather than registered in `links.sh`.
+
+**Adding an install.sh prompt** also means updating two test fixtures in
+lockstep: the answer stream in `tests/helpers.sh` (one char per prompt, no
+newlines — `read -n 1` would consume them as answers) and the pinned category
+list in `tests/test_install.sh`.
+
 ## Tool Versions
 
 **Track latest by default.** New tools fetch whatever upstream ships now — unpinned

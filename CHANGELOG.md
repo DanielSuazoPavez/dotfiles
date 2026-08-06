@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-08-06
+
+### Added
+- `scripts/kde-setup.sh` — applies KDE Plasma desktop settings: BreezeDark color scheme, Breeze widget style, breeze icons, and the `us`/`altgr-intl` keyboard layout. Dispatched from `install.sh` behind a new "KDE settings" prompt, and runnable standalone to re-apply after a Plasma reset. Idempotent; self-skips on WSL and on any machine without `kwriteconfig6`.
+- `install.sh`: `INSTALL_KDE` category. Defaults to **N**, unlike every other prompt — it is the only category that is desktop-only and writes system state (`localectl` needs sudo), so a headless box, a WSL install, or a GNOME desktop should not get it by accepting every default.
+
+### Fixed
+- `tests/helpers.sh`: the install answer stream was newline-separated (`$'y\ny\n…'`), but `prompt_category` reads with `read -n 1`. Each separator newline was consumed as the *next* prompt's answer, leaving an empty `REPLY` — so every answer landed one prompt late. The `[Y/n]` defaults masked it completely, since `prompt_category` treats empty as yes. Adding the first `[y/N]` prompt exposed it: empty means *no* there, and the KDE category silently never ran. Stream is now one character per prompt with no separators.
+
+### Changed
+- Keyboard layout is no longer documentation-only. `docs/BOOTSTRAP.md` section 6 becomes "Desktop settings (native KDE)" and points at the script; the manual `localectl` command stays for non-KDE desktops, where the script skips itself.
+
+### Notes
+- These settings are applied as commands, not symlinks, and `CLAUDE.md` records the rule: symlink only files *we* own. Plasma regenerates `kdeglobals` on every settings change — it holds the fully-expanded `[Colors:*]` blocks derived from the active scheme plus a `ColorSchemeHash` — so a symlink there would have Plasma writing back into this repo. `kxkbrc` alone would symlink cleanly, but splitting the two across mechanisms is worse than one script covering both.
+- `try_sudo` and `apply_colorscheme` carry `SC2329` disables. Both are invoked through `run_step "$@"`, which shellcheck cannot trace; the pre-commit hook stashes unstaged files and lints each script in isolation, so it flags them where `make lint` does not.
+- The live run on this machine applied the theme and `kxkbrc` but could not complete `localectl set-x11-keymap` — sudo had no TTY to read a password from. That is the intended failure path: the step reports itself, prints the manual command, and the script continues rather than aborting.
+
 ## [0.2.1] - 2026-08-05
 
 ### Fixed

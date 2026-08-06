@@ -131,17 +131,21 @@ stub_path() {
 #                       would otherwise write THROUGH it into the tracked file
 #                       even with HOME redirected
 # Answers: starship, neovim, zellij, zoxide, cli-extras, runtimes, claude,
-# ghostty, fonts.
+# ghostty, fonts, kde. One character per prompt, NO newlines between them —
+# prompt_category uses `read -n 1`, so a separator newline would be consumed as
+# the next prompt's answer (an empty REPLY). That reads as "yes" at a [Y/n]
+# prompt, which is why a newline-separated stream appeared to work: the answers
+# were landing on the wrong prompts and the y-defaults masked it. A [y/N] prompt
+# takes empty as "no" and exposes the misalignment.
 #
 # The answer stream is EXACT-FIT and must be extended in lockstep if a prompt
 # is added to install.sh. It cannot self-detect a mismatch: on EOF `read`
-# returns non-zero but leaves REPLY empty, and prompt_category treats empty as
-# "yes" for every y-default prompt. A short stream therefore answers yes to
-# everything remaining instead of failing. The accepted_categories assertion in
-# test_install.sh is the only guard against that.
+# returns non-zero but leaves REPLY empty, so a short stream answers each
+# remaining prompt with its default instead of failing. The accepted_categories
+# assertion in test_install.sh is the only guard against that.
 run_install_sh() {
     env PATH="$STUB:$PATH" HOME="$SCRATCH" GIT_CONFIG_GLOBAL="$WORK/gitconfig" \
-        "$REPO_ROOT/install.sh" <<< $'y\ny\ny\ny\ny\ny\ny\ny\ny\n' \
+        "$REPO_ROOT/install.sh" <<< $'yyyyyyyyyy\n' \
         > "$WORK/install.log" 2>&1
 }
 
