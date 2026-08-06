@@ -204,6 +204,20 @@
       "updated_at": "2026-08-06",
       "source": "wrap-up chore/claude-toolkit-update, 2026-08-05",
       "notes": "PROJECT_ROOT is set in the gitignored .claude/settings.local.json because Claude Code passes env values through literally (the template's \"$(pwd)\" never expands) and a resolved path in the tracked settings.json would be wrong on every other clone. setup-toolkit-diagnose.py's check 8 only reads settings.json, so it reports MISSING_ENV: PROJECT_ROOT on every run. Recurring false positive that trains us to skim check 8. Fix is upstream in claude-toolkit: have the drift check merge settings.local.json env before diffing against the template, or let a project mark an env key as local-only."
+    },
+    {
+      "id": "precommit-lint-isolation-divergence",
+      "priority": "P3",
+      "title": "make lint and the pre-commit hook disagree on shellcheck scope",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-06",
+      "updated_at": "2026-08-06",
+      "branch": "feat/kde-desktop-settings",
+      "source": "surfaced while adding scripts/kde-setup.sh",
+      "notes": "`make lint` runs pre-commit over all files at once, so shellcheck sees the whole repo and can resolve cross-file usage. The commit-time hook stashes unstaged files first, so it lints each script in isolation and raises SC2329 (\"function never invoked\") for functions called indirectly \u2014 e.g. via `run_step \\\"$@\\\"`. Consequence: `make lint` can pass green and the commit still fail, which is a confusing loop right when you are trying to commit. kde-setup.sh works around it with two targeted SC2329 disables. Options: add SC2329 to a shellcheck config so both paths agree, or make `make lint` mirror the hook's isolation. Low priority \u2014 the workaround is one comment line \u2014 but the divergence will bite again on the next script with indirect dispatch."
     }
   ]
 }

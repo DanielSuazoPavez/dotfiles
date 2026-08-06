@@ -30,6 +30,7 @@ inline where root is needed.
 | Core GUI | ghostty, Nerd Fonts (JetBrainsMono + FiraCode) |
 | Runtimes (prompt, default Y) | uv, node, docker |
 | Optional (prompt, default Y) | Claude Code (+ playwright chromium) |
+| Desktop (prompt, default N) | KDE settings: dark theme, us/altgr-intl keyboard |
 | Doc-only (see [BOOTSTRAP.md](docs/BOOTSTRAP.md)) | rust, go |
 
 ## What's Included
@@ -42,6 +43,7 @@ inline where root is needed.
 - **Editor**: Neovim (lazy.nvim, LSP, completion) — [keybind reference](docs/NVIM-REFERENCE.md)
 - **File navigator**: broot (`br` cd's your shell) — [reference](docs/BROOT-REFERENCE.md)
 - **Data CLI**: duckdb (csv/json/parquet/xlsx from the shell) — [reference](docs/DUCKDB-REFERENCE.md)
+- **Desktop (KDE)**: dark theme + keyboard layout via `scripts/kde-setup.sh` — [setup](docs/BOOTSTRAP.md)
 
 ## Related Projects
 

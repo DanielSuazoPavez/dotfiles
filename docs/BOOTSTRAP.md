@@ -80,25 +80,43 @@ side (e.g. JetBrainsMono Nerd Font from <https://www.nerdfonts.com/font-download
 and select it in your terminal's settings. The `install.sh` Nerd Fonts step
 targets Linux (`~/.local/share/fonts`) and only matters for native Linux GUIs.
 
-## 6. Keyboard layout (native desktop)
+## 6. Desktop settings (native KDE)
 
-Only relevant on a **native Linux desktop** (KDE/GNOME on real hardware), not
-WSL. If the physical keyboard is Spanish/Latin-American but you type in English,
-use the US layout with the **AltGr international variant**: plain `'` and `"`
-type instantly (no dead-key wait), and accents move onto AltGr —
+Only relevant on a **native Linux desktop**, not WSL. On KDE Plasma these are
+applied by `install.sh` — accept the "KDE settings" prompt, or run
+`./scripts/kde-setup.sh` directly to re-apply after a Plasma reset. It is
+idempotent and no-ops on WSL or a non-Plasma desktop.
+
+It sets two things:
+
+**Dark theme** — BreezeDark color scheme, Breeze widget style, breeze icons.
+
+**Keyboard layout** — US layout with the **AltGr international variant**. If the
+physical keyboard is Spanish/Latin-American but you type in English, this gives
+plain `'` and `"` instantly (no dead-key wait), with accents on AltGr —
 `AltGr+'` then a vowel → `á`, `AltGr+n` → `ñ`, `AltGr+.` → `·`.
-
-```bash
-# Test live (resets on logout):
-setxkbmap us -variant altgr-intl
-
-# Persist across reboots (systemd/X11; KDE reads this too):
-sudo localectl set-x11-keymap us pc105 altgr-intl
-```
 
 The plain `us(intl)` variant makes `'`/`"` **dead keys** (they wait for the next
 keypress to compose) — a common surprise on a fresh install. `altgr-intl` avoids
 it while keeping the accents a chord away.
+
+Log out and back in for the changes to take effect. To test a layout live
+without persisting it (`setxkbmap` resets on logout):
+
+```bash
+setxkbmap us -variant altgr-intl
+```
+
+On a **non-KDE** desktop the script skips itself; set the layout system-wide
+with the command it would have run:
+
+```bash
+sudo localectl set-x11-keymap us pc105 altgr-intl
+```
+
+These settings are applied as commands rather than symlinked configs: Plasma
+owns and rewrites `kdeglobals` on every settings change, so a symlink there
+would have it writing back into this repo.
 
 ## 7. Clone and install
 
