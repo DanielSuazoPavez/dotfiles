@@ -9,6 +9,7 @@
     "CLAUDE_TOOLKIT_INJECTION_SCAN": "0",
     "CLAUDE_TOOLKIT_OUTPUT_SCAN": "0",
     "CLAUDE_TOOLKIT_PROTECTED_BRANCHES": "^(main|master)$",
+    "CLAUDE_TOOLKIT_PROFILE": "hata",
     "CLAUDE_TOOLKIT_CLAUDEMD_WARN_LINES": "100",
     "CLAUDE_TOOLKIT_CLAUDEMD_NESTED_WARN_LINES": "150",
     "CLAUDE_TOOLKIT_BACKLOG_NOTES_MAX_CHARS": "1500",
@@ -49,9 +50,16 @@
       "Bash(git commit:*)",
       "Bash(git check-ignore:*)",
       "Bash(git mv:*)",
+      "Bash(git restore:*)",
       "Bash(./.claude/hooks/*)",
       "Bash(.claude/scripts/*)",
-      "Bash(claude-toolkit:*)",
+      "Bash(claude-toolkit backlog:*)",
+      "Bash(claude-toolkit docs:*)",
+      "Bash(claude-toolkit eval:*)",
+      "Bash(claude-toolkit lessons:*)",
+      "Bash(claude-toolkit send:*)",
+      "Bash(claude-toolkit version:*)",
+      "Bash(claude-toolkit version-main:*)",
       "Grep(/**)",
       "Read(/**)",
       "Read(~/.claude/CLAUDE.md)",
@@ -67,6 +75,7 @@
       "Edit(/CHANGELOG.md)"
     ],
     "ask": [
+      "Bash(claude-toolkit sync:*)",
       "Bash(git config:*)",
       "Bash(git merge:*)",
       "Bash(git rebase:*)",
@@ -184,7 +193,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/grouped-bash-guard.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/grouped-bash-guard.sh\""
           }
         ]
       },
@@ -193,7 +202,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/grouped-edit-guard.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/grouped-edit-guard.sh\""
           }
         ]
       },
@@ -220,7 +229,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/grouped-write-guard.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/grouped-write-guard.sh\""
           }
         ]
       }
@@ -250,7 +259,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/grouped-posttooluse-bash-scan.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/grouped-posttooluse-bash-scan.sh\""
           }
         ]
       },
