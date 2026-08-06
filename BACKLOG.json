@@ -88,8 +88,8 @@
       ],
       "status": "planned",
       "created_at": "2026-07-28",
-      "updated_at": "2026-07-28",
-      "notes": "Repo is private, so real identities in tracked files are acceptable today. If it ever goes public: tracked .gitconfig holds user.email (dsuazop@gmail.com) and includeIf paths naming the raiz/blumar work trees; docs/gitconfig-conditional-includes.md additionally names all three GitHub accounts and both work email domains. Cheapest fix: move [user] out of the tracked .gitconfig into an untracked ~/.gitconfig-local pulled in via [include], mirroring how ~/.gitconfig-raiz and ~/.gitconfig-blumar already work \u2014 tracked file becomes structure only, no template/substitution step, symlink keeps working. The includeIf directory names (raiz/blumar) remain structural and can only be removed by untracking. Note .gitconfig is symlinked to ~/.gitconfig, so it cannot hold placeholders while also being the live config.",
+      "updated_at": "2026-08-06",
+      "notes": "Tracked .gitconfig leaks user.email and includeIf paths naming the raiz/blumar work trees; the docs name all three accounts and both work email domains. Fix: move [user] (and ideally the includeIf blocks) into an untracked ~/.gitconfig-local pulled in via unconditional [include], shipped as a tracked .gitconfig-local.template that install.sh prompts for and writes if absent. Decided 2026-08-06 in favour of the prompt over a bare [include], since an untracked file does not exist on a fresh machine. Does not cover history scrubbing, which publishing would also require.\n\nSee: output/claude-toolkit/backlog-notes/gitconfig-sanitize-if-public.md",
       "references": [
         "docs/gitconfig-conditional-includes.md"
       ],
