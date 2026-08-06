@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-08-05
+
+### Added
+- `docs/DUAL-BOOT-TUMBLEWEED.md` — Phase -1: Intel VMD / RST pre-check. With VMD enabled the installer boots to GRUB, prints a load error and falls back to the firmware boot menu, or reaches the partitioner with no disks visible. Reads as a bad USB write; it isn't. Covers the Device Manager check, the Acer **Ctrl+S** unhide for the hidden BIOS entry, and the `bcdedit` route with both traps that cost time here.
+- `docs/DUAL-BOOT-TUMBLEWEED.md` — NVIDIA section. Tumbleweed's kernel outruns `NVIDIA:repo-non-free`: on 2026-08-05 the newest G06 kmp targeted kernel 6.12.9 against a running 7.1.5, so `modprobe nvidia` reports "module not found". openSUSE's own `nvidia-open-driver-G07-signed-kmp-meta` in `repo-oss` tracks the kernel and ships prebuilt and signed — under Secure Boot the *absence* of a MOK prompt is correct, not a failure.
+- `docs/DUAL-BOOT-TUMBLEWEED.md` — read-only snapshot trap. If GRUB's default entry lands on a snapper snapshot, installs succeed and then vanish on reboot. Tell is `btrfs subvolume get-default /` naming `.snapshots/N/snapshot`; fix is `snapper rollback`. Notes that the post-rollback default still reads `@/.snapshots/N/snapshot` with a new N — that is the correct end state, not a failed rollback.
+- `docs/DUAL-BOOT-TUMBLEWEED.md` — a Machines section recording per-machine facts and the deviations each forced.
+
+### Changed
+- `docs/DUAL-BOOT-TUMBLEWEED.md`: machine-specific facts moved out of the header into Machines, leaving Phases 0–4 as the general procedure. The header previously described one desktop's disk as though it were the guide's premise.
+- Phase 4 installs the G07 open signed kmp directly, replacing the `addrepo` + `install-new-recommends` recipe that led into the G06 dead end.
+
+### Notes
+- Second machine bootstrapped from this repo (Acer Nitro V15, RTX 5060). `install.sh` ran clean on bare-metal Tumbleweed apart from playwright's chromium fetch, which is a network step nothing else depends on.
+- The two machines disagreed on NTFS shrinking, so the guide can't state one rule: the desktop's Disk Management capped at ~5 GB with 144 GB free (unmovable `$UsnJrnl`/`$MFT` metadata) and needed an offline resize from the installer; the Nitro shrank 800 GB from Windows without complaint.
+- Disabling VMD did not require the Safe Mode dance the usual advice prescribes — Windows loaded `stornvme` by itself after the BIOS flip. Documented as "try the plain flip first", with Safe Mode as fallback, since the fallback's own failure modes (Hello disabled so PIN login fails; `{current}` in WinRE resolving to the recovery environment, not the install, so `bcdedit /deletevalue {current} safeboot` reports "element not found" while the flag sits under `{default}`) cost more time than the switch itself.
+- GRUB installed correctly but the Acer firmware listed the openSUSE entry with a **blank label** below Windows. Easy to read as a failed bootloader install when it's an ordering problem.
+
 ## [0.1.23] - 2026-08-02
 
 ### Added
