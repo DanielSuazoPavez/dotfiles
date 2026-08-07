@@ -218,6 +218,18 @@
       "branch": "feat/kde-desktop-settings",
       "source": "surfaced while adding scripts/kde-setup.sh",
       "notes": "`make lint` runs pre-commit over all files at once, so shellcheck sees the whole repo and can resolve cross-file usage. The commit-time hook stashes unstaged files first, so it lints each script in isolation and raises SC2329 (\"function never invoked\") for functions called indirectly \u2014 e.g. via `run_step \\\"$@\\\"`. Consequence: `make lint` can pass green and the commit still fail, which is a confusing loop right when you are trying to commit. kde-setup.sh works around it with two targeted SC2329 disables. Options: add SC2329 to a shellcheck config so both paths agree, or make `make lint` mirror the hook's isolation. Low priority \u2014 the workaround is one comment line \u2014 but the divergence will bite again on the next script with indirect dispatch."
+    },
+    {
+      "id": "kdeconnect-explore",
+      "priority": "P2",
+      "title": "Explore KDE Connect capabilities",
+      "scope": [
+        "config"
+      ],
+      "status": "planned",
+      "created_at": "2026-08-07",
+      "updated_at": "2026-08-07",
+      "notes": "KDE Connect installed and paired with phone (dotfiles install.sh now has an install_kdeconnect prompt, default no). Follow-up is open-ended exploration: Run Commands plugin (e.g. triggering 'proj'/'projtab' remotely to spin up a Ghostty+zellij session from the phone), remote input, virtual-display/second-screen mode, clipboard sync reliability. Not a scoped task \u2014 capture findings as they surface from actual use."
     }
   ]
 }
