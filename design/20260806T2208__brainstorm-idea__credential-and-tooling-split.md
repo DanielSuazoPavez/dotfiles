@@ -64,3 +64,20 @@ changelog notes) — Bitwarden/`rbw` is a candidate future source to *seed*
   *shape* vs. actual profile values), or belongs entirely in machine-setup.
 - Full privacy scrub of current dotfiles repo before flipping it public
   (not addressed this session).
+
+## Carried Forward (to machine-setup, once it exists)
+
+- **`.gitconfig-local` guided setup.** dotfiles' tracked `.gitconfig` had its
+  `user.name`/`user.email` sanitized into an untracked `~/.gitconfig.local`
+  (fix/gitconfig-sanitize, v0.3.1) — but that file has no template and no
+  install-time prompt, so a fresh machine silently has no override until
+  created by hand. A `.gitconfig-local.template` + guided prompt is exactly
+  the kind of "now set up everything else, with personal values" step that
+  belongs in machine-setup, not dotfiles proper.
+- **`includeIf` raiz/blumar blocks.** Still tracked in dotfiles' `.gitconfig`
+  and name both work email domains/trees directly — same category of
+  personal-value leak as above, same destination once machine-setup exists.
+- **`docs/gitconfig-conditional-includes.md`** describes the pre-sanitization
+  state and needs a pass reflecting the `.gitconfig.local` split — likely
+  split itself between a generic mechanism doc (dotfiles) and the actual
+  account setup steps (machine-setup).

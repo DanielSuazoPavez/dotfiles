@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-08-06
+
+### Fixed
+- `.gitconfig`: `user.name`/`user.email` sat in the tracked file since the very first gitconfig commit (`12d5583`), unlike the `includeIf`/`insteadOf` multi-account plumbing added later (`0c17968`), which was already designed to be public-safe. Moved personal identity to untracked `~/.gitconfig.local`, pulled in via `[include] path`, so the tracked file no longer leaks a real name/email.
+
+### Notes
+- Same untracked-sidecar pattern already used for the `raiz`/`blumar` per-tree identity overrides — this just closes the one gap those never covered.
+- Resolves the `gitconfig-sanitize-if-public` backlog item.
+
 ## [0.3.0] - 2026-08-06
 
 ### Added
