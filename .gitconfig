@@ -1,21 +1,14 @@
 [core]
-	excludesfile = ~/.gitignore_global
-[user]
-	name = Daniel Suazo Pavez
-	email = dsuazop@gmail.com
+    excludesfile = ~/.gitignore_global
 [init]
-	defaultBranch = main
+    defaultBranch = main
 [credential]
-	helper = cache
+    helper = cache
 [credential "https://github.com"]
-	helper =
-	helper = !gh auth git-credential
+    helper =
+    helper = !gh auth git-credential
 [credential "https://gist.github.com"]
-	helper =
-	helper = !gh auth git-credential
-[url "git@github-hata:"]
-	insteadOf = git@github.com:
-[includeIf "gitdir:~/projects/work/raiz/"]
-	path = ~/.gitconfig-raiz
-[includeIf "gitdir:~/projects/work/blumar/"]
-	path = ~/.gitconfig-blumar
+    helper =
+    helper = !gh auth git-credential
+[include]
+    path = ~/.gitconfig.local
