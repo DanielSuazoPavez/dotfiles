@@ -72,8 +72,8 @@
       ],
       "status": "idea",
       "created_at": "2026-07-27",
-      "updated_at": "2026-08-06",
-      "notes": "Two repos along a privacy line, dependency points one way only: PUBLIC dotfiles (configs, symlinks, install.sh - self-contained, useful to a stranger, never learns bootstrap exists) <- PRIVATE bootstrap (clones dotfiles, runs ./install.sh, then packages + private repos + per-repo setup). Keeps dotfiles genuinely publishable rather than publishable-with-holes, and confines the non-idempotent cloning/setup mess to the private repo so install.sh keeps its symlink-only idempotency. Confirmed as the right home for machine-provisioning concerns (incl. gaming) by the 2026-08-05 Nitro build.\n\nSee: output/claude-toolkit/backlog-notes/machine-bootstrap.md",
+      "updated_at": "2026-08-07",
+      "notes": "Two repos along a privacy line, dependency points one way only: PUBLIC dotfiles (configs, symlinks, install.sh - self-contained, useful to a stranger, never learns bootstrap exists) <- PRIVATE bootstrap (clones dotfiles, runs ./install.sh, then packages + private repos + per-repo setup). Keeps dotfiles genuinely publishable rather than publishable-with-holes, and confines the non-idempotent cloning/setup mess to the private repo so install.sh keeps its symlink-only idempotency. Confirmed as the right home for machine-provisioning concerns (incl. gaming) by the 2026-08-05 Nitro build, and for agent CLI tooling (herdr + pi) on 2026-08-07 - pi is npm-global and would break install.sh's minimal-dependency rule. Install commands and setup gotchas for both are in the brief.",
       "relates_to": [
         "new-machine-tools:relates-to"
       ]
