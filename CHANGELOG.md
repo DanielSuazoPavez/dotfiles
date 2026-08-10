@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Verified by opening a probe file headless and reading the extmarks under the `render-markdown.nvim` namespace: 24 marks, including the bullet `●`, checkbox `󰄱`, and table box-drawing characters.
 - The attribution fix keys off the `/after/ftplugin/` path segment rather than `stdpath("config")`: `~/.config/nvim` is a symlink into this repo, so Lua sources resolve to the repo path and a comparison against the config root never matches.
 - Drift check is back in sync at 43 keys (41 before, plus `]]` and `[[`).
+- Backlog: added `keymap-check-sample-coverage` (P3). The `--sample` fix closes the markdown gap but the filetype list is still hand-maintained, so a future `after/ftplugin/<ft>.lua` stays invisible until someone adds a sample of that filetype. Distinct from the existing `keymap-check-setup-tables`, which covers mappings passed as plugin setup config.
 
 ## [0.2.3] - 2026-08-10
 
