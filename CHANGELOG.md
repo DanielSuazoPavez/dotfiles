@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-08-10
+
+### Fixed
+- `.config/nvim/lua/plugins/telescope.lua`: `Ctrl-j` / `Ctrl-k` now move through picker results. They were documented as the navigation keys in 0.1.23 — when zellij's interception of `Ctrl-n` / `Ctrl-p` was worked around — but never actually bound, so the picker had no working navigation at all. Both are overrides of live upstream binds, not gaps: telescope sets `Ctrl-j` to `actions.nop` (deliberately disabled, to keep newlines out of the prompt) and `Ctrl-k` to `preview_scrolling_right`.
+
+### Changed
+- `docs/nvim-learning.md`: the rotation table tracks position instead of numbering weeks. Discovery and the telescope pickers are marked done, in-file movement is current, and quickfix moved below text objects and jumping — the keys were never the obstacle there, having a real multi-file edit to practice on was.
+- `docs/nvim-learning.md`: `f<char>` documented as line-scoped, with `,` and `F`/`T`, plus the operator pairing (`df,` through, `ct)` up to) in the text-objects section. It composes with operators and leaves the last-search pattern alone, which is what separates it from `/<char>`.
+
+### Notes
+- Losing `preview_scrolling_right` to the `Ctrl-k` override is a deliberate trade: the preview sets `wrap = true`, so there is little to scroll horizontally.
+- Corrected in the same doc: `q` does not close a picker in normal mode. `Esc` does — it is bound to `close`, so a second `Esc` after entering normal mode exits.
+- Verified against telescope's `default_mappings` table in `lua/telescope/mappings.lua` rather than from memory; every other in-picker key the doc lists checks out.
+- Folding is configured only for markdown and json, so `za` / `zo` / `zc` silently do nothing in `.sh` and `.py` buffers. Filed as `nvim-folding-sh-py` (P1) rather than fixed here.
+
 ## [0.3.1] - 2026-08-06
 
 ### Fixed
@@ -54,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - `Ctrl b` is no longer a mode prefix, but it is not unbound: scroll mode still binds it to `PageScrollUp`, which predates this change and does not collide.
 - The remaining duplicate letters across modes (`d` in `pane`/`session`/`scroll`, `x` in `pane`/`tab`) are not collisions — zellij scopes binds per mode.
+
 ## [0.2.2] - 2026-08-06
 
 ### Added

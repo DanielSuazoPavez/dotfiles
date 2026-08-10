@@ -33,7 +33,7 @@ space. `Esc` first if you want normal-mode keys.
 | `Ctrl-y` | open in a new tab |
 | `Ctrl-u` / `Ctrl-d` | scroll the **preview** — read without opening |
 | `Ctrl-/` | show all keys for this picker |
-| `Esc` | normal mode inside the picker (`j`/`k`, `q` quits) |
+| `Esc` | normal mode inside the picker (`j`/`k` navigate; `Esc` again closes) |
 | `Tab` / `Shift-Tab` | multi-select |
 | `Ctrl-a` | send **all** results to quickfix |
 | `Alt-a` | send **selected** to quickfix |
@@ -58,7 +58,7 @@ Quickfix follow-up: `:cnext` / `:cprev` walk hits, `:copen` shows the list.
 | `gg` / `G` | top / bottom of file |
 | `{` / `}` | previous / next paragraph |
 | `%` | matching bracket |
-| `f<char>` / `t<char>` | to / just before next char on the line (`;` repeats) |
+| `f<char>` / `t<char>` | to / just before next char **on the line** (`;` repeats, `,` reverses; `F`/`T` go backwards) |
 | `*` | search word under cursor |
 | `Ctrl-o` / `Ctrl-i` | back / forward in the jumplist |
 | `''` | back to where the last jump started |
@@ -77,20 +77,30 @@ Text objects: `iw`/`aw` word · `i"`/`a"` quotes · `ib`/`ab` parens ·
 `i` = inner (contents), `a` = around (contents + delimiters). So `ci"` changes
 inside quotes, `dap` deletes a paragraph, `yib` yanks inside parens.
 
+`f`/`t` take an operator too, and that's where they stop being movement and
+start being editing: `df,` deletes **through** the next comma, `ct)` changes up
+to but not including the closing paren. `t` = "up to", `f` = "through" — the
+pairing is the whole point. Not a `/` shortcut: `f` is line-scoped and leaves
+your last-search pattern (and `n`) alone.
+
 ## Rotation
 
 Three to five keys a week; ignore the rest. That restraint is the method.
 
-| Week | Focus | Keys |
+| | Focus | Keys |
 |---|---|---|
-| 1 | Discovery | `<leader>?`, `<leader>fk`, `Ctrl-/` |
-| 2 | In-file movement | `f<char>`, `;`, `%`, `*` |
-| 3 | Text objects | `ciw`, `ci"`, `cib`, `dap` |
-| 4 | Telescope beyond ff/fg | `<leader>fr`, `<leader>fo`, `<leader>fb` |
-| 5 | Telescope → quickfix | `Ctrl-a`, `:cnext`, `:cprev`, `:copen` |
-| 6 | Jumping | `Ctrl-o`, `Ctrl-i`, `gd`, `gr` |
-| 7 | Git in-buffer | `]c`, `[c`, `<leader>hp`, `<leader>hb` |
-| 8 | Splits & buffers | `Ctrl-w v`, `Ctrl-w s`, `Tab`, `<leader>bd` |
+| ✅ | Discovery | `<leader>?`, `<leader>fk`, `Ctrl-/` |
+| ✅ | Telescope beyond ff/fg | `<leader>fr`, `<leader>fo`, `<leader>fb` |
+| **→** | **In-file movement** | **`f<char>`, `;`, `%`, `*`** |
+| | Text objects | `ciw`, `ci"`, `cib`, `dap` |
+| | Jumping | `Ctrl-o`, `Ctrl-i`, `gd`, `gr` |
+| | Telescope → quickfix | `Ctrl-a`, `:cnext`, `:cprev`, `:copen` |
+| | Git in-buffer | `]c`, `[c`, `<leader>hp`, `<leader>hb` |
+| | Splits & buffers | `Ctrl-w v`, `Ctrl-w s`, `Tab`, `<leader>bd` |
+
+Quickfix moved down the list deliberately: the keys aren't the hard part, having
+thirty things to change is. It'll click the first time a real multi-file edit
+shows up — drill 2 is there for that day.
 
 Rule for the week: catch yourself doing the slow version, undo, redo it the
 fast way. Once. Then move on.
