@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-08-10
+
+### Added
+- `.config/nvim/lua/plugins/render-markdown.lua` — in-buffer markdown rendering. Draws headings, bullets, checkboxes, tables, code blocks, and callouts as virtual text over the buffer; the file on disk is never touched. Picked over browser-based previewers (peek.nvim, markdown-preview.nvim) because it needs no Deno or Node runtime — the `markdown` and `markdown_inline` treesitter parsers it depends on were already installed.
+
+### Notes
+- Two non-default options: `heading = { width = "block" }` stops headings spanning the full window, and `render_modes = { "n", "c" }` keeps rendering off in insert mode so editing always shows raw markdown.
+- Cosmetic only — no HTML output and no mermaid rendering. Diagrams still need a browser-based previewer or the `mmdc` CLI.
+- Verified by opening a probe file headless and reading the extmarks under the `render-markdown.nvim` namespace: 24 marks, including the bullet `●`, checkbox `󰄱`, and table box-drawing characters.
+
 ## [0.2.3] - 2026-08-10
 
 ### Removed
