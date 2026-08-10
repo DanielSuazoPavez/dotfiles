@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-08-10
+
+### Added
+- `.config/nvim/lua/plugins/render-markdown.lua` — in-buffer markdown rendering. Draws headings, bullets, checkboxes, tables, code blocks, and callouts as virtual text over the buffer; the file on disk is never touched. Picked over browser-based previewers (peek.nvim, markdown-preview.nvim) because it needs no Deno or Node runtime — the `markdown` and `markdown_inline` treesitter parsers it depends on were already installed.
+
+- `docs/NVIM-REFERENCE.md`: a **Markdown** section. Covers the new rendering plus the `]]` / `[[` heading navigation and treesitter section folding from `after/ftplugin/markdown.lua` — those keys have existed since the ftplugin was written but were documented nowhere, so reading the config was the only way to find them.
+
+### Fixed
+- `scripts/check-keymap-docs.py`: buffer-local markdown keys were invisible to the drift check, which is why `]]` / `[[` could go undocumented without ever being reported. Two causes, both fixed:
+  - The `--sample` file it opens was a single Python file. Buffer-local maps only attach in a buffer of the matching filetype, and no one buffer attaches them all — the LSP keys need Python, the ftplugin keys need markdown. `--sample` is now repeatable and defaults to one of each, with the results merged.
+  - Keymap attribution truncated the definition site to a basename, so this repo's `after/ftplugin/markdown.lua` was indistinguishable from Neovim's own `runtime/ftplugin/markdown.lua`. Both bind `]]` / `[[` (ours load second and win) and the runtime copy also binds `gO`, so a basename match either pulled in a built-in that this doc does not cover or attributed ours to the runtime. `ftplugin` sources are now qualified `after/` or `runtime/` by path segment.
+
+### Notes
+- Two non-default plugin options: `heading = { width = "block" }` stops headings spanning the full window, and `render_modes = { "n", "c" }` keeps rendering off in insert mode so editing always shows raw markdown.
+- Cosmetic only — no HTML output and no mermaid rendering. Diagrams still need a browser-based previewer or the `mmdc` CLI.
+- Verified by opening a probe file headless and reading the extmarks under the `render-markdown.nvim` namespace: 24 marks, including the bullet `●`, checkbox `󰄱`, and table box-drawing characters.
+- The attribution fix keys off the `/after/ftplugin/` path segment rather than `stdpath("config")`: `~/.config/nvim` is a symlink into this repo, so Lua sources resolve to the repo path and a comparison against the config root never matches.
+- Drift check is back in sync at 43 keys (41 before, plus `]]` and `[[`).
+- Backlog: added `keymap-check-sample-coverage` (P3). The `--sample` fix closes the markdown gap but the filetype list is still hand-maintained, so a future `after/ftplugin/<ft>.lua` stays invisible until someone adds a sample of that filetype. Distinct from the existing `keymap-check-setup-tables`, which covers mappings passed as plugin setup config.
+
 ## [0.2.3] - 2026-08-10
 
 ### Removed

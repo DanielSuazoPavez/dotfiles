@@ -40,7 +40,7 @@ inline where root is needed.
 - **Prompt**: Starship configuration
 - **Terminal**: Ghostty settings
 - **Multiplexer**: Zellij layouts and config — [keybind reference](docs/ZELLIJ-REFERENCE.md)
-- **Editor**: Neovim (lazy.nvim, LSP, completion) — [keybind reference](docs/NVIM-REFERENCE.md)
+- **Editor**: Neovim (lazy.nvim, LSP, completion, in-buffer markdown rendering) — [keybind reference](docs/NVIM-REFERENCE.md)
 - **File navigator**: broot (`br` cd's your shell) — [reference](docs/BROOT-REFERENCE.md)
 - **Data CLI**: duckdb (csv/json/parquet/xlsx from the shell) — [reference](docs/DUCKDB-REFERENCE.md)
 - **Desktop (KDE)**: dark theme + keyboard layout via `scripts/kde-setup.sh` — [setup](docs/BOOTSTRAP.md)
