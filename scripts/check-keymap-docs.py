@@ -50,6 +50,11 @@ NVIM_OWNED = {
     # undotree declares its key via lazy.nvim's `keys` spec, so lazy's own
     # handler binds it and reports keys.lua as the definition site.
     "keys.lua",
+    # Buffer-local, so these only attach when the sample file is markdown; see
+    # the --sample default below. Qualified with `after/` because nvim's own
+    # runtime/ftplugin/markdown.lua shares the basename and binds gO, which is
+    # a built-in and out of scope for this doc.
+    "after/markdown.lua",
 }
 
 # Keys the doc documents but no `vim.keymap.set` call creates. Plugins that
@@ -79,6 +84,14 @@ vim.keymap.set = function(mode, lhs, rhs, opts)
   local info = debug.getinfo(2, "S")
   local src = (info and info.source or ""):gsub("^@", "")
   local file = vim.fn.fnamemodify(src, ":t")
+  -- Basenames collide across runtimes: nvim's own runtime/ftplugin/markdown.lua
+  -- binds gO and ]]/[[, and this repo's after/ftplugin/markdown.lua rebinds the
+  -- latter two (ours load second and win). Only the `after/` copy is ours.
+  -- Match on the path segment, not stdpath("config") -- the config dir is a
+  -- symlink into the dotfiles repo, so sources resolve to the repo path.
+  if src:find("/ftplugin/", 1, true) then
+    file = (src:find("/after/ftplugin/", 1, true) and "after/" or "runtime/") .. file
+  end
   local modes = type(mode) == "table" and mode or { mode }
   for _, mo in ipairs(modes) do
     _G.__keymap_origin[mo .. "\0" .. norm(lhs)] = file
@@ -151,8 +164,22 @@ def canon(key: str) -> str:
     return k.lower()
 
 
-def nvim_binds(sample: Path, delay_ms: int) -> dict[str, str]:
-    """Keys bound by this repo's nvim config -> their `desc`."""
+def nvim_binds(samples: list[Path], delay_ms: int) -> dict[str, str]:
+    """Keys bound by this repo's nvim config -> their `desc`.
+
+    Buffer-local maps only attach in a buffer of the right filetype, and no one
+    buffer attaches them all: the LSP keys need a Python file, the markdown
+    ftplugin keys need a `.md`. Each sample is dumped in its own nvim run and
+    the results merged.
+    """
+    merged: dict[str, str] = {}
+    for sample in samples:
+        merged.update(_nvim_binds_one(sample, delay_ms))
+    return merged
+
+
+def _nvim_binds_one(sample: Path, delay_ms: int) -> dict[str, str]:
+    """Keys attributed to this config from a single nvim run on `sample`."""
     with tempfile.NamedTemporaryFile("r+", suffix=".json") as tmp:
         proc = subprocess.run(
             [
@@ -293,9 +320,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--self-test", action="store_true",
                     help="check notation handling without launching nvim")
-    ap.add_argument("--sample", type=Path,
-                    default=REPO_ROOT / "scripts/check-keybind-collisions.py",
-                    help="file to open so buffer-local (LSP/gitsigns) maps attach")
+    ap.add_argument("--sample", type=Path, action="append",
+                    help="file to open so buffer-local maps attach; repeatable. "
+                         "Defaults to one Python file (LSP/gitsigns keys) and "
+                         "one markdown file (ftplugin heading keys)")
     ap.add_argument("--delay", type=int, default=6000,
                     help="ms to wait for LSP/gitsigns attach before dumping")
     args = ap.parse_args()
@@ -303,7 +331,11 @@ def main() -> int:
     if args.self_test:
         return self_test()
 
-    bound = nvim_binds(args.sample, args.delay)
+    samples = args.sample or [
+        REPO_ROOT / "scripts/check-keybind-collisions.py",
+        REPO_ROOT / "docs/NVIM-REFERENCE.md",
+    ]
+    bound = nvim_binds(samples, args.delay)
     if not bound:
         sys.stderr.write("error: no keymaps attributed to this config\n")
         return 2

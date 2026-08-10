@@ -133,6 +133,31 @@ Snippet library: friendly-snippets (loads per-filetype automatically).
 Snippets show up in the popup marked as such. Confirm one, then `Tab` through
 its placeholder fields.
 
+## Markdown
+
+Rendering is in-buffer (render-markdown.nvim) — headings, bullets, checkboxes,
+tables, code blocks and callouts draw as virtual text over the file. Nothing is
+written to disk and there is no preview window to sync. Rendering drops on the
+cursor line in insert mode, so editing always shows the raw markdown.
+
+Navigation and folding come from `after/ftplugin/markdown.lua`, so they are
+buffer-local — they exist in a `.md` buffer and nowhere else.
+
+| Key | Action |
+|---|---|
+| `] ]` | Next heading (anchored to top) |
+| `[ [` | Previous heading (anchored to top) |
+
+Heading jumps bypass `scrolloff` and land the heading on line 1, so the section
+you jumped to starts at the top of the view rather than mid-screen.
+
+Folding is treesitter-based and starts fully open: `zc` on a heading collapses
+that section and everything nested under it, `zo` reopens, `za` toggles. The
+fold column is on, so collapsed sections are visible in the gutter.
+
+Cosmetic only — no HTML export and no mermaid rendering. For diagrams you still
+need a browser-based previewer or the `mmdc` CLI.
+
 ## Windows & undo
 
 | Key | Action |
