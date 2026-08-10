@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-08-06
+
+### Fixed
+- `.gitconfig`: `user.name`/`user.email` sat in the tracked file since the very first gitconfig commit (`12d5583`), unlike the `includeIf`/`insteadOf` multi-account plumbing added later (`0c17968`), which was already designed to be public-safe. Moved personal identity to untracked `~/.gitconfig.local`, pulled in via `[include] path`, so the tracked file no longer leaks a real name/email.
+
+### Notes
+- Same untracked-sidecar pattern already used for the `raiz`/`blumar` per-tree identity overrides — this just closes the one gap those never covered.
+- Resolves the `gitconfig-sanitize-if-public` backlog item.
+
+## [0.3.0] - 2026-08-06
+
+### Added
+- `install.sh`: `INSTALL_KDECONNECT` category for KDE Connect (phone integration — file transfer, clipboard sync, remote input, Run Commands). Defaults to **N**, same as KDE settings: desktop-only, needs Plasma's device-pairing UI, so a headless box, WSL, or GNOME should not get it by accepting every default.
+- `design/` — brainstorm and decision docs, starting with the credential-and-tooling repo-split notes (dotfiles vs. a separate machine-setup repo vs. Bitwarden/`rbw` as the credential-bootstrap step between them).
+
+### Notes
+- `tests/helpers.sh` and `tests/test_install.sh` answer stream and pinned category list extended in lockstep for the new prompt, per the CLAUDE.md rule.
+
 ## [0.2.4] - 2026-08-10
 
 ### Added
@@ -36,7 +54,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - `Ctrl b` is no longer a mode prefix, but it is not unbound: scroll mode still binds it to `PageScrollUp`, which predates this change and does not collide.
 - The remaining duplicate letters across modes (`d` in `pane`/`session`/`scroll`, `x` in `pane`/`tab`) are not collisions — zellij scopes binds per mode.
-
 ## [0.2.2] - 2026-08-06
 
 ### Added

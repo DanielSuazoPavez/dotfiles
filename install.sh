@@ -312,6 +312,12 @@ install_ghostty() {
     fi
 }
 
+install_kdeconnect() {
+    command -v kdeconnectd &> /dev/null && return 0
+    echo "  Installing kdeconnect..."
+    pkg_install kdeconnect-kde kdeconnect
+}
+
 # --- Runtimes ---------------------------------------------------------------
 
 install_uv() {
@@ -443,6 +449,7 @@ INSTALL_BROOT=false
 INSTALL_RUNTIMES=false
 INSTALL_CLAUDE=false
 INSTALL_KDE=false
+INSTALL_KDECONNECT=false
 
 if prompt_category "Starship prompt" "y"; then
     INSTALL_STARSHIP=true
@@ -486,6 +493,12 @@ fi
 # it by accepting every default.
 if prompt_category "KDE settings (dark theme, keyboard layout)" "n"; then
     INSTALL_KDE=true
+fi
+
+# Defaults to no: desktop-only (needs Plasma's device-pairing UI), so a
+# headless box, WSL, or GNOME should not get it by accepting every default.
+if prompt_category "KDE Connect (phone integration)" "n"; then
+    INSTALL_KDECONNECT=true
 fi
 
 echo
@@ -566,6 +579,12 @@ if [ "$INSTALL_KDE" = true ]; then
     echo "Installing KDE settings..."
     install_kde_settings() { "$DOTFILES_DIR/scripts/kde-setup.sh"; }
     run_install install_kde_settings
+fi
+
+# KDE Connect
+if [ "$INSTALL_KDECONNECT" = true ]; then
+    echo "Installing KDE Connect..."
+    run_install install_kdeconnect
 fi
 
 # Symlinks last: every enabled group in one pass, gated by GROUP_FLAGS in

@@ -79,25 +79,6 @@
       ]
     },
     {
-      "id": "gitconfig-sanitize-if-public",
-      "priority": "P3",
-      "title": "Sanitize tracked .gitconfig before making repo public",
-      "scope": [
-        "config",
-        "repo"
-      ],
-      "status": "planned",
-      "created_at": "2026-07-28",
-      "updated_at": "2026-08-06",
-      "notes": "Tracked .gitconfig leaks user.email and includeIf paths naming the raiz/blumar work trees; the docs name all three accounts and both work email domains. Fix: move [user] (and ideally the includeIf blocks) into an untracked ~/.gitconfig-local pulled in via unconditional [include], shipped as a tracked .gitconfig-local.template that install.sh prompts for and writes if absent. Decided 2026-08-06 in favour of the prompt over a bare [include], since an untracked file does not exist on a fresh machine. Does not cover history scrubbing, which publishing would also require.\n\nSee: output/claude-toolkit/backlog-notes/gitconfig-sanitize-if-public.md",
-      "references": [
-        "docs/gitconfig-conditional-includes.md"
-      ],
-      "relates_to": [
-        "machine-bootstrap:relates-to"
-      ]
-    },
-    {
       "id": "bitwarden-cli-setup",
       "priority": "P1",
       "title": "Set up Bitwarden CLI for personal credentials",
@@ -233,6 +214,18 @@
       "relates_to": [
         "keymap-check-setup-tables:relates-to"
       ]
+    },
+    {
+      "id": "kdeconnect-explore",
+      "priority": "P2",
+      "title": "Explore KDE Connect capabilities",
+      "scope": [
+        "config"
+      ],
+      "status": "planned",
+      "created_at": "2026-08-07",
+      "updated_at": "2026-08-07",
+      "notes": "KDE Connect installed and paired with phone (dotfiles install.sh now has an install_kdeconnect prompt, default no). Follow-up is open-ended exploration: Run Commands plugin (e.g. triggering 'proj'/'projtab' remotely to spin up a Ghostty+zellij session from the phone), remote input, virtual-display/second-screen mode, clipboard sync reliability. Not a scoped task \u2014 capture findings as they surface from actual use."
     }
   ]
 }
