@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-08-10
+
+### Removed
+- `.config/zellij/config.kdl`: the entire `tmux` mode and its `Ctrl b` prefix — roughly twenty binds duplicating navigation, pane splitting, and tab switching that zellij's own modes already cover. The compat layer existed for tmux muscle memory that is no longer in use, and it held `Ctrl b` hostage as a prefix key.
+
+### Changed
+- `.config/zellij/config.kdl`: two binds that lived in `shared_among` blocks with `tmux` moved into the modes that own them — `x` → `CloseFocus` is now a `pane` mode bind (`Ctrl p` `x`), and `d` → `Detach` is now a `session` mode bind (`Ctrl o` `d`). Removing `tmux` alone would have deleted both, since neither had a home outside the shared blocks.
+
+### Notes
+- `Ctrl b` is no longer a mode prefix, but it is not unbound: scroll mode still binds it to `PageScrollUp`, which predates this change and does not collide.
+- The remaining duplicate letters across modes (`d` in `pane`/`session`/`scroll`, `x` in `pane`/`tab`) are not collisions — zellij scopes binds per mode.
+
 ## [0.2.2] - 2026-08-06
 
 ### Added
