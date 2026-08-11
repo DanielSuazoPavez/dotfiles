@@ -1,0 +1,3 @@
+# SC2329 fires on functions invoked indirectly via "$@" (e.g. run_step),
+# which shellcheck cannot trace. Exits non-zero despite being info-level.
+disable=SC2329

@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.6] - 2026-08-11
+
+### Fixed
+- shellcheck SC2329 ("function never invoked") now disabled repo-wide via `.shellcheckrc` instead of per-function inline directives. shellcheck cannot trace indirect dispatch through `"$@"` after `shift` (the `run_step` pattern) and exits non-zero despite SC2329 being info-level — both `make lint` and the commit hook failed without workarounds. New scripts using `run_step`-style dispatch no longer need inline disables.
+
 ## [0.3.5] - 2026-08-11
 
 ### Changed
