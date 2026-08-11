@@ -40,6 +40,7 @@ NVIM_DOC = REPO_ROOT / "docs/NVIM-REFERENCE.md"
 NVIM_OWNED = {
     "telescope.lua",
     "neo-tree.lua",
+    "cmp.lua",
     "bufferline.lua",
     "gitsigns.lua",
     "lsp-config.lua",
@@ -53,16 +54,6 @@ NVIM_OWNED = {
     # runtime/ftplugin/markdown.lua shares the basename and binds gO, which is
     # a built-in and out of scope for this doc.
     "after/markdown.lua",
-}
-
-# Keys the doc documents but no `vim.keymap.set` call creates. Plugins that
-# take their mappings as setup-table config (neo-tree's window.mappings,
-# cmp's mapping preset, telescope's defaults.mappings for in-picker keys) are
-# invisible to the vim.keymap.set hook, so drift in those is NOT caught -- they
-# are listed here only to keep them from being reported stale forever.
-NVIM_NON_KEYMAP_SET = {
-    "Y", "gy",              # neo-tree window mappings (its setup table)
-    "Ctrl-Space", "Enter",  # nvim-cmp mapping preset
 }
 
 
@@ -79,6 +70,7 @@ def canon(key: str) -> str:
     k = k.replace("<leader>", "leader-")
     # Bare named keys: the config binds <Tab>/<CR>, the doc writes Tab/Enter.
     k = re.sub(r"<(\w+)>", r"\1", k)
+    k = re.sub(r"\bCR\b", "Enter", k, flags=re.I)
     k = re.sub(r"\s+", "", k)
     return k.lower()
 
@@ -99,6 +91,10 @@ def nvim_binds(samples: list[Path], delay_ms: int) -> dict[str, str]:
         for lhs, info in mode_map.items():
             if info["src"] in NVIM_OWNED:
                 merged[lhs] = info["desc"]
+    for mode_map in chords["setup_table"].values():
+        for lhs, src in mode_map.items():
+            if src in NVIM_OWNED:
+                merged.setdefault(lhs, f"{src} (setup table)")
     return merged
 
 
@@ -176,16 +172,14 @@ def expand_range(lo: str, hi: str) -> list[str]:
     return [f"{prefix}{d}" for d in range(int(m_lo.group(2)), int(m_hi.group(2)) + 1)]
 
 
-def report(tool: str, bound: dict[str, str], docd: dict[str, str],
-           exempt: set[str]) -> int:
+def report(tool: str, bound: dict[str, str], docd: dict[str, str]) -> int:
     bound_canon = {canon(k): k for k in bound}
     doc_canon = {canon(k): k for k in docd}
-    exempt_canon = {canon(k) for k in exempt}
 
     missing = [v for k, v in bound_canon.items() if k not in doc_canon]
     stale = [
         docd_key for k, docd_key in doc_canon.items()
-        if k not in bound_canon and k not in exempt_canon
+        if k not in bound_canon
     ]
 
     if not missing and not stale:
@@ -220,6 +214,7 @@ def self_test() -> int:
         (canon("<S-Tab>"), canon("Shift-Tab"), "shift notation"),
         (canon("] c"), canon("]c"), "spaced key"),
         (canon("<leader>ff"), "leader-ff", "leader expansion"),
+        (canon("<CR>"), canon("Enter"), "CR/Enter alias"),
     ]
     failed = 0
     for got, want, label in cases:
@@ -260,7 +255,7 @@ def main() -> int:
     if not bound:
         sys.stderr.write("error: no keymaps attributed to this config\n")
         return 2
-    return report("nvim", bound, documented(NVIM_DOC), NVIM_NON_KEYMAP_SET)
+    return report("nvim", bound, documented(NVIM_DOC))
 
 
 if __name__ == "__main__":
