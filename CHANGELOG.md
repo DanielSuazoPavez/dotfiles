@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2026-08-11
+
+### Fixed
+- `scripts/check-keymap-docs.py`: nvim sample filetypes are now derived from `.config/nvim/after/ftplugin/*.lua` instead of a hardcoded list. Buffer-local maps (LSP, gitsigns, ftplugin bindings) only attach in a buffer of the matching filetype, so a filetype missing from the sample list was invisible to drift detection no matter what it bound — this already happened once, with markdown's `]]`/`[[` bindings going undocumented until 0.2.4 hand-added a markdown sample. `ftplugin_samples()` globs the directory and synthesizes one empty temp file per filetype found, so a new ftplugin file is picked up automatically on the next run.
+
+### Notes
+- This closes sample *coverage* (which filetypes get a buffer at all), not source-file *attribution* — a new `after/ftplugin/<ft>.lua` binding still needs to be added to `NVIM_OWNED` for its keys to be checked rather than reported MISSING. `keymap-check-setup-tables` (plugin setup-table mappings, a separate blind spot) remains open.
+- `ftplugin_samples()`'s temp-file suffix is the ftplugin file's stem, which only works because it currently equals a nvim-detectable extension for all three filetypes (json/lua/markdown). A future ftplugin whose filetype name isn't also a valid extension (e.g. `gitcommit`) would need a differently-named sample to attach — flagged in-code rather than fixed, since it doesn't affect anything bound today.
+
 ## [0.3.3] - 2026-08-11
 
 ### Added
