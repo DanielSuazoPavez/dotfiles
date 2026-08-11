@@ -28,10 +28,20 @@ from the neo-tree sidebar or an empty buffer they're genuinely absent.
 
 ## Finding things — Telescope
 
-Fuzzy pickers. Inside any picker: type to filter · `Ctrl-j`/`Ctrl-k` or arrows
-to move · `Enter` open · `Ctrl-x` horizontal split · `Ctrl-v` vertical split ·
-`Ctrl-y` new tab · `Ctrl-a` send all results to quickfix · `Esc`/`Ctrl-c` close.
-`Ctrl-/` lists every key for the current picker.
+Fuzzy pickers. Inside any picker: type to filter · arrows to move · `Enter`
+open · `Ctrl-x` horizontal split · `Ctrl-v` vertical split · `Esc`/`Ctrl-c`
+close. `Ctrl-/` lists every key for the current picker.
+
+*Inside any picker:*
+
+| Key | Action |
+|---|---|
+| `Ctrl-j` / `Ctrl-k` | Move selection down / up |
+| `Ctrl-y` | Open in new tab |
+| `Ctrl-a` | Send all results to quickfix |
+| `Alt-a` | Send selected to quickfix |
+
+*Launcher keys:*
 
 | Key | Action |
 |---|---|
@@ -46,10 +56,8 @@ to move · `Enter` open · `Ctrl-x` horizontal split · `Ctrl-v` vertical split 
 | `<leader>fd` | Diagnostics — all errors/warnings (needs LSP) |
 
 > Note: zellij owns `Ctrl-n`, `Ctrl-p`, `Ctrl-t` and `Ctrl-q` (resize, pane and
-> tab modes, and Quit) — they never reach nvim. Telescope's defaults for those
-> are remapped: navigation is `Ctrl-j`/`Ctrl-k`, new-tab is `Ctrl-y`, and
-> send-to-quickfix is `Ctrl-a` (`Alt-a` for selected only). Upstream telescope
-> docs will show the originals.
+> tab modes, and Quit) — they never reach nvim. The in-picker keys above are the
+> remapped replacements; upstream telescope docs will show the originals.
 
 **ui-select**: telescope also hijacks Neovim's generic selection menus, so
 prompts like code actions (`<leader>ca`) render as a nice telescope dropdown
@@ -127,8 +135,10 @@ Snippet library: friendly-snippets (loads per-filetype automatically).
 |---|---|
 | `Ctrl-Space` | Trigger completion |
 | `Enter` | Confirm selection |
-| `Tab` | Next item / expand-or-jump to next snippet field |
-| `Shift-Tab` | Previous item / jump to previous snippet field |
+| `Ctrl-e` | Dismiss popup |
+| `Tab` / `Ctrl-n` / `Down` | Next item (Tab also expands/jumps snippet fields) |
+| `Shift-Tab` / `Ctrl-p` / `Up` | Previous item (Shift-Tab also jumps back) |
+| `Ctrl-y` | Confirm selection (vim built-in) |
 
 Snippets show up in the popup marked as such. Confirm one, then `Tab` through
 its placeholder fields.
