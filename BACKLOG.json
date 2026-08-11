@@ -189,21 +189,6 @@
       "notes": "`make lint` runs pre-commit over all files at once, so shellcheck sees the whole repo and can resolve cross-file usage. The commit-time hook stashes unstaged files first, so it lints each script in isolation and raises SC2329 (\"function never invoked\") for functions called indirectly \u2014 e.g. via `run_step \\\"$@\\\"`. Consequence: `make lint` can pass green and the commit still fail, which is a confusing loop right when you are trying to commit. kde-setup.sh works around it with two targeted SC2329 disables. Options: add SC2329 to a shellcheck config so both paths agree, or make `make lint` mirror the hook's isolation. Low priority \u2014 the workaround is one comment line \u2014 but the divergence will bite again on the next script with indirect dispatch."
     },
     {
-      "id": "keymap-check-sample-coverage",
-      "priority": "P3",
-      "title": "check-keymap-docs.py sample coverage is manual",
-      "scope": [
-        "repo"
-      ],
-      "status": "idea",
-      "created_at": "2026-08-10",
-      "updated_at": "2026-08-10",
-      "notes": "Buffer-local keys only attach in a buffer of the matching filetype, so the checker only sees filetypes listed in the --sample default. v0.2.4 made --sample repeatable and added a markdown file alongside the Python one, which is what surfaced the undocumented ]]/[[ ftplugin keys -- but the list is hand-maintained. A new after/ftplugin/<ft>.lua binding keys stays invisible until someone remembers to add a sample of that filetype. Fix would be deriving samples from the after/ftplugin/ directory listing (one temp buffer per ft found) rather than a hardcoded default. Related but distinct from keymap-check-setup-tables, which is about mappings passed as plugin setup config rather than filetype coverage.",
-      "relates_to": [
-        "keymap-check-setup-tables:relates-to"
-      ]
-    },
-    {
       "id": "kdeconnect-explore",
       "priority": "P2",
       "title": "Explore KDE Connect capabilities",
