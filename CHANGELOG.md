@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.5] - 2026-08-11
+
+### Changed
+- `scripts/check-keymap-docs.py`: setup-table mappings (neo-tree `window.mappings`, cmp `mapping` preset, telescope `defaults.mappings`) are now included in drift detection. Previously these were invisible to the `vim.keymap.set` hook and listed in a static `NVIM_NON_KEYMAP_SET` exemption set that suppressed false STALE reports — meaning drift in them was never caught. The script now consumes the `setup_table` dict from `all_nvim_chords()`, removes the exemption set entirely, and drops the `exempt` parameter from `report()`.
+- `scripts/check-keymap-docs.py`: `canon()` maps `CR` → `Enter` so cmp's `<CR>` matches the doc's `Enter` notation.
+- `docs/NVIM-REFERENCE.md`: telescope in-picker keys (`Ctrl-j`/`k`, `Ctrl-y`, `Ctrl-a`, `Alt-a`) moved from prose into a checked table. cmp preset defaults (`Ctrl-n`/`p`, `Up`/`Down`, `Ctrl-e`, `Ctrl-y`) added to the completion table.
+
+### Notes
+- `cmp.lua` added to `NVIM_OWNED` — the setup-table extraction reports it by that filename but it wasn't previously listed since cmp keys only came through the (now-removed) exemption set.
+- cmp's `preset.insert()` merges custom keys with built-in defaults (`Ctrl-n`/`p`, `Up`/`Down`, `Ctrl-e`, `Ctrl-y`), so the extraction captures all of them. These are standard vim completion keys worth documenting; they're now drift-checked like any other setup-table key.
+- Telescope defaults (`Enter`, `Ctrl-x`, `Ctrl-v`, `Esc`, `Ctrl-c`, `Ctrl-/`) are not in our setup table — they remain in the prose intro and are out of scope for the checker.
+
 ## [0.3.4] - 2026-08-11
 
 ### Fixed
