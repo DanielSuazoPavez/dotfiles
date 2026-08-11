@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 from _nvim_chords import all_nvim_chords
@@ -99,6 +100,24 @@ def nvim_binds(samples: list[Path], delay_ms: int) -> dict[str, str]:
             if info["src"] in NVIM_OWNED:
                 merged[lhs] = info["desc"]
     return merged
+
+
+def ftplugin_samples() -> list[Path]:
+    """One temp file per filetype with a `.config/nvim/after/ftplugin/*.lua`.
+
+    Buffer-local ftplugin maps only attach in a buffer of the matching
+    filetype, so each filetype found there needs its own sample. Content can
+    be empty -- attach depends on filetype detection, not buffer content.
+    Callers must unlink the returned paths once done with them.
+    """
+    ftplugin_dir = REPO_ROOT / ".config/nvim/after/ftplugin"
+    samples = []
+    for lua_file in sorted(ftplugin_dir.glob("*.lua")):
+        ft = lua_file.stem
+        tmp = tempfile.NamedTemporaryFile(suffix=f".{ft}", delete=False)
+        tmp.close()
+        samples.append(Path(tmp.name))
+    return samples
 
 
 # A table row: leading `|`, a key cell, an action cell. The key cell holds one
@@ -216,8 +235,8 @@ def main() -> int:
                     help="check notation handling without launching nvim")
     ap.add_argument("--sample", type=Path, action="append",
                     help="file to open so buffer-local maps attach; repeatable. "
-                         "Defaults to one Python file (LSP/gitsigns keys) and "
-                         "one markdown file (ftplugin heading keys)")
+                         "Defaults to one Python file (LSP/gitsigns keys) plus "
+                         "one synthesized sample per after/ftplugin/*.lua filetype found")
     ap.add_argument("--delay", type=int, default=6000,
                     help="ms to wait for LSP/gitsigns attach before dumping")
     args = ap.parse_args()
@@ -225,11 +244,16 @@ def main() -> int:
     if args.self_test:
         return self_test()
 
-    samples = args.sample or [
-        REPO_ROOT / "scripts/check-keybind-collisions.py",
-        REPO_ROOT / "docs/NVIM-REFERENCE.md",
-    ]
-    bound = nvim_binds(samples, args.delay)
+    if args.sample:
+        samples, derived = args.sample, []
+    else:
+        derived = ftplugin_samples()
+        samples = [REPO_ROOT / "scripts/check-keybind-collisions.py", *derived]
+    try:
+        bound = nvim_binds(samples, args.delay)
+    finally:
+        for path in derived:
+            path.unlink(missing_ok=True)
     if not bound:
         sys.stderr.write("error: no keymaps attributed to this config\n")
         return 2
