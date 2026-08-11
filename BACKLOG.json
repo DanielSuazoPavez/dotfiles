@@ -135,18 +135,6 @@
       "notes": "v0.1.21 removed $DISPLAY/$WAYLAND_DISPLAY headless detection, so Ghostty and Nerd Fonts are now unconditional prompts \u2014 an install on a display-less machine (SSH, container, CI) installs a terminal emulator and fonts nothing can render. Accepted deliberately: no headless targets remain since the move off WSL, and the sniffing was a third encoding of group gating competing with GROUP_FLAGS. Revisit when a real headless target reappears; the fix is an explicit --headless flag or INSTALL_GUI=false, never restored environment sniffing (identity.md and README now state that as policy). Note the suite has no headless path anymore, so this costs a second prompt-stream fixture with its own accepted_categories assertion.\n\nSee: output/claude-toolkit/backlog-notes/headless-install-flag.md"
     },
     {
-      "id": "nvim-zellij-collision-check",
-      "priority": "P2",
-      "title": "Extend keybind collision checker to nvim vs zellij",
-      "scope": [
-        "config"
-      ],
-      "status": "idea",
-      "created_at": "2026-08-03",
-      "updated_at": "2026-08-03",
-      "notes": "check-keybind-collisions.py covers ghostty<->zellij only. Zellij's shared_except blocks bind Ctrl-n/p/t/q in normal mode, so they never reach nvim -- this shadowed four telescope picker defaults (found by hand, not by tooling: remapped to Ctrl-j/k, Ctrl-y, Ctrl-a in v0.1.23). A zellij extractor parsing shared_except/normal blocks would catch the class. Note in-picker mappings live in telescope's defaults.mappings, not vim.keymap.set, so the nvim side needs setup-table parsing, not just the keymap dump used by check-keymap-docs.py."
-    },
-    {
       "id": "keymap-check-setup-tables",
       "priority": "P3",
       "title": "check-keymap-docs.py misses plugin setup-table mappings",
@@ -238,6 +226,18 @@
       "created_at": "2026-08-10",
       "updated_at": "2026-08-10",
       "notes": "Folding is configured only in after/ftplugin/markdown.lua and json.lua (foldmethod=expr + vim.treesitter.foldexpr, foldlevel=99, foldcolumn=1). In .sh/.py buffers no folds exist, so za/zo/zc silently do nothing. Extend the same per-ftplugin pattern to sh and python, or lift it to a global default with per-ft opt-out. Keep foldlevel=99 (open by default, folding opt-in) -- that is the established convention in both existing ftplugins. Docs: docs/nvim-learning.md currently omits folds because they were markdown/json-only; revisit once this lands."
+    },
+    {
+      "id": "nvim-chords-new-plugin-source",
+      "priority": "P3",
+      "title": "Document/automate detection of new nvim setup-table mapping sources",
+      "scope": [
+        "config"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-11",
+      "updated_at": "2026-08-11",
+      "notes": "scripts/_nvim_chords.py's NVIM_SETUP_TABLE_HOOK_LUA hardcodes three patch targets (telescope, neo-tree, cmp). A future plugin adding setup-table-based keybinds (vs vim.keymap.set) is invisible to check-keybind-collisions.py's nvim-vs-zellij check until someone manually adds a fourth TARGETS entry -- nothing flags the gap. Low priority: rare event, and the existing three cover this repo's current setup-table plugins."
     }
   ]
 }
