@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.3] - 2026-08-11
+
+### Added
+- `scripts/check-keybind-collisions.py`: cross-references zellij's global binds (`shared_except`/`shared_among`/`normal` sections) against nvim's normal- and insert-mode chords, in addition to the existing ghostty check. Zellij intercepts a chord before nvim, running as a zellij pane, ever sees it — this already caused a silent regression once (telescope's `Ctrl-n`/`p`/`t`/`q` remap in 0.1.23) that surfaced only as a dead key someone noticed by friction. nvim chords are pulled from both `vim.keymap.set` and plugin setup tables (telescope, neo-tree, cmp).
+- `scripts/_nvim_chords.py` — shared headless-nvim chord extractor, used by both `check-keybind-collisions.py` and `check-keymap-docs.py` (refactored off its own inline extraction).
+
+### Notes
+- Setup-table capture (telescope/neo-tree/cmp mappings passed as `setup()` config, invisible to `vim.keymap.set`) patches Lua's global `require` rather than the plugin module directly: lazy.nvim itself is `require()`'d from `init.lua`, so nothing is requirable yet at the point a `--cmd`-installed hook runs. The wrapper intercepts the module the moment anything first requires it and patches `setup` (or, for `nvim-cmp`, the `__call` metamethod its `setup` table uses) before that plugin's own config can call it.
+- Current config is collision-free — this only adds the check.
+
 ## [0.3.2] - 2026-08-10
 
 ### Fixed

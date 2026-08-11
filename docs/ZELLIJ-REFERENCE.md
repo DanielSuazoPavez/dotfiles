@@ -146,7 +146,7 @@ Every tab keeps its top tab-bar and bottom status-bar (set via
 
 - **Keybinds are cleared to defaults-off** (`clear-defaults=true`) and fully
   redefined — this is the authoritative set, not stock zellij.
-- **Zellij owns terminal keybinds.** Ghostty deliberately avoids binds that
-  would collide; see `scripts/check-keybind-collisions.py`.
+- **Zellij owns terminal keybinds.** Ghostty and nvim deliberately avoid
+  binds that would collide; see `scripts/check-keybind-collisions.py`.
 - Startup tips are off; pane frames on; default mode `normal`; default layout
   `default`.
