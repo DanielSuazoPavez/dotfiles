@@ -44,8 +44,6 @@ fi
 # scripts/dev-setup.sh: separate entrypoints, no shared code.
 # ============================================================================
 
-# Invoked as `run_step ... try_sudo ...`, which shellcheck cannot trace.
-# shellcheck disable=SC2329
 try_sudo() {
     if sudo "$@"; then
         return 0
@@ -75,7 +73,6 @@ echo "Applying dark theme..."
 # plasma-apply-colorscheme reloads running apps; kwriteconfig alone would need
 # a re-login to show up. Absent on a Plasma install missing plasma-workspace,
 # so fall back to writing the key directly.
-# shellcheck disable=SC2329  # invoked via run_step below
 apply_colorscheme() {
     if command -v plasma-apply-colorscheme &> /dev/null; then
         plasma-apply-colorscheme BreezeDark > /dev/null
