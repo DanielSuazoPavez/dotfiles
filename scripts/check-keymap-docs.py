@@ -113,6 +113,9 @@ def ftplugin_samples() -> list[Path]:
     ftplugin_dir = REPO_ROOT / ".config/nvim/after/ftplugin"
     samples = []
     for lua_file in sorted(ftplugin_dir.glob("*.lua")):
+        # Assumes stem == a nvim-detectable file extension (true for
+        # json/lua/markdown today); a filetype like "gitcommit" would need
+        # a differently-named sample to attach.
         ft = lua_file.stem
         tmp = tempfile.NamedTemporaryFile(suffix=f".{ft}", delete=False)
         tmp.close()
