@@ -53,11 +53,13 @@ if [ -f "$HOME/.cargo/env" ]; then
 fi
 
 # Go
-
 if [ -d /usr/local/go ]; then
     export GOROOT=/usr/local/go
+    export PATH=$GOROOT/bin:$PATH
+fi
+if command -v go &> /dev/null; then
     export GOPATH=$HOME/go
-    export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+    export PATH=$GOPATH/bin:$PATH
 fi
 
 # NVM (Node Version Manager)
