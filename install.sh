@@ -301,6 +301,20 @@ install_duckdb() {
     curl -fsSL https://install.duckdb.org | sh
 }
 
+install_cron() {
+    command -v crontab &> /dev/null && return 0
+    echo "  Installing cronie..."
+    pkg_install cronie cron
+}
+
+enable_cron() {
+    local unit="cron"
+    if systemctl is-enabled "$unit" &> /dev/null; then
+        return 0
+    fi
+    try_sudo systemctl enable --now "$unit"
+}
+
 install_ghostty() {
     command -v ghostty &> /dev/null && return 0
     echo "  Installing ghostty..."
@@ -446,6 +460,7 @@ INSTALL_FONTS=false
 INSTALL_ZOXIDE=false
 INSTALL_RIPGREP=false
 INSTALL_BROOT=false
+INSTALL_CRON=false
 INSTALL_RUNTIMES=false
 INSTALL_CLAUDE=false
 INSTALL_KDE=false
@@ -470,6 +485,10 @@ fi
 if prompt_category "CLI extras (ripgrep, broot, bat, trash-cli, duckdb)" "y"; then
     INSTALL_RIPGREP=true
     INSTALL_BROOT=true
+fi
+
+if prompt_category "Cron (cronie)" "y"; then
+    INSTALL_CRON=true
 fi
 
 if prompt_category "Runtimes (uv, node, docker)" "y"; then
@@ -550,6 +569,13 @@ if [ "$INSTALL_RIPGREP" = true ] || [ "$INSTALL_BROOT" = true ]; then
     run_install install_bat
     run_install install_trash_cli
     run_install install_duckdb
+fi
+
+# Cron
+if [ "$INSTALL_CRON" = true ]; then
+    echo "Installing Cron..."
+    run_install install_cron
+    run_install enable_cron
 fi
 
 # Runtimes

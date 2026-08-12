@@ -109,7 +109,7 @@ scratch_home() {
 stub_path() {
     local t
     for t in starship zellij nvim zoxide rg broot bat trash duckdb \
-             uv node npm docker claude ghostty fc-list fc-cache unzip; do
+             uv node npm docker claude ghostty crontab systemctl fc-list fc-cache unzip; do
         printf '#!/bin/sh\nexit 0\n' > "$STUB/$t"
         chmod +x "$STUB/$t"
     done
@@ -145,7 +145,7 @@ stub_path() {
 # assertion in test_install.sh is the only guard against that.
 run_install_sh() {
     env PATH="$STUB:$PATH" HOME="$SCRATCH" GIT_CONFIG_GLOBAL="$WORK/gitconfig" \
-        "$REPO_ROOT/install.sh" <<< $'yyyyyyyyyyy\n' \
+        "$REPO_ROOT/install.sh" <<< $'yyyyyyyyyyyy\n' \
         > "$WORK/install.log" 2>&1
 }
 
