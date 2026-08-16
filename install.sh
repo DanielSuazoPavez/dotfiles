@@ -451,15 +451,13 @@ echo
 # Category Prompts
 # ============================================================================
 
-# Shell basics are always installed (no prompt)
-INSTALL_STARSHIP=false
-INSTALL_NEOVIM=false
-INSTALL_ZELLIJ=false
-INSTALL_GHOSTTY=false
+# Shell basics are always installed (no prompt).
+# Only installer-gating flags are declared here. The flags that gate link groups
+# (INSTALL_STARSHIP, INSTALL_NEOVIM, INSTALL_ZELLIJ, INSTALL_GHOSTTY,
+# INSTALL_RIPGREP, INSTALL_BROOT) are declared by links.sh from GROUP_FLAGS,
+# sourced at line 34 — well before this block. Do not re-declare them.
 INSTALL_FONTS=false
 INSTALL_ZOXIDE=false
-INSTALL_RIPGREP=false
-INSTALL_BROOT=false
 INSTALL_CRON=false
 INSTALL_RUNTIMES=false
 INSTALL_CLAUDE=false

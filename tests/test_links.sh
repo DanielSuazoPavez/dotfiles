@@ -75,20 +75,23 @@ flag_groups_list=$(for g in "${!GROUP_FLAGS[@]}"; do echo "$g"; done | sort)
 assert_eq "$flag_groups_list" "$link_groups_list" \
     "GROUP_FLAGS keys match LINKS groups exactly"
 
-# 9. Every flag named by GROUP_FLAGS is one install.sh actually declares.
-# group_enabled reads ${!flag:-}, so a typo'd INSTALL_NEOVIN is indistinguishable
-# from INSTALL_NEOVIM=false — the group silently never links. Pinned against the
-# flag initializer block in install.sh.
-unknown_flags=""
+# 9. Sourcing links.sh declares every flag GROUP_FLAGS names, defaulted to false.
+# This is what replaces the old string coupling: the declaration is derived from the
+# registry, so a typo'd INSTALL_NEOVIN can no longer read as "declared elsewhere,
+# currently false" — there is no elsewhere. The file runs `set -u`, so an undeclared
+# flag aborts this loop rather than silently passing.
+undeclared_flags=""
 for g in "${!GROUP_FLAGS[@]}"; do
     for f in ${GROUP_FLAGS[$g]}; do
-        grep -q "^$f=false$" "$REPO_ROOT/install.sh" || unknown_flags="$unknown_flags $g:$f"
+        [[ -v $f && ${!f} == false ]] || undeclared_flags="$undeclared_flags $g:$f"
     done
 done
-assert_eq "$unknown_flags" "" "every GROUP_FLAGS flag is declared in install.sh"
+assert_eq "$undeclared_flags" "" "sourcing links.sh declares every GROUP_FLAGS flag as false"
 
-# 10. group_enabled semantics. No INSTALL_* is defined at this point and the file
-# runs `set -u`, so these also prove the predicate cannot abort a flag-less caller.
+# 10. group_enabled semantics. The link-gating INSTALL_* flags are defined and
+# false here — links.sh declared them when it was sourced — so these cases test
+# the default-off behaviour, not undefined-flag behaviour. The `set -u`-abort
+# guarantee of ${!flag:-} is proved by the undeclared-flag case below instead.
 #
 # The INSTALL_* assignments below are read only via group_enabled's ${!flag:-}
 # indirect expansion, which shellcheck cannot follow, so each needs SC2034
@@ -97,10 +100,18 @@ if group_enabled core; then core_on=yes; else core_on=no; fi
 assert_eq "$core_on" "yes" "group_enabled core is always on (empty spec)"
 
 if group_enabled starship; then st_on=yes; else st_on=no; fi
-assert_eq "$st_on" "no" "group_enabled starship is off when the flag is undefined"
+assert_eq "$st_on" "no" "group_enabled starship is off at the links.sh default"
 
 if group_enabled nosuchgroup; then ns_on=yes; else ns_on=no; fi
 assert_eq "$ns_on" "no" "group_enabled fails closed on an unregistered group"
+
+# A GROUP_FLAGS spec naming a flag nothing declares must read as off, not abort.
+# This is what keeps group_enabled's ${!flag:-} honest under `set -u` — the real
+# flags are all declared now, so without this case that guard would be untested.
+GROUP_FLAGS[phantom]="INSTALL_NOSUCHFLAG"
+if group_enabled phantom; then ph_on=yes; else ph_on=no; fi
+assert_eq "$ph_on" "no" "group_enabled is off (not aborting) for an undeclared flag"
+unset 'GROUP_FLAGS[phantom]'
 
 INSTALL_RIPGREP=true INSTALL_BROOT=false
 if group_enabled cli-extras; then or_a=yes; else or_a=no; fi
