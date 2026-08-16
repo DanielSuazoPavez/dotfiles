@@ -146,10 +146,18 @@ unset INSTALL_STARSHIP INSTALL_RIPGREP INSTALL_BROOT
 # match still catches a typo (the name appears nowhere) while surviving any
 # reformat. Do not "tighten" it back.
 #
-# Comment lines are stripped first, and that is load-bearing: install.sh's
-# flag-declaration comment names all six flags in prose, so a match against the
-# raw file would pass for a flag whose last real use was deleted.
-install_code=$(grep -vE '^[[:space:]]*#' "$REPO_ROOT/install.sh")
+# Both full-line and trailing comments are stripped, and that is load-bearing:
+# install.sh's flag-declaration comment names all six flags in prose, so a match
+# against the raw file would pass for a flag whose last real use was deleted. A
+# flag surviving only as a trailing comment (`foo=1  # INSTALL_NEOVIM`) is the
+# same false pass.
+#
+# The trailing-comment pattern is anchored on leading whitespace, NOT a bare
+# `s/#.*//`. install.sh has `#` inside parameter expansions — `${fn#install_}`
+# and `${#FAILED_LINKS[@]}` — and the bare form truncates those lines
+# mid-expansion. Do not "simplify" it.
+install_code=$(grep -vE '^[[:space:]]*#' "$REPO_ROOT/install.sh" |
+    sed 's/[[:space:]]#.*$//')
 flags_missing_from_install=""
 for g in "${!GROUP_FLAGS[@]}"; do
     for f in ${GROUP_FLAGS[$g]}; do
