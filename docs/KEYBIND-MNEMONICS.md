@@ -80,7 +80,7 @@ An exception is a decision, not a deviation — it is listed here rather than in
 | `s` | — | — | **contested**: *stacked* (pane), *sync* (tab), *scroll* (`Ctrl s`), *search* (scroll mode), *share* (session) |
 | `p` | — | — | **contested**: *pane* (`Ctrl p`), *previous* (`Search "up"` — scoped exception), *pin* (`Alt p`, `<leader>bp`), *plugin manager* (session), *preview* (`<leader>hp`) |
 | `e` | — | — | **contested**: *embed* (pane), *move* mode (`Ctrl e`), *edit* (scroll, broot) vs *explorer* (`<leader>e` in nvim) |
-| `c` | — | — | **contested**: *change name* (pane rename), *case sensitivity* (search), *configuration* (session), *code* (`<leader>c` in nvim) |
+| `c` | — | — | **contested**: *case sensitivity* (search), *configuration* (session), *code* (`<leader>c` in nvim). Freed in pane mode when `r` took rename — left unbound rather than reassigned |
 | `d` | down | motion | **held** — `HalfPageScrollDown`; session *detach* is a scoped exception, `<leader>fd` is a different namespace |
 | `w` | — | — | **contested**: *floating window* (pane), *wrap* (search), *session manager* (session) |
 | `z` | frames / fold | display | **held** — `TogglePaneFrames` in zellij; vim's own `z` prefix is folds, a different tool's namespace |
@@ -116,7 +116,6 @@ Scoped exceptions (see `## The charter`) are decisions and are not listed here.
 | `bind "p" { SwitchFocus; }` | `.config/zellij/config.kdl:29` (pane) | Cycle pane focus | `p` = *pane* as a mode-entry noun (`Ctrl p`); here it is a verb |
 | `bind "f" { ToggleFocusFullscreen; ... }` | `.config/zellij/config.kdl:15` (pane) | Toggle fullscreen | `f` = *find* is held across nvim's entire `<leader>f` subtree |
 | `bind "Alt f" { ToggleFloatingPanes; }` | `.config/zellij/config.kdl:167` | Toggle floating panes | Third verb on `f`, and a *global* reservation — this one nvim genuinely cannot reuse |
-| `bind "c" { SearchToggleOption "CaseSensitivity"; }` | `.config/zellij/config.kdl:103` (search) | Toggle case sensitivity | Disagrees with pane-mode `c` = *change name* |
 | `bind "Alt i" { MoveTab "left"; }` | `.config/zellij/config.kdl:169` | Move tab left | *left* is `h`; `i` means *pin* in pane mode |
 
 ## Notes / policy
