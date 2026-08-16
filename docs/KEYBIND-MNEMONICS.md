@@ -2,11 +2,14 @@
 
 What a letter is *supposed* to mean, across zellij, neovim and broot. Nothing
 recorded this before, so the same letter drifted to different verbs in different
-modes — `r` is *rename* in zellij's tab mode but *new pane right* in pane mode,
-`s` is *stacked* / *sync* / *scroll* / *search* depending on where you are. This
-document fixes the intended meaning of each letter so a new bind is decidable
-(consult the table instead of guessing), and lists every current binding that
-contradicts it. **It changes no keybindings** — see `## Notes / policy`.
+modes — `s` still means *stacked* / *sync* / *scroll* / *search* / *share*
+depending on where you are. This document fixes the intended meaning of each
+letter so a new bind is decidable (consult the table instead of guessing), and
+lists every current binding that contradicts it.
+
+A small **core set** — `h j k l`, `r`, `n`, `x` — is enforced in the config;
+everything else is recorded, not policed. See `## Notes / policy` for what that
+distinction obliges.
 
 ## Scope and tiers
 
@@ -19,12 +22,12 @@ it treats as global. There are two tiers:
 
 | Tier | What it covers | Reserved against nvim/broot? |
 |---|---|---|
-| **Global chords** | `Alt f/h/i/j/k/l/n/o/p`, `Alt` digits/arrows/brackets, `Ctrl e/g/n/o/p/q/s/t` — the `shared_except` sections (`config.kdl:142-191`) | **Yes.** Hard reservation; nvim never receives them. |
+| **Global chords** | `Alt f/h/i/j/k/l/n/o/p`, `Alt` digits/arrows/brackets, `Ctrl e/g/n/o/p/q/s/t` — the `shared_except` sections (`config.kdl:148-197`) | **Yes.** Hard reservation; nvim never receives them. |
 | **Mode-local letters** | Every bare letter in `pane`, `tab`, `resize`, `move`, `scroll`, `search`, `session` | **No.** They only fire after you enter that mode. |
 
 **From normal mode, zellij reserves no bare letter.** Every global reservation is
 `Alt`- or `Ctrl`-chorded. The bare letters `d h j k l u` in
-`shared_among "scroll" "search"` (`config.kdl:198-215`) are the only bare letters
+`shared_among "scroll" "search"` (`config.kdl:204-221`) are the only bare letters
 in a section the collision checker calls global — and that section is itself
 mode-scoped, so they fire only once you are already scrolling or searching.
 
@@ -42,26 +45,43 @@ and `ctrl-g` are zellij globals, so broot only sees them outside zellij.
 
 ## The charter
 
-Axis = the family of verbs the letter belongs to. Status **held** means the
-letter already means one thing everywhere it appears; **contested** means more
-than one verb claims it and no meaning is being invented to break the tie.
+Axis = the family of verbs the letter belongs to. Status **core** means the
+letter is governed: it has one verb, deviations get fixed rather than recorded,
+and a new bind may not claim it for anything else. **held** means it already
+means one thing everywhere it appears but is not load-bearing enough to govern.
+**contested** means more than one verb claims it and no meaning is being
+invented to break the tie.
+
+The core set is deliberately small — `h` `j` `k` `l` `r` `n` `x`. Everything
+else is documentation, not policy.
+
+**Scoped exceptions.** Two bindings contradict a core letter and are kept
+anyway, because they inherit a stronger convention from another tool:
+
+| Binding | Why it stands |
+|---|---|
+| search mode `n` / `p` = next / previous match | vim's search bindings; "new" is meaningless inside a search |
+| session mode `d` = detach | `d` = *down* is a motion-axis claim; session mode is a deliberate, rarely-entered namespace |
+
+An exception is a decision, not a deviation — it is listed here rather than in
+`## Known deviations` so the deviation table stays a work-list.
 
 | Letter | Verb | Axis | Status |
 |---|---|---|---|
-| `h` | left / previous | motion | **held** — pane, tab, resize, move, scroll, `Alt` |
-| `j` | down / next | motion | **held** — same six surfaces |
-| `k` | up / previous | motion | **held** — same six surfaces |
-| `l` | right / next | motion | **held** — same six surfaces |
-| `x` | close | destroy | **held** — `CloseFocus` (pane) and `CloseTab` (tab) agree |
+| `h` | left / previous | motion | **core** — pane, tab, resize, move, scroll, `Alt` |
+| `j` | down / next | motion | **core** — same six surfaces |
+| `k` | up / previous | motion | **core** — same six surfaces |
+| `l` | right / next | motion | **core** — same six surfaces |
+| `r` | rename | edit | **core** — pane and tab agree |
+| `x` | close | destroy | **core** — `CloseFocus` (pane) and `CloseTab` (tab) agree |
 | `b` | break out | structure | **held** — `BreakPane` in tab mode; `<leader>b` = buffer in nvim is a different namespace |
 | `f` | find | search | **held in nvim** (`<leader>f` subtree is all pickers) — **contested** in zellij: *fullscreen* (pane) and *floating* (`Alt f`) |
-| `n` | new | create | **held in pane/tab** (`NewPane`, `NewTab`, `Alt n`) — **contested**: also *next* (`Search "down"`) and *move* (`MovePane`, move mode) |
+| `n` | new | create | **core** — `NewPane`, `NewTab`, `Alt n`. Search-mode *next* is a scoped exception; `Ctrl n` = resize remains a deviation |
 | `s` | — | — | **contested**: *stacked* (pane), *sync* (tab), *scroll* (`Ctrl s`), *search* (scroll mode), *share* (session) |
-| `r` | — | — | **contested**: *right* (pane, `NewPane "right"`) vs *rename* (tab) |
-| `p` | — | — | **contested**: *pane* (`Ctrl p`), *previous* (`Search "up"`, `MovePaneBackwards`), *pin* (`Alt p`, `<leader>bp`), *plugin manager* (session), *preview* (`<leader>hp`) |
+| `p` | — | — | **contested**: *pane* (`Ctrl p`), *previous* (`Search "up"` — scoped exception), *pin* (`Alt p`, `<leader>bp`), *plugin manager* (session), *preview* (`<leader>hp`) |
 | `e` | — | — | **contested**: *embed* (pane), *move* mode (`Ctrl e`), *edit* (scroll, broot) vs *explorer* (`<leader>e` in nvim) |
 | `c` | — | — | **contested**: *change name* (pane rename), *case sensitivity* (search), *configuration* (session), *code* (`<leader>c` in nvim) |
-| `d` | down | motion | **held in zellij motion contexts** (`NewPane "down"`, `HalfPageScrollDown`) — **contested** by *detach* (session) and *diagnostics* (`<leader>fd`) |
+| `d` | down | motion | **held** — `HalfPageScrollDown`; session *detach* is a scoped exception, `<leader>fd` is a different namespace |
 | `w` | — | — | **contested**: *floating window* (pane), *wrap* (search), *session manager* (session) |
 | `z` | frames / fold | display | **held** — `TogglePaneFrames` in zellij; vim's own `z` prefix is folds, a different tool's namespace |
 | `i` | pin / insert-left | structure | **contested**: `TogglePanePinned` (pane) vs `MoveTab "left"` (`Alt i`) |
@@ -80,41 +100,40 @@ a meaning nothing currently uses would make the table lie.
 
 ## Known deviations
 
-Every current binding that contradicts a **held** row above. Rows are keyed on
-the bind text — line numbers drift, the bind is the identity.
+Every current binding that contradicts a **core** or **held** row above. Rows
+are keyed on the bind text — line numbers drift, the bind is the identity.
+Scoped exceptions (see `## The charter`) are decisions and are not listed here.
 
 | Binding | Location | Does today | Charter says |
 |---|---|---|---|
-| `bind "r" { NewPane "right"; ... }` | `.config/zellij/config.kdl:26` (pane) | New pane to the right | `r` is contested; *right* belongs to `l` on the motion axis, and `r` = *rename* in tab mode |
-| `bind "r" { SwitchToMode "renametab"; ... }` | `.config/zellij/config.kdl:54` (tab) | Rename the tab | Same letter as pane-mode *right* — the sharpest contradiction in the config |
-| `bind "c" { SwitchToMode "renamepane"; ... }` | `.config/zellij/config.kdl:14` (pane) | Rename the pane | Rename is `r` in tab mode; `c` for the same verb in pane mode splits it |
-| `bind "s" { NewPane "stacked"; ... }` | `.config/zellij/config.kdl:28` (pane) | New stacked pane | `n` is *new*; `s` also means sync/scroll/search/share elsewhere |
-| `bind "s" { ToggleActiveSyncTab; ... }` | `.config/zellij/config.kdl:55` (tab) | Toggle tab sync | Disagrees with pane-mode `s` = *stacked* |
-| `bind "s" { SwitchToMode "entersearch"; ... }` | `.config/zellij/config.kdl:94` (scroll) | Enter search | Third verb on `s` — and it is reached via `Ctrl s` = *scroll* |
-| `bind "n" { MovePane; }` | `.config/zellij/config.kdl:88` (move) | Move pane forward | `n` = *new* (held in pane/tab); this is *next* |
-| `bind "n" { Search "down"; }` | `.config/zellij/config.kdl:98` (search) | Next match | `n` = *new*; vim-inherited *next* — kept deliberately, but it is a deviation |
-| `bind "Ctrl n" { SwitchToMode "resize"; }` | `.config/zellij/config.kdl:190` | Enter resize mode | `n` = *new*; positional inheritance from stock zellij, not mnemonic |
-| `bind "e" { TogglePaneEmbedOrFloating; ... }` | `.config/zellij/config.kdl:16` (pane) | Embed / float the pane | `e` is contested; nvim's `<leader>e` = *explorer* and broot's `ctrl-e` = *edit* |
-| `bind "Ctrl e" { SwitchToMode "move"; }` | `.config/zellij/config.kdl:175` | Enter move mode | Mode-entry chords are otherwise first-letter-of-noun; *move* should be `m` |
-| `bind "Ctrl o" { SwitchToMode "session"; }` | `.config/zellij/config.kdl:178` | Enter session mode | *session* should be `s`, but `Ctrl s` is *scroll*; positional inheritance |
-| `bind "p" { SwitchFocus; }` | `.config/zellij/config.kdl:24` (pane) | Cycle pane focus | `p` = *pane* as a mode-entry noun (`Ctrl p`); here it is a verb |
-| `bind "p" { MovePaneBackwards; }` | `.config/zellij/config.kdl:89` (move) | Move pane backward | *previous*, not *pane* |
-| `bind "p" { Search "up"; }` | `.config/zellij/config.kdl:100` (search) | Previous match | *previous*, not *pane* |
-| `bind "d" { NewPane "down"; ... }` | `.config/zellij/config.kdl:15` (pane) | New pane below | *down* is `j` on the motion axis; `d` is also *detach* in session mode |
-| `bind "d" { Detach; }` | `.config/zellij/config.kdl:119` (session) | Detach the session | Conflicts with `d` = *down* used in pane and scroll modes |
-| `bind "f" { ToggleFocusFullscreen; ... }` | `.config/zellij/config.kdl:17` (pane) | Toggle fullscreen | `f` = *find* is held across nvim's entire `<leader>f` subtree |
-| `bind "Alt f" { ToggleFloatingPanes; }` | `.config/zellij/config.kdl:161` | Toggle floating panes | Third verb on `f`, and a *global* reservation — this one nvim genuinely cannot reuse |
-| `bind "c" { SearchToggleOption "CaseSensitivity"; }` | `.config/zellij/config.kdl:97` (search) | Toggle case sensitivity | Disagrees with pane-mode `c` = *change name* |
-| `bind "Alt i" { MoveTab "left"; }` | `.config/zellij/config.kdl:163` | Move tab left | *left* is `h`; `i` means *pin* in pane mode |
+| `bind "s" { NewPane "stacked"; ... }` | `.config/zellij/config.kdl:33` (pane) | New stacked pane | `n` is *new*; `s` also means sync/scroll/search/share elsewhere |
+| `bind "s" { ToggleActiveSyncTab; ... }` | `.config/zellij/config.kdl:60` (tab) | Toggle tab sync | Disagrees with pane-mode `s` = *stacked* |
+| `bind "s" { SwitchToMode "entersearch"; ... }` | `.config/zellij/config.kdl:100` (scroll) | Enter search | Third verb on `s` — and it is reached via `Ctrl s` = *scroll* |
+| `bind "Ctrl n" { SwitchToMode "resize"; }` | `.config/zellij/config.kdl:196` | Enter resize mode | `n` = *new*; positional inheritance from stock zellij, not mnemonic |
+| `bind "e" { TogglePaneEmbedOrFloating; ... }` | `.config/zellij/config.kdl:14` (pane) | Embed / float the pane | `e` is contested; nvim's `<leader>e` = *explorer* and broot's `ctrl-e` = *edit* |
+| `bind "Ctrl e" { SwitchToMode "move"; }` | `.config/zellij/config.kdl:181` | Enter move mode | Mode-entry chords are otherwise first-letter-of-noun; *move* should be `m` |
+| `bind "Ctrl o" { SwitchToMode "session"; }` | `.config/zellij/config.kdl:184` | Enter session mode | *session* should be `s`, but `Ctrl s` is *scroll*; positional inheritance |
+| `bind "p" { SwitchFocus; }` | `.config/zellij/config.kdl:29` (pane) | Cycle pane focus | `p` = *pane* as a mode-entry noun (`Ctrl p`); here it is a verb |
+| `bind "f" { ToggleFocusFullscreen; ... }` | `.config/zellij/config.kdl:15` (pane) | Toggle fullscreen | `f` = *find* is held across nvim's entire `<leader>f` subtree |
+| `bind "Alt f" { ToggleFloatingPanes; }` | `.config/zellij/config.kdl:167` | Toggle floating panes | Third verb on `f`, and a *global* reservation — this one nvim genuinely cannot reuse |
+| `bind "c" { SearchToggleOption "CaseSensitivity"; }` | `.config/zellij/config.kdl:103` (search) | Toggle case sensitivity | Disagrees with pane-mode `c` = *change name* |
+| `bind "Alt i" { MoveTab "left"; }` | `.config/zellij/config.kdl:169` | Move tab left | *left* is `h`; `i` means *pin* in pane mode |
 
 ## Notes / policy
 
-- **The charter governs *new* binds.** Adding a key? Find the letter above. If
-  it is **held**, use it for that verb or pick another letter. If it is
-  **contested**, you are free — but add your choice to the contested list.
-- **The deviations are deliberately unchanged.** Every row in that table is a
-  documented fact, not a bug and not an oversight — rebinding was explicitly
-  deferred. The table is the work-list if normalization is ever approved.
+- **Core letters are enforced; everything else is recorded.** A bind that
+  contradicts a **core** letter gets fixed. A bind that contradicts a **held**
+  or **contested** letter gets a row in `## Known deviations` and is left alone.
+  That asymmetry is the whole policy — a core set small enough to actually hold
+  beats a comprehensive one nobody follows.
+- **Adding a key?** Find the letter above. **core** → use it for that verb or
+  pick another letter. **held** → prefer that verb. **contested** → you are
+  free, but add your choice to the contested list.
+- **The remaining deviations are deliberately unchanged.** Every row in that
+  table is a documented fact, not an oversight. It is the work-list if the core
+  set is ever widened.
+- **Scoped exceptions are decisions, not debt.** search `n`/`p` and session `d`
+  contradict a core letter and stay. Do not "fix" them.
 - **This document is *meaning*; `scripts/check-keybind-collisions.py` is
   *overlap*.** A binding can be collision-free and still mnemonically wrong, and
   the checker will never say so.

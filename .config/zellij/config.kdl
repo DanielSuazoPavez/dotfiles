@@ -11,8 +11,6 @@ keybinds clear-defaults=true {
         bind "down" { MoveFocus "down"; }
         bind "up" { MoveFocus "up"; }
         bind "right" { MoveFocus "right"; }
-        bind "c" { SwitchToMode "renamepane"; PaneNameInput 0; }
-        bind "d" { NewPane "down"; SwitchToMode "normal"; }
         bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "normal"; }
         bind "f" { ToggleFocusFullscreen; SwitchToMode "normal"; }
         bind "h" { MoveFocus "left"; }
@@ -20,10 +18,17 @@ keybinds clear-defaults=true {
         bind "j" { MoveFocus "down"; }
         bind "k" { MoveFocus "up"; }
         bind "l" { MoveFocus "right"; }
+        // Core letters (docs/KEYBIND-MNEMONICS.md): n = new, r = rename,
+        // x = close. Directional new-pane rides the motion axis shifted, so
+        // "new pane rightwards" is Shift-l, not r -- r is rename everywhere.
         bind "n" { NewPane; SwitchToMode "normal"; }
+        bind "H" { NewPane "left"; SwitchToMode "normal"; }
+        bind "J" { NewPane "down"; SwitchToMode "normal"; }
+        bind "K" { NewPane "up"; SwitchToMode "normal"; }
+        bind "L" { NewPane "right"; SwitchToMode "normal"; }
         bind "p" { SwitchFocus; }
         bind "Ctrl p" { SwitchToMode "normal"; }
-        bind "r" { NewPane "right"; SwitchToMode "normal"; }
+        bind "r" { SwitchToMode "renamepane"; PaneNameInput 0; }
         bind "x" { CloseFocus; SwitchToMode "normal"; }
         bind "s" { NewPane "stacked"; SwitchToMode "normal"; }
         bind "w" { ToggleFloatingPanes; SwitchToMode "normal"; }
@@ -85,9 +90,10 @@ keybinds clear-defaults=true {
         bind "j" { MovePane "down"; }
         bind "k" { MovePane "up"; }
         bind "l" { MovePane "right"; }
-        bind "n" { MovePane; }
-        bind "p" { MovePaneBackwards; }
+        // Cycling the pane through layout positions lives on tab/Shift-tab;
+        // n and p are unbound here so n = new and p stay uncontested.
         bind "tab" { MovePane; }
+        bind "Shift tab" { MovePaneBackwards; }
     }
     scroll {
         bind "e" { EditScrollback; SwitchToMode "normal"; }

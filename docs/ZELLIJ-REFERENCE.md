@@ -45,16 +45,15 @@ mode dance for the common stuff:
 | Key | Action |
 |---|---|
 | `n` | New pane |
-| `d` | Split **down** |
-| `r` | Split **right** |
+| `H/J/K/L` | New pane **left / down / up / right** (shifted motion keys) |
 | `s` | New **stacked** pane |
 | `h/j/k/l` or arrows | Move focus |
+| `r` | Rename pane |
 | `x` | Close focused pane |
 | `f` | Toggle fullscreen for focused pane |
 | `z` | Toggle pane frames |
 | `w` | Toggle floating panes |
 | `e` | Toggle embed / float for focused pane |
-| `c` | Rename pane |
 | `p` | Cycle focus |
 
 ## Tab mode (`Ctrl t`, then…)
@@ -85,8 +84,8 @@ mode dance for the common stuff:
 | Key | Action |
 |---|---|
 | `h/j/k/l` or arrows | Move pane in that direction |
-| `n` / `Tab` | Move pane to next position |
-| `p` | Move pane backwards |
+| `Tab` | Cycle pane to next layout position |
+| `Shift Tab` | Cycle pane to previous layout position |
 
 ## Scroll & search (`Ctrl s`, then…)
 
