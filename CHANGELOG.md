@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.8] - 2026-08-16
+
+### Added
+- Neovim: treesitter folding in `sh`, `python` and `yaml` buffers via new `after/ftplugin/{sh,python,yaml}.lua`, matching the settings already used in `json.lua`/`markdown.lua` (`foldmethod=expr`, `vim.treesitter.foldexpr`, `foldlevel=99`, `foldcolumn=1`). Previously `za`/`zo`/`zc` were silent no-ops in those buffers — no folds, no error, no feedback.
+- `yaml` added to the treesitter parser install list; without it a `yaml` ftplugin would render a fold column with zero folds.
+- `docs/NVIM-REFERENCE.md`: new `## Folding` section covering all five folding filetypes, the `zc`/`zo`/`za` keys, and what adding a new filetype requires. Also closes a pre-existing gap — `json` folding was never documented.
+
+### Changed
+- `docs/NVIM-REFERENCE.md`: the markdown section no longer claims folding exists in a `.md` buffer "and nowhere else" — that scope now correctly applies to heading navigation only.
+
 ## [0.3.7] - 2026-08-12
 
 ### Added

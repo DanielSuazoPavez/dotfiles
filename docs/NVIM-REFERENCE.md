@@ -150,8 +150,8 @@ tables, code blocks and callouts draw as virtual text over the file. Nothing is
 written to disk and there is no preview window to sync. Rendering drops on the
 cursor line in insert mode, so editing always shows the raw markdown.
 
-Navigation and folding come from `after/ftplugin/markdown.lua`, so they are
-buffer-local — they exist in a `.md` buffer and nowhere else.
+Heading navigation comes from `after/ftplugin/markdown.lua`, so it is
+buffer-local — it exists in a `.md` buffer only.
 
 | Key | Action |
 |---|---|
@@ -161,12 +161,34 @@ buffer-local — they exist in a `.md` buffer and nowhere else.
 Heading jumps bypass `scrolloff` and land the heading on line 1, so the section
 you jumped to starts at the top of the view rather than mid-screen.
 
-Folding is treesitter-based and starts fully open: `zc` on a heading collapses
-that section and everything nested under it, `zo` reopens, `za` toggles. The
-fold column is on, so collapsed sections are visible in the gutter.
+Folding is on here too (see `## Folding`): `zc` on a heading collapses that
+section and everything nested under it.
 
 Cosmetic only — no HTML export and no mermaid rendering. For diagrams you still
 need a browser-based previewer or the `mmdc` CLI.
+
+## Folding
+
+Folding is treesitter-based and enabled in five filetypes: `markdown`, `json`,
+`sh`, `python` and `yaml`. What collapses is whatever the language's syntax tree
+calls a block — markdown sections under a heading, json objects and arrays,
+shell function bodies and `if`/`case`/loop blocks, python function and class
+bodies, yaml nested mappings and sequences.
+
+Buffers open fully expanded (`foldlevel=99`) — folding is opt-in per fold, never
+a wall of collapsed text on open. The fold column is on, so collapsed regions
+are visible in the gutter and the `+`/`-` markers are clickable.
+
+| Key | Action |
+|---|---|
+| `zc` | Close the fold under the cursor |
+| `zo` | Open it again |
+| `za` | Toggle it |
+
+It is configured per filetype in `after/ftplugin/<ft>.lua`, so a filetype not in
+the list above has no folds at all — `za` there does nothing. Adding one means
+three edits: the ftplugin, the parser in `lua/plugins/treesitter.lua`'s
+`install()` list if it is not already there, and this section.
 
 ## Windows & undo
 
