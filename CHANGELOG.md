@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-08-16
+
+### Added
+- `tests/test_links.sh`: new assertion that every `INSTALL_*` flag named in `GROUP_FLAGS` also appears as code in `install.sh`. This closes the gap 0.3.9 left open — that release's flag assertion is circular (it validates `GROUP_FLAGS` against declarations `links.sh` derives from `GROUP_FLAGS` itself), so a typo'd value like `[nvim]="INSTALL_NEOVIN"` declared itself and passed. The typo was still caught end-to-end by `tests/test_install.sh`; what is restored here is the fast unit-level guard that names the offending flag directly instead of surfacing as a missing symlink.
+
+### Notes
+- The match is deliberately loose — a bare word-boundary `grep` over `install.sh` with full-line comments stripped, **not** an anchored `^FLAG=true$`. 0.3.9 removed exactly that anchored form because it pinned `install.sh`'s formatting: a trailing comment or re-indent turned the suite red with no defect. Verified against re-indent, trailing comment, quoted value, `export` prefix and the `[ "$FLAG" = true ]` conditional form — all still match.
+- Stripping comments is load-bearing, not tidiness: `install.sh`'s flag-declaration comment names all six flags in prose, so a match against the raw file would pass for a flag whose last real use was deleted.
+- The assertion is one-directional (`GROUP_FLAGS` → `install.sh`) on purpose. The seven installer-gating flags gate installers rather than link groups and correctly have no `GROUP_FLAGS` entry, so the reverse check would fail on every one of them.
+- Consequence for future work: a new link group whose `install.sh` prompt was never added now fails this suite. That is intended — the fix is to add the prompt, never to weaken the assertion.
+- Known limitation: only *full-line* comments are stripped, so a flag surviving solely in a trailing comment on a code line would false-pass. `install.sh` has no such reference today.
+- Proven against the defect it exists for: with `[nvim]="INSTALL_NEOVIN"` temporarily in `links.sh`, the suite exits 1 naming `nvim:INSTALL_NEOVIN`.
+
 ## [0.4.0] - 2026-08-16
 
 ### Added

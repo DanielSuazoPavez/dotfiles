@@ -174,19 +174,6 @@
       "notes": "Five ftplugins now carry the same four fold lines verbatim (json, markdown, sh, python, yaml in .config/nvim/after/ftplugin/). A change to fold defaults must touch all five and nothing enforces that. Option: lua/ts-folding.lua exposing enable(), each ftplugin calling require('ts-folding').enable(). Deliberately deferred during nvim-folding-sh-py (user chose one file per type 'for now'); five copies is roughly where the refactor starts earning itself."
     },
     {
-      "id": "links-flag-typo-unit-guard",
-      "priority": "P3",
-      "title": "GROUP_FLAGS flag typo no longer caught at unit level (test_links.sh is circular)",
-      "scope": [
-        "install",
-        "repo"
-      ],
-      "status": "idea",
-      "created_at": "2026-08-16",
-      "updated_at": "2026-08-16",
-      "notes": "Since v0.3.9, links.sh declares link-gating INSTALL_* flags from GROUP_FLAGS itself. That removed the string coupling to install.sh's initializer block, but made tests/test_links.sh's flag assertion circular: it validates GROUP_FLAGS against declarations derived from GROUP_FLAGS in the same file, so a typo'd flag value (e.g. [nvim]=\"INSTALL_NEOVIN\") passes that suite.\n\nNot a coverage hole overall: tests/test_install.sh runs install.sh end-to-end and asserts the link set matches LINKS exactly, so a typo makes the group stop linking and 'make test' goes red. Verified by experiment. What was lost is the fast unit-level guard, not the catch.\n\nSurfaced by code-reviewer during the v0.3.9 branch review. Its suggested fix \u2014 cross-check GROUP_FLAGS values against install.sh's INSTALL_*=true prompt assignments \u2014 would restore a unit guard but re-introduce a string-and-format coupling to install.sh, which is what v0.3.9 set out to remove. Revisit only if a typo ever reaches a real machine; the end-to-end catch may well be sufficient."
-    },
-    {
       "id": "nvim-keymap-docs-drift",
       "priority": "P3",
       "title": "check-keymap-docs.py reports stale za/zc/zo in NVIM-REFERENCE.md",
@@ -209,6 +196,19 @@
       "created_at": "2026-08-16",
       "updated_at": "2026-08-16",
       "notes": "Deferred from the keybind-mnemonics branch by user decision. docs/KEYBIND-MNEMONICS.md defines a core letter set (h/j/k/l, r, n, x) that nothing enforces automatically -- check-keybind-collisions.py covers overlap, check-keymap-docs.py covers key-set drift, neither covers meaning. A checker would also need to keep the deviation table's file:line citations honest; four of them drifted during this branch's own rebinds and were only caught by a manual sweep. Caveat from .claude/rules/workflow/script-first.md: a script encoding the charter's rules is a second source of truth -- single-source it from the doc or accept the sync burden."
+    },
+    {
+      "id": "links-flag-guard-trailing-comment",
+      "priority": "P3",
+      "title": "test_links.sh flag guard strips only full-line comments",
+      "scope": [
+        "install",
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-16",
+      "updated_at": "2026-08-16",
+      "notes": "tests/test_links.sh assertion 11 strips comments with grep -vE '^[[:space:]]*#', which removes full-line comments only. A GROUP_FLAGS flag whose sole surviving mention in install.sh is a *trailing* comment on a code line (e.g. 'foo=1  # INSTALL_NEOVIM') would false-pass \u2014 the guard would report the flag as live code when its real use had been deleted.\n\nUntriggered today: install.sh has no trailing-comment reference to any of the six link-gating flags, and no heredocs. Surfaced by code-reviewer on the v0.4.1 branch, which judged it not worth fixing at this scale.\n\nDo NOT fix by anchoring the pattern (^FLAG=true$) \u2014 that is the v0.3.9 regression the loose match deliberately avoids. Any fix must stay format-independent; stripping trailing comments as well (sed 's/#.*//') is the obvious candidate but needs checking against '#' inside strings."
     }
   ]
 }
