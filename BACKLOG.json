@@ -109,19 +109,6 @@
       ]
     },
     {
-      "id": "links-flag-coupling-by-string",
-      "priority": "P3",
-      "title": "GROUP_FLAGS couples links.sh to install.sh flag names by string",
-      "scope": [
-        "install",
-        "repo"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-29",
-      "updated_at": "2026-07-29",
-      "notes": "Since v0.1.20, links.sh's GROUP_FLAGS names INSTALL_* variables that live in install.sh, resolved indirectly via ${!flag:-}. Renaming a flag in install.sh produces no error anywhere \u2014 the group just silently stops linking.\n\nMitigation in place: tests/test_links.sh asserts every GROUP_FLAGS flag matches a '^FLAG=false$' line in install.sh's initializer block. That works but is mildly brittle to reformatting of that block (e.g. switching to ': ${INSTALL_X:=false}' or one-lining the declarations would break the grep without any real defect).\n\nWorth revisiting only if the initializer block gets reformatted or the assertion produces a false failure. The alternative is accepting the silent-failure class, or moving to a single declaration site \u2014 but flags are prompt state owned by install.sh and meaningless to uninstall.sh, which sources the same links.sh."
-    },
-    {
       "id": "headless-install-flag",
       "priority": "P3",
       "title": "Restore headless install support via explicit --headless flag",
@@ -197,6 +184,19 @@
       "created_at": "2026-08-16",
       "updated_at": "2026-08-16",
       "notes": "Five ftplugins now carry the same four fold lines verbatim (json, markdown, sh, python, yaml in .config/nvim/after/ftplugin/). A change to fold defaults must touch all five and nothing enforces that. Option: lua/ts-folding.lua exposing enable(), each ftplugin calling require('ts-folding').enable(). Deliberately deferred during nvim-folding-sh-py (user chose one file per type 'for now'); five copies is roughly where the refactor starts earning itself."
+    },
+    {
+      "id": "links-flag-typo-unit-guard",
+      "priority": "P3",
+      "title": "GROUP_FLAGS flag typo no longer caught at unit level (test_links.sh is circular)",
+      "scope": [
+        "install",
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-16",
+      "updated_at": "2026-08-16",
+      "notes": "Since v0.3.9, links.sh declares link-gating INSTALL_* flags from GROUP_FLAGS itself. That removed the string coupling to install.sh's initializer block, but made tests/test_links.sh's flag assertion circular: it validates GROUP_FLAGS against declarations derived from GROUP_FLAGS in the same file, so a typo'd flag value (e.g. [nvim]=\"INSTALL_NEOVIN\") passes that suite.\n\nNot a coverage hole overall: tests/test_install.sh runs install.sh end-to-end and asserts the link set matches LINKS exactly, so a typo makes the group stop linking and 'make test' goes red. Verified by experiment. What was lost is the fast unit-level guard, not the catch.\n\nSurfaced by code-reviewer during the v0.3.9 branch review. Its suggested fix \u2014 cross-check GROUP_FLAGS values against install.sh's INSTALL_*=true prompt assignments \u2014 would restore a unit guard but re-introduce a string-and-format coupling to install.sh, which is what v0.3.9 set out to remove. Revisit only if a typo ever reaches a real machine; the end-to-end catch may well be sufficient."
     }
   ]
 }

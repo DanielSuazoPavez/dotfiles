@@ -1,7 +1,9 @@
 # links.sh — single source of truth for every symlink install.sh creates
 # and uninstall.sh removes. Sourced by both; not executable, do not run it.
 # To add a config: add one line to LINKS. A brand-new group also needs one
-# GROUP_FLAGS entry below. Nothing outside this file needs editing.
+# GROUP_FLAGS entry below, which declares the gating flag as well as naming it —
+# install.sh only adds the prompt that sets it true. Nothing outside this file
+# needs editing.
 # shellcheck shell=bash  # sourced, so it intentionally has no shebang
 
 # Resolved from this file's own location so both callers agree no matter
@@ -41,8 +43,11 @@ LINKS=(
 # Every group in LINKS must appear here and vice versa; tests/test_links.sh
 # asserts both directions, so a new group cannot be added to LINKS alone.
 #
-# Inert when sourced: this names flags as strings only. uninstall.sh sources this
-# file with no INSTALL_* in scope and never calls group_enabled.
+# Declaring a flag here is enough: sourcing this file defines every flag named
+# below as `false` unless the caller already set it, so install.sh must not
+# re-declare them — it only needs the prompt that flips one to `true`.
+# uninstall.sh inherits the six `false` values harmlessly: it reads LINKS and
+# DOTFILES_DIR only, and never calls group_enabled.
 declare -A GROUP_FLAGS=(
     [core]=""
     [starship]="INSTALL_STARSHIP"
@@ -52,6 +57,26 @@ declare -A GROUP_FLAGS=(
     [cli-extras]="INSTALL_RIPGREP INSTALL_BROOT"
     [broot]="INSTALL_BROOT"
 )
+
+# Declare every flag GROUP_FLAGS names, defaulting to false. This is the single
+# declaration site — no other file initializes a link-gating flag.
+#
+# Assign-if-unset, never unconditional: `declare -g "$f=false"` would reset a flag
+# the caller already set to true, so re-sourcing this file after install.sh's
+# prompts would silently disable every group.
+#
+# `printf -v` rather than `declare` on purpose: this file is sourced at file scope
+# today, but `declare` inside a function creates a *local* — if this loop is ever
+# moved into one, every group silently stops linking. `printf -v` assigns in the
+# current scope with no such trap. core's empty spec contributes nothing.
+for _lg_group in "${!GROUP_FLAGS[@]}"; do
+    # Unquoted on purpose: an OR-spec is space-separated, same as group_enabled.
+    for _lg_flag in ${GROUP_FLAGS[$_lg_group]}; do
+        printf -v "$_lg_flag" '%s' "${!_lg_flag:-false}"
+    done
+done
+# Prefixed and unset so sourcing leaks no loop variables into the caller.
+unset _lg_group _lg_flag
 
 # links_for_group <group> <out-array-name>
 # Populates the caller's array via nameref rather than echoing, so paths
