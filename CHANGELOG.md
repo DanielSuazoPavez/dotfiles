@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-08-16
+
+### Fixed
+- `tests/test_links.sh`: the `GROUP_FLAGS` flag guard now strips **trailing** comments as well as full-line ones. 0.4.1 shipped this as a known limitation — a flag whose sole surviving mention in `install.sh` was a trailing comment on a code line (`foo=1  # INSTALL_NEOVIM`) false-passed as live code, so the group would silently stop linking (`group_enabled` fails closed) while the suite stayed green.
+
+### Notes
+- The strip is whitespace-anchored — `sed 's/[[:space:]]#.*$//'`, **not** a bare `s/#.*//`. `install.sh` has `#` inside two parameter expansions, `${fn#install_}` and `${#FAILED_LINKS[@]}`; the bare form truncates both lines mid-expansion. Neither names a flag, so the naive pattern would pass today by luck — the anchor is what makes it correct rather than lucky.
+- The guard's match is still the loose `\b${f}\b` word-boundary form. The v0.3.9 anchored `^FLAG=true$` regression was not reintroduced.
+- The whitespace anchor is a heuristic, not a parse; the argument for it is the verification, not the pattern's general correctness. Checked against every `#` in `install.sh`: the strip touches exactly four lines (`set -e` and three `pkg_install`), both parameter expansions survive intact, and all six link-gating flags still resolve to their two real references. There are no heredocs and no `#` inside string literals — a future `install.sh` edit introducing either on a line that also names a flag is the case that would break this, and re-running that diff is the diagnostic.
+- No negative test was added. Asserting that a trailing-comment-only flag is reported missing would require extracting the strip into a callable helper, a structural change to a suite that is deliberately pure-assertion — too much for a P3 hole-closer. The rationale comment carries the intent instead.
+
 ## [0.4.1] - 2026-08-16
 
 ### Added

@@ -196,19 +196,6 @@
       "created_at": "2026-08-16",
       "updated_at": "2026-08-16",
       "notes": "Deferred from the keybind-mnemonics branch by user decision. docs/KEYBIND-MNEMONICS.md defines a core letter set (h/j/k/l, r, n, x) that nothing enforces automatically -- check-keybind-collisions.py covers overlap, check-keymap-docs.py covers key-set drift, neither covers meaning. A checker would also need to keep the deviation table's file:line citations honest; four of them drifted during this branch's own rebinds and were only caught by a manual sweep. Caveat from .claude/rules/workflow/script-first.md: a script encoding the charter's rules is a second source of truth -- single-source it from the doc or accept the sync burden."
-    },
-    {
-      "id": "links-flag-guard-trailing-comment",
-      "priority": "P3",
-      "title": "test_links.sh flag guard strips only full-line comments",
-      "scope": [
-        "install",
-        "repo"
-      ],
-      "status": "idea",
-      "created_at": "2026-08-16",
-      "updated_at": "2026-08-16",
-      "notes": "tests/test_links.sh assertion 11 strips comments with grep -vE '^[[:space:]]*#', which removes full-line comments only. A GROUP_FLAGS flag whose sole surviving mention in install.sh is a *trailing* comment on a code line (e.g. 'foo=1  # INSTALL_NEOVIM') would false-pass \u2014 the guard would report the flag as live code when its real use had been deleted.\n\nUntriggered today: install.sh has no trailing-comment reference to any of the six link-gating flags, and no heredocs. Surfaced by code-reviewer on the v0.4.1 branch, which judged it not worth fixing at this scale.\n\nDo NOT fix by anchoring the pattern (^FLAG=true$) \u2014 that is the v0.3.9 regression the loose match deliberately avoids. Any fix must stay format-independent; stripping trailing comments as well (sed 's/#.*//') is the obvious candidate but needs checking against '#' inside strings."
     }
   ]
 }
