@@ -38,23 +38,22 @@ mode dance for the common stuff:
 | `Alt [` / `Alt ]` | Previous / next layout |
 | `Alt f` | Toggle floating panes |
 | `Alt 1`…`Alt 9` | Go to tab by number |
-| `Alt i` / `Alt o` | Move current tab left / right |
+| `Alt Shift h` / `Alt Shift l` | Move current tab left / right |
 
 ## Pane mode (`Ctrl p`, then…)
 
 | Key | Action |
 |---|---|
 | `n` | New pane |
-| `d` | Split **down** |
-| `r` | Split **right** |
+| `H/J/K/L` | New pane **left / down / up / right** (shifted motion keys) |
 | `s` | New **stacked** pane |
 | `h/j/k/l` or arrows | Move focus |
+| `r` | Rename pane |
 | `x` | Close focused pane |
 | `f` | Toggle fullscreen for focused pane |
 | `z` | Toggle pane frames |
 | `w` | Toggle floating panes |
 | `e` | Toggle embed / float for focused pane |
-| `c` | Rename pane |
 | `p` | Cycle focus |
 
 ## Tab mode (`Ctrl t`, then…)
@@ -85,8 +84,8 @@ mode dance for the common stuff:
 | Key | Action |
 |---|---|
 | `h/j/k/l` or arrows | Move pane in that direction |
-| `n` / `Tab` | Move pane to next position |
-| `p` | Move pane backwards |
+| `Tab` | Cycle pane to next layout position |
+| `Shift Tab` | Cycle pane to previous layout position |
 
 ## Scroll & search (`Ctrl s`, then…)
 
@@ -150,3 +149,5 @@ Every tab keeps its top tab-bar and bottom status-bar (set via
   binds that would collide; see `scripts/check-keybind-collisions.py`.
 - Startup tips are off; pane frames on; default mode `normal`; default layout
   `default`.
+- **Mnemonic meanings** — what a letter *should* mean, across zellij, nvim and
+  broot — are in `docs/KEYBIND-MNEMONICS.md`.

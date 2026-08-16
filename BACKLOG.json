@@ -8,18 +8,6 @@
   "current_goal": "Bootstrap kit for a fresh Linux/WSL machine: clone, run install.sh, done.",
   "tasks": [
     {
-      "id": "keybind-mnemonics",
-      "priority": "P1",
-      "title": "Normalize keybind mnemonics across zellij/nvim/inner tools",
-      "scope": [
-        "config"
-      ],
-      "status": "idea",
-      "created_at": "2026-07-23",
-      "updated_at": "2026-08-02",
-      "notes": "Semantic consistency of the mnemonic letter, not just collision-avoidance: a given letter should mean the same verb everywhere (e.g. m=move in zellij, not 'mark' elsewhere). Goal: lower cognitive load. Follow-up from the zellij quick-terminal/mode-alignment branch. Collision checker exists (scripts/check-keybind-collisions.py); this is about meaning, not overlap. Also revisit nvim-vs-zellij/ghostty collisions (nvim maps only apply in-pane; zellij globals shadow them)."
-    },
-    {
       "id": "nvim-lazygit",
       "priority": "P2",
       "title": "Install lazygit + wire into nvim and broot",
@@ -197,6 +185,30 @@
       "created_at": "2026-08-16",
       "updated_at": "2026-08-16",
       "notes": "Since v0.3.9, links.sh declares link-gating INSTALL_* flags from GROUP_FLAGS itself. That removed the string coupling to install.sh's initializer block, but made tests/test_links.sh's flag assertion circular: it validates GROUP_FLAGS against declarations derived from GROUP_FLAGS in the same file, so a typo'd flag value (e.g. [nvim]=\"INSTALL_NEOVIN\") passes that suite.\n\nNot a coverage hole overall: tests/test_install.sh runs install.sh end-to-end and asserts the link set matches LINKS exactly, so a typo makes the group stop linking and 'make test' goes red. Verified by experiment. What was lost is the fast unit-level guard, not the catch.\n\nSurfaced by code-reviewer during the v0.3.9 branch review. Its suggested fix \u2014 cross-check GROUP_FLAGS values against install.sh's INSTALL_*=true prompt assignments \u2014 would restore a unit guard but re-introduce a string-and-format coupling to install.sh, which is what v0.3.9 set out to remove. Revisit only if a typo ever reaches a real machine; the end-to-end catch may well be sufficient."
+    },
+    {
+      "id": "nvim-keymap-docs-drift",
+      "priority": "P3",
+      "title": "check-keymap-docs.py reports stale za/zc/zo in NVIM-REFERENCE.md",
+      "scope": [
+        "config"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-16",
+      "updated_at": "2026-08-16",
+      "notes": "Pre-existing drift, predates the keybind-mnemonics branch (confirmed by stashing that branch's changes and re-running). check-keymap-docs.py reports za/zc/zo as STALE -- documented in docs/NVIM-REFERENCE.md but not bound as explicit keymaps. They are vim built-ins enabled by foldmethod rather than keymap.set calls, so the checker cannot see them. Either teach the checker about built-in fold keys or adjust how the doc marks them."
+    },
+    {
+      "id": "keybind-charter-checker",
+      "priority": "P3",
+      "title": "Semantic checker for the keybind mnemonic charter",
+      "scope": [
+        "repo"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-16",
+      "updated_at": "2026-08-16",
+      "notes": "Deferred from the keybind-mnemonics branch by user decision. docs/KEYBIND-MNEMONICS.md defines a core letter set (h/j/k/l, r, n, x) that nothing enforces automatically -- check-keybind-collisions.py covers overlap, check-keymap-docs.py covers key-set drift, neither covers meaning. A checker would also need to keep the deviation table's file:line citations honest; four of them drifted during this branch's own rebinds and were only caught by a manual sweep. Caveat from .claude/rules/workflow/script-first.md: a script encoding the charter's rules is a second source of truth -- single-source it from the doc or accept the sync burden."
     }
   ]
 }

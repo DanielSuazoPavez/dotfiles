@@ -79,3 +79,6 @@ Path placeholders available to verbs: `{file}`, `{directory}`, `{parent}`.
   harmlessly if the tool is missing.
 - `installed-v4` marker is committed and symlinked so broot never prompts to
   self-install on a fresh machine.
+- **`Ctrl e` and `Ctrl g` are also zellij mode-entry chords** (move, locked), so
+  broot only sees them outside zellij; `docs/KEYBIND-MNEMONICS.md` has the
+  cross-tool letter picture.
