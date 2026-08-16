@@ -175,18 +175,6 @@
       "notes": "KDE Connect installed and paired with phone (dotfiles install.sh now has an install_kdeconnect prompt, default no). Follow-up is open-ended exploration: Run Commands plugin (e.g. triggering 'proj'/'projtab' remotely to spin up a Ghostty+zellij session from the phone), remote input, virtual-display/second-screen mode, clipboard sync reliability. Not a scoped task \u2014 capture findings as they surface from actual use."
     },
     {
-      "id": "nvim-folding-sh-py",
-      "priority": "P1",
-      "title": "Enable treesitter folding for shell and python buffers",
-      "scope": [
-        "config"
-      ],
-      "status": "idea",
-      "created_at": "2026-08-10",
-      "updated_at": "2026-08-10",
-      "notes": "Folding is configured only in after/ftplugin/markdown.lua and json.lua (foldmethod=expr + vim.treesitter.foldexpr, foldlevel=99, foldcolumn=1). In .sh/.py buffers no folds exist, so za/zo/zc silently do nothing. Extend the same per-ftplugin pattern to sh and python, or lift it to a global default with per-ft opt-out. Keep foldlevel=99 (open by default, folding opt-in) -- that is the established convention in both existing ftplugins. Docs: docs/nvim-learning.md currently omits folds because they were markdown/json-only; revisit once this lands."
-    },
-    {
       "id": "nvim-chords-new-plugin-source",
       "priority": "P3",
       "title": "Document/automate detection of new nvim setup-table mapping sources",
@@ -197,6 +185,18 @@
       "created_at": "2026-08-11",
       "updated_at": "2026-08-11",
       "notes": "scripts/_nvim_chords.py's NVIM_SETUP_TABLE_HOOK_LUA hardcodes three patch targets (telescope, neo-tree, cmp). A future plugin adding setup-table-based keybinds (vs vim.keymap.set) is invisible to check-keybind-collisions.py's nvim-vs-zellij check until someone manually adds a fourth TARGETS entry -- nothing flags the gap. Low priority: rare event, and the existing three cover this repo's current setup-table plugins."
+    },
+    {
+      "id": "nvim-ts-folding-helper",
+      "priority": "P3",
+      "title": "Factor the duplicated treesitter fold block into a shared helper",
+      "scope": [
+        "config"
+      ],
+      "status": "idea",
+      "created_at": "2026-08-16",
+      "updated_at": "2026-08-16",
+      "notes": "Five ftplugins now carry the same four fold lines verbatim (json, markdown, sh, python, yaml in .config/nvim/after/ftplugin/). A change to fold defaults must touch all five and nothing enforces that. Option: lua/ts-folding.lua exposing enable(), each ftplugin calling require('ts-folding').enable(). Deliberately deferred during nvim-folding-sh-py (user chose one file per type 'for now'); five copies is roughly where the refactor starts earning itself."
     }
   ]
 }
