@@ -111,7 +111,7 @@ Scoped exceptions (see `## The charter`) are decisions and are not listed here.
 | `bind "s" { SwitchToMode "entersearch"; ... }` | `.config/zellij/config.kdl:100` (scroll) | Enter search | Third verb on `s` — and it is reached via `Ctrl s` = *scroll* |
 | `bind "Ctrl n" { SwitchToMode "resize"; }` | `.config/zellij/config.kdl:196` | Enter resize mode | `n` = *new*; positional inheritance from stock zellij, not mnemonic |
 | `bind "e" { TogglePaneEmbedOrFloating; ... }` | `.config/zellij/config.kdl:14` (pane) | Embed / float the pane | `e` is contested; nvim's `<leader>e` = *explorer* and broot's `ctrl-e` = *edit* |
-| `bind "Ctrl e" { SwitchToMode "move"; }` | `.config/zellij/config.kdl:181` | Enter move mode | Mode-entry chords are otherwise first-letter-of-noun; *move* should be `m` |
+| `bind "Ctrl e" { SwitchToMode "move"; }` | `.config/zellij/config.kdl:181` | Enter move mode | Mode-entry chords are otherwise first-letter-of-noun — but `Ctrl m` is reserved (= `Enter`, see notes), so this one has no clean fix |
 | `bind "Ctrl o" { SwitchToMode "session"; }` | `.config/zellij/config.kdl:184` | Enter session mode | *session* should be `s`, but `Ctrl s` is *scroll*; positional inheritance |
 | `bind "p" { SwitchFocus; }` | `.config/zellij/config.kdl:29` (pane) | Cycle pane focus | `p` = *pane* as a mode-entry noun (`Ctrl p`); here it is a verb |
 | `bind "f" { ToggleFocusFullscreen; ... }` | `.config/zellij/config.kdl:15` (pane) | Toggle fullscreen | `f` = *find* is held across nvim's entire `<leader>f` subtree |
@@ -134,6 +134,14 @@ Scoped exceptions (see `## The charter`) are decisions and are not listed here.
   set is ever widened.
 - **Scoped exceptions are decisions, not debt.** search `n`/`p` and session `d`
   contradict a core letter and stay. Do not "fix" them.
+- **`Ctrl m`, `Ctrl i` and `Ctrl [` are reserved — never bind them.** At the
+  ASCII layer they *are* `Enter` (0x0D), `Tab` (0x09) and `Esc` (0x1B). Only the
+  Kitty keyboard protocol tells them apart, so a bind works in Ghostty and
+  silently becomes the wrong action over SSH, in tmux, or in any terminal
+  without it. This config binds all three aliases in overlapping mode-space
+  (`enter` at `config.kdl:199`, `tab` at `:95`, `esc` at `:202`), so the clash is
+  live, not hypothetical. `Ctrl m` for *move* mode is the tempting one — it is
+  the right mnemonic and still not worth it.
 - **This document is *meaning*; `scripts/check-keybind-collisions.py` is
   *overlap*.** A binding can be collision-free and still mnemonically wrong, and
   the checker will never say so.
