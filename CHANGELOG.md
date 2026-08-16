@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-08-16
+
+### Added
+- `docs/KEYBIND-MNEMONICS.md`: a cross-tool charter recording what each mnemonic letter is *supposed* to mean across zellij, nvim and broot. Defines a small enforced **core set** (`h/j/k/l` motion, `r` rename, `n` new, `x` close) and marks every other letter **held** or **contested** rather than inventing meanings to fill rows. Contested letters list their competing verbs inline; a `## Known deviations` table catalogs each remaining binding that contradicts the charter, keyed on bind text so rows survive line-number drift. Linked from the zellij, nvim and broot references.
+- Charter rule: **shifting a motion key acts on the object, not the focus** — `H/J/K/L` open a pane in that direction, `Alt Shift h/l` move the tab. Previously an implicit coincidence between two unrelated binds; now the stated way to add a directional variant without spending a fresh letter.
+
+### Changed
+- Zellij pane mode: `r` is now **rename pane** (was `c`), matching tab mode's `r`. Directional new-pane moved from the ad-hoc `d`/`r` pair to the shifted motion keys `H/J/K/L`. `c` and `d` are left unbound rather than reassigned — `c` still has three live claims elsewhere (case-sensitivity, configuration, nvim's `<leader>c`) and no clear winner.
+- Zellij global chords: tab reordering moved from `Alt i`/`Alt o` to `Alt Shift h`/`Alt Shift l`. `Alt i`/`Alt o` claimed `i` and `o` for *left* and *right*, which the motion axis already owns. Frees both; `i` drops to held (pin, sole claim), `o` loses one of four competing claims.
+- Zellij move mode: cycling a pane through layout positions is now `Tab` / `Shift Tab`. `n` was redundant with the existing `Tab` bind and `p` had no forward counterpart.
+- `docs/ZELLIJ-REFERENCE.md`: pane-mode and move-mode key tables updated to match; `Alt i`/`Alt o` row replaced.
+
+### Notes
+- **`Ctrl m`, `Ctrl i` and `Ctrl [` are documented as reserved — never bind them.** At the ASCII layer they *are* `Enter` (0x0D), `Tab` (0x09) and `Esc` (0x1B); only the Kitty keyboard protocol distinguishes them, so a bind works in Ghostty and silently does the wrong thing over SSH or in tmux. This config binds all three aliases in overlapping mode-space, so the clash is live rather than hypothetical. `Ctrl m` for *move* mode is the tempting case — right mnemonic, wrong trade-off — so the `Ctrl e`→move deviation row now explains why it has no clean fix instead of reading as low-hanging fruit.
+- Two bindings contradict a core letter and are kept as **scoped exceptions**, not deviations: search-mode `n`/`p` (vim's next/prev — "new" is meaningless inside a search) and session-mode `d` = detach. Listed separately so the deviation table stays a work-list.
+- The core set is deliberately small. A bind contradicting a **core** letter gets fixed; one contradicting a **held** or **contested** letter gets a deviation row and is left alone. That asymmetry is the whole policy — a set small enough to actually hold beats a comprehensive one nobody follows.
+- Deviations went from 21 rows to 10. The remainder (chiefly `s` meaning stacked/sync/scroll/search/share, and the positional `Ctrl e`/`Ctrl o` mode-entry chords inherited from stock zellij) are recorded and deliberately unchanged.
+- Verified with `zellij setup --check`, using a deliberately invalid key as a control — zellij accepts some key spellings it then never matches, so a bare "parses fine" proves less than it appears. `check-keybind-collisions.py` reports no collisions.
+- Nothing enforces the charter automatically; a semantic checker is tracked in the backlog.
+
 ## [0.3.9] - 2026-08-16
 
 ### Changed
