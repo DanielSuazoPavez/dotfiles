@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.9] - 2026-08-16
+
+### Changed
+- `links.sh`: sourcing it now declares every `INSTALL_*` flag that `GROUP_FLAGS` names, defaulting each to `false`. Previously those six flags were declared in `install.sh` and coupled to `GROUP_FLAGS` by string only — renaming or typo'ing one on either side produced no error, since `group_enabled`'s indirect `${!flag:-}` reads an undefined name as empty and the group silently stops linking. Adding a link group is now one `links.sh` edit; `install.sh` only adds the prompt that sets the flag to `true`.
+- `install.sh`: no longer declares the six link-gating flags (`INSTALL_STARSHIP`, `INSTALL_NEOVIM`, `INSTALL_ZELLIJ`, `INSTALL_GHOSTTY`, `INSTALL_RIPGREP`, `INSTALL_BROOT`). The seven installer-gating flags are unchanged — they gate installers rather than link groups, so `GROUP_FLAGS` has no opinion on them.
+- `tests/test_links.sh`: the assertion that grepped `install.sh` for `^FLAG=false$` is replaced by one checking the real invariant (every `GROUP_FLAGS` flag is defined and `false` after sourcing). The old form pinned `install.sh`'s formatting, so a harmless reformat turned the suite red with no defect.
+
+### Notes
+- The declaration is assign-if-unset (`printf -v "$f" '%s' "${!f:-false}"`), not unconditional: a plain `declare -g "$f=false"` would reset a flag already set to `true`, so re-sourcing `links.sh` after `install.sh`'s prompts would silently disable every group.
+- Trade-off accepted: an `INSTALL_*=true` inherited from the environment now survives sourcing, where the old unconditional `=false` reset it.
+- Known gap: `tests/test_links.sh`'s flag assertion is now circular — it validates `GROUP_FLAGS` against declarations derived from `GROUP_FLAGS` itself, so a typo'd flag value no longer fails that suite. `tests/test_install.sh` still catches it end-to-end (the group stops linking and the link-set assertion fails), so `make test` remains red on a typo; only the unit-level guard was lost. Tracked in the backlog.
+
 ## [0.3.8] - 2026-08-16
 
 ### Added
