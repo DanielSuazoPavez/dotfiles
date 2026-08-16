@@ -11,6 +11,7 @@ return {
       "json",
       "lua",
       "python",
+      "yaml",
       "markdown",
       "markdown_inline",
     })
