@@ -44,8 +44,8 @@
       ],
       "status": "idea",
       "created_at": "2026-07-27",
-      "updated_at": "2026-08-02",
-      "notes": "Gap between 'configs symlinked' and 'machine actually ready'. Start as docs/tools.md (tool, why, install command per package manager) rather than install.sh logic \u2014 package names differ across zypper/apt/pacman, flatpak-vs-native is a per-machine call, and install.sh assuming a package manager cuts against the minimal-dependencies principle. Promote into the installer later if the list stabilizes. Scope now covers CLI tools too, so suggest two sections: the CLI half is natively packaged and scriptable and could plausibly move into install.sh, while GUI stays a per-machine judgment call. GUI settled on DBeaver (flatpak) and resolved the S3 GUI slot as 'no GUI needed'. CLI half (aws-vault, rclone, duckdb) is installed and working as of 2026-07-28, with per-tool install and credential-isolation gotchas in the brief.\n\nSee: output/claude-toolkit/backlog-notes/new-machine-tools.md",
+      "updated_at": "2026-08-16",
+      "notes": "Gap between 'configs symlinked' and 'machine actually ready'. Start as docs/tools.md (tool, why, install command per package manager) rather than install.sh logic \u2014 package names differ across zypper/apt/pacman, flatpak-vs-native is a per-machine call, and install.sh assuming a package manager cuts against the minimal-dependencies principle. Promote into the installer later if the list stabilizes. Two sections: CLI half is natively packaged and scriptable, GUI stays a per-machine judgment call. GUI settled on DBeaver (flatpak); S3 GUI slot resolved as 'no GUI needed'. CLI half (aws-vault, rclone, duckdb) installed and working as of 2026-07-28. Added 2026-08-16 from bitwarden-cli-setup research: rustup + rbw (Bitwarden CLI) \u2014 binaries owned here, usage guidance stays with that task.\n\nSee: output/claude-toolkit/backlog-notes/new-machine-tools.md",
       "relates_to": [
         "nvim-lazygit:relates-to"
       ]
@@ -75,10 +75,10 @@
       ],
       "status": "idea",
       "created_at": "2026-07-28",
-      "updated_at": "2026-07-28",
+      "updated_at": "2026-08-16",
       "notes": "Bitwarden is already the password manager in use on Windows and phone; this is about getting it usable from the Linux CLI. Open decision: official 'bw' (Node, npm install -g @bitwarden/cli or native binary from releases - check 'zypper se bitwarden', likely not in openSUSE repos) vs 'rbw' (unofficial Rust client, much faster, has an unlock agent so you are not re-entering the master password constantly; third-party client for the password vault, which is its own trust call). Official bw is required for anything touching org/admin operations. Session handling is the main friction: bw needs BW_SESSION exported and it expires - do NOT put it in .bashrc, it is a live vault-unlock token. Distinct from aws-vault, which stays as-is for AWS only.",
       "relates_to": [
-        "new-machine-tools:relates-to"
+        "new-machine-tools:depends-on"
       ]
     },
     {
