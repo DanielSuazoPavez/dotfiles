@@ -93,7 +93,7 @@ the bind text — line numbers drift, the bind is the identity.
 | `bind "s" { SwitchToMode "entersearch"; ... }` | `.config/zellij/config.kdl:94` (scroll) | Enter search | Third verb on `s` — and it is reached via `Ctrl s` = *scroll* |
 | `bind "n" { MovePane; }` | `.config/zellij/config.kdl:88` (move) | Move pane forward | `n` = *new* (held in pane/tab); this is *next* |
 | `bind "n" { Search "down"; }` | `.config/zellij/config.kdl:98` (search) | Next match | `n` = *new*; vim-inherited *next* — kept deliberately, but it is a deviation |
-| `bind "n" { SwitchToMode "resize"; }` | `.config/zellij/config.kdl:190` (`Ctrl n`) | Enter resize mode | `n` = *new*; positional inheritance from stock zellij, not mnemonic |
+| `bind "Ctrl n" { SwitchToMode "resize"; }` | `.config/zellij/config.kdl:190` | Enter resize mode | `n` = *new*; positional inheritance from stock zellij, not mnemonic |
 | `bind "e" { TogglePaneEmbedOrFloating; ... }` | `.config/zellij/config.kdl:16` (pane) | Embed / float the pane | `e` is contested; nvim's `<leader>e` = *explorer* and broot's `ctrl-e` = *edit* |
 | `bind "Ctrl e" { SwitchToMode "move"; }` | `.config/zellij/config.kdl:175` | Enter move mode | Mode-entry chords are otherwise first-letter-of-noun; *move* should be `m` |
 | `bind "Ctrl o" { SwitchToMode "session"; }` | `.config/zellij/config.kdl:178` | Enter session mode | *session* should be `s`, but `Ctrl s` is *scroll*; positional inheritance |
@@ -105,7 +105,7 @@ the bind text — line numbers drift, the bind is the identity.
 | `bind "f" { ToggleFocusFullscreen; ... }` | `.config/zellij/config.kdl:17` (pane) | Toggle fullscreen | `f` = *find* is held across nvim's entire `<leader>f` subtree |
 | `bind "Alt f" { ToggleFloatingPanes; }` | `.config/zellij/config.kdl:161` | Toggle floating panes | Third verb on `f`, and a *global* reservation — this one nvim genuinely cannot reuse |
 | `bind "c" { SearchToggleOption "CaseSensitivity"; }` | `.config/zellij/config.kdl:97` (search) | Toggle case sensitivity | Disagrees with pane-mode `c` = *change name* |
-| `bind "i" { MoveTab "left"; }` (`Alt i`) | `.config/zellij/config.kdl:163` | Move tab left | *left* is `h`; `i` means *pin* in pane mode |
+| `bind "Alt i" { MoveTab "left"; }` | `.config/zellij/config.kdl:163` | Move tab left | *left* is `h`; `i` means *pin* in pane mode |
 
 ## Notes / policy
 
