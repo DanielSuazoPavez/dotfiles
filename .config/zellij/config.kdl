@@ -166,12 +166,15 @@ keybinds clear-defaults=true {
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt f" { ToggleFloatingPanes; }
         bind "Alt h" { MoveFocusOrTab "left"; }
-        bind "Alt i" { MoveTab "left"; }
         bind "Alt j" { MoveFocus "down"; }
         bind "Alt k" { MoveFocus "up"; }
         bind "Alt l" { MoveFocusOrTab "right"; }
+        // Shifted motion key = move the thing itself, not the focus -- the same
+        // idiom as H/J/K/L in pane mode. Was Alt i / Alt o, which claimed i for
+        // "left" (docs/KEYBIND-MNEMONICS.md).
+        bind "Alt Shift h" { MoveTab "left"; }
+        bind "Alt Shift l" { MoveTab "right"; }
         bind "Alt n" { NewPane; }
-        bind "Alt o" { MoveTab "right"; }
         bind "Alt p" { TogglePaneInGroup; }
         bind "Alt Shift p" { ToggleGroupMarking; }
         bind "Ctrl q" { Quit; }

@@ -38,7 +38,7 @@ mode dance for the common stuff:
 | `Alt [` / `Alt ]` | Previous / next layout |
 | `Alt f` | Toggle floating panes |
 | `Alt 1`…`Alt 9` | Go to tab by number |
-| `Alt i` / `Alt o` | Move current tab left / right |
+| `Alt Shift h` / `Alt Shift l` | Move current tab left / right |
 
 ## Pane mode (`Ctrl p`, then…)
 

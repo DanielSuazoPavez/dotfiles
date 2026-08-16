@@ -22,12 +22,12 @@ it treats as global. There are two tiers:
 
 | Tier | What it covers | Reserved against nvim/broot? |
 |---|---|---|
-| **Global chords** | `Alt f/h/i/j/k/l/n/o/p`, `Alt` digits/arrows/brackets, `Ctrl e/g/n/o/p/q/s/t` — the `shared_except` sections (`config.kdl:148-197`) | **Yes.** Hard reservation; nvim never receives them. |
+| **Global chords** | `Alt f/h/j/k/l/n/p`, `Alt Shift h/l/p`, `Alt` digits/arrows/brackets, `Ctrl e/g/n/o/p/q/s/t` — the `shared_except` sections (`config.kdl:148-200`) | **Yes.** Hard reservation; nvim never receives them. |
 | **Mode-local letters** | Every bare letter in `pane`, `tab`, `resize`, `move`, `scroll`, `search`, `session` | **No.** They only fire after you enter that mode. |
 
 **From normal mode, zellij reserves no bare letter.** Every global reservation is
 `Alt`- or `Ctrl`-chorded. The bare letters `d h j k l u` in
-`shared_among "scroll" "search"` (`config.kdl:204-221`) are the only bare letters
+`shared_among "scroll" "search"` (`config.kdl:207-224`) are the only bare letters
 in a section the collision checker calls global — and that section is itself
 mode-scoped, so they fire only once you are already scrolling or searching.
 
@@ -54,6 +54,12 @@ invented to break the tie.
 
 The core set is deliberately small — `h` `j` `k` `l` `r` `n` `x`. Everything
 else is documentation, not policy.
+
+**Shifting a motion key moves the thing itself.** Where a bare motion key moves
+*focus*, its shifted form acts on the object: `H/J/K/L` open a new pane in that
+direction (pane mode), `Alt Shift h/l` move the current tab (global). Prefer
+this over spending a fresh letter on a directional variant — it is what retired
+`d`/`r` for splits and `Alt i`/`Alt o` for tab-moves.
 
 **Scoped exceptions.** Two bindings contradict a core letter and are kept
 anyway, because they inherit a stronger convention from another tool:
@@ -84,8 +90,8 @@ An exception is a decision, not a deviation — it is listed here rather than in
 | `d` | down | motion | **held** — `HalfPageScrollDown`; session *detach* is a scoped exception, `<leader>fd` is a different namespace |
 | `w` | — | — | **contested**: *floating window* (pane), *wrap* (search), *session manager* (session) |
 | `z` | frames / fold | display | **held** — `TogglePaneFrames` in zellij; vim's own `z` prefix is folds, a different tool's namespace |
-| `i` | pin / insert-left | structure | **contested**: `TogglePanePinned` (pane) vs `MoveTab "left"` (`Alt i`) |
-| `o` | — | — | **contested**: *session* mode (`Ctrl o`), *whole word* (search), *move tab right* (`Alt o`), *oldfiles* (`<leader>fo`) |
+| `i` | pin | structure | **held** — `TogglePanePinned`; sole claim since `Alt i` gave up *move tab left* |
+| `o` | — | — | **contested**: *session* mode (`Ctrl o`), *whole word* (search), *oldfiles* (`<leader>fo`). `Alt o` is now free |
 | `u` | up (half page) | motion | **held** — only one use, `HalfPageScrollUp` |
 | `q` | quit | destroy | **held** — `Ctrl q` |
 | `g` | git / lock | — | **contested**: *locked mode* (`Ctrl g` in zellij) vs *git* (`ctrl-g` in broot, `<leader>hs`-family in nvim) |
@@ -109,14 +115,13 @@ Scoped exceptions (see `## The charter`) are decisions and are not listed here.
 | `bind "s" { NewPane "stacked"; ... }` | `.config/zellij/config.kdl:33` (pane) | New stacked pane | `n` is *new*; `s` also means sync/scroll/search/share elsewhere |
 | `bind "s" { ToggleActiveSyncTab; ... }` | `.config/zellij/config.kdl:60` (tab) | Toggle tab sync | Disagrees with pane-mode `s` = *stacked* |
 | `bind "s" { SwitchToMode "entersearch"; ... }` | `.config/zellij/config.kdl:100` (scroll) | Enter search | Third verb on `s` — and it is reached via `Ctrl s` = *scroll* |
-| `bind "Ctrl n" { SwitchToMode "resize"; }` | `.config/zellij/config.kdl:196` | Enter resize mode | `n` = *new*; positional inheritance from stock zellij, not mnemonic |
+| `bind "Ctrl n" { SwitchToMode "resize"; }` | `.config/zellij/config.kdl:199` | Enter resize mode | `n` = *new*; positional inheritance from stock zellij, not mnemonic |
 | `bind "e" { TogglePaneEmbedOrFloating; ... }` | `.config/zellij/config.kdl:14` (pane) | Embed / float the pane | `e` is contested; nvim's `<leader>e` = *explorer* and broot's `ctrl-e` = *edit* |
-| `bind "Ctrl e" { SwitchToMode "move"; }` | `.config/zellij/config.kdl:181` | Enter move mode | Mode-entry chords are otherwise first-letter-of-noun — but `Ctrl m` is reserved (= `Enter`, see notes), so this one has no clean fix |
-| `bind "Ctrl o" { SwitchToMode "session"; }` | `.config/zellij/config.kdl:184` | Enter session mode | *session* should be `s`, but `Ctrl s` is *scroll*; positional inheritance |
+| `bind "Ctrl e" { SwitchToMode "move"; }` | `.config/zellij/config.kdl:184` | Enter move mode | Mode-entry chords are otherwise first-letter-of-noun — but `Ctrl m` is reserved (= `Enter`, see notes), so this one has no clean fix |
+| `bind "Ctrl o" { SwitchToMode "session"; }` | `.config/zellij/config.kdl:187` | Enter session mode | *session* should be `s`, but `Ctrl s` is *scroll*; positional inheritance |
 | `bind "p" { SwitchFocus; }` | `.config/zellij/config.kdl:29` (pane) | Cycle pane focus | `p` = *pane* as a mode-entry noun (`Ctrl p`); here it is a verb |
 | `bind "f" { ToggleFocusFullscreen; ... }` | `.config/zellij/config.kdl:15` (pane) | Toggle fullscreen | `f` = *find* is held across nvim's entire `<leader>f` subtree |
 | `bind "Alt f" { ToggleFloatingPanes; }` | `.config/zellij/config.kdl:167` | Toggle floating panes | Third verb on `f`, and a *global* reservation — this one nvim genuinely cannot reuse |
-| `bind "Alt i" { MoveTab "left"; }` | `.config/zellij/config.kdl:169` | Move tab left | *left* is `h`; `i` means *pin* in pane mode |
 
 ## Notes / policy
 
@@ -138,7 +143,7 @@ Scoped exceptions (see `## The charter`) are decisions and are not listed here.
   Kitty keyboard protocol tells them apart, so a bind works in Ghostty and
   silently becomes the wrong action over SSH, in tmux, or in any terminal
   without it. This config binds all three aliases in overlapping mode-space
-  (`enter` at `config.kdl:199`, `tab` at `:95`, `esc` at `:202`), so the clash is
+  (`enter` at `config.kdl:202`, `tab` at `:95`, `esc` at `:205`), so the clash is
   live, not hypothetical. `Ctrl m` for *move* mode is the tempting one — it is
   the right mnemonic and still not worth it.
 - **This document is *meaning*; `scripts/check-keybind-collisions.py` is
