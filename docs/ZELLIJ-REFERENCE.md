@@ -150,3 +150,5 @@ Every tab keeps its top tab-bar and bottom status-bar (set via
   binds that would collide; see `scripts/check-keybind-collisions.py`.
 - Startup tips are off; pane frames on; default mode `normal`; default layout
   `default`.
+- **Mnemonic meanings** — what a letter *should* mean, across zellij, nvim and
+  broot — are in `docs/KEYBIND-MNEMONICS.md`.

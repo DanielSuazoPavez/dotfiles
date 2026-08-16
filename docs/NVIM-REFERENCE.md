@@ -10,7 +10,8 @@ managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
 Still learning the setup? `docs/nvim-learning.md` has the active rotation,
 in-picker keys, and drills. `scripts/check-keymap-docs.py` verifies this file
-still matches what the config binds.
+still matches what the config binds. For what a mnemonic letter *should* mean
+across zellij, nvim and broot, see `docs/KEYBIND-MNEMONICS.md`.
 
 ## Discovery — which-key
 
