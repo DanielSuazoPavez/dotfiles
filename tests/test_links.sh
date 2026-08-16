@@ -134,4 +134,30 @@ if group_enabled starship; then t_on=yes; else t_on=no; fi
 assert_eq "$t_on" "no" "only the literal 'true' enables a group"
 unset INSTALL_STARSHIP INSTALL_RIPGREP INSTALL_BROOT
 
+# 11. Every flag GROUP_FLAGS names is real code in install.sh. Assertion 9 above
+# is circular by construction — it checks GROUP_FLAGS against declarations
+# links.sh derives from GROUP_FLAGS itself, so a typo'd value declares itself and
+# passes. This is the non-circular half: the flag must also exist in install.sh,
+# the only other file that uses it.
+#
+# Deliberately a bare word-boundary match, NOT an anchored `^FLAG=true$`. v0.3.9
+# removed exactly that anchored form because it pinned install.sh's formatting —
+# a trailing comment or re-indent turned this suite red with no defect. The loose
+# match still catches a typo (the name appears nowhere) while surviving any
+# reformat. Do not "tighten" it back.
+#
+# Comment lines are stripped first, and that is load-bearing: install.sh's
+# flag-declaration comment names all six flags in prose, so a match against the
+# raw file would pass for a flag whose last real use was deleted.
+install_code=$(grep -vE '^[[:space:]]*#' "$REPO_ROOT/install.sh")
+flags_missing_from_install=""
+for g in "${!GROUP_FLAGS[@]}"; do
+    for f in ${GROUP_FLAGS[$g]}; do
+        grep -qE "\b${f}\b" <<< "$install_code" ||
+            flags_missing_from_install="$flags_missing_from_install $g:$f"
+    done
+done
+assert_eq "$flags_missing_from_install" "" \
+    "every GROUP_FLAGS flag appears as code in install.sh"
+
 finish
