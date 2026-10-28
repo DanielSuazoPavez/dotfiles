@@ -54,3 +54,13 @@ output/plans/
 
 # Auto-rendered from BACKLOG.json
 BACKLOG.md
+
+# >>> claude-toolkit >>>
+# Managed by `ct sync` — edits inside this block are overwritten.
+output/claude-toolkit/
+output/plans/
+.claude/*
+!.claude/settings.json
+!.claude/memories/*-project-*
+.Trash-*/
+# <<< claude-toolkit <<<

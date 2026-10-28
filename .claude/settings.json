@@ -3,18 +3,25 @@
   "enableAllProjectMcpServers": false,
   "showClearContextOnPlanAccept": true,
   "plansDirectory": "output/claude-toolkit/plans",
+  "disableClaudeAiConnectors": true,
+  "disableBundledSkills": true,
+  "disableArtifact": true,
+  "autoMemoryEnabled": false,
+  "disableRemoteControl": false,
+  "outputStyle": "concise",
+  "spinnerTipsEnabled": false,
+  "respondToBashCommands": false,
   "env": {
-    "CLAUDE_TOOLKIT_LESSONS": "0",
     "CLAUDE_TOOLKIT_TRACEABILITY": "1",
-    "CLAUDE_TOOLKIT_INJECTION_SCAN": "0",
-    "CLAUDE_TOOLKIT_OUTPUT_SCAN": "0",
     "CLAUDE_TOOLKIT_PROTECTED_BRANCHES": "^(main|master)$",
+    "CLAUDE_TOOLKIT_PR_REPO": "",
+    "CLAUDE_TOOLKIT_REGISTRY_LOCALE": "",
     "CLAUDE_TOOLKIT_PROFILE": "hata",
     "CLAUDE_TOOLKIT_CLAUDEMD_WARN_LINES": "100",
     "CLAUDE_TOOLKIT_CLAUDEMD_NESTED_WARN_LINES": "150",
-    "CLAUDE_TOOLKIT_BACKLOG_NOTES_MAX_CHARS": "1500",
-    "CLAUDE_TOOLKIT_SETTINGS_INTEGRITY": "1",
-    "CLAUDE_CODE_ADAPTIVE_THINKING": "0"
+    "CLAUDE_CODE_ADAPTIVE_THINKING": "0",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
+    "CLAUDE_TOOLKIT_BACKLOG_NOTES_MAX_CHARS": "1500"
   },
   "permissions": {
     "allow": [
@@ -46,20 +53,24 @@
       "Bash(git add:*)",
       "Bash(git rm --cached:*)",
       "Bash(git checkout:*)",
+      "Bash(git restore:*)",
       "Bash(git switch:*)",
       "Bash(git commit:*)",
       "Bash(git check-ignore:*)",
       "Bash(git mv:*)",
-      "Bash(git restore:*)",
+      "Bash(git config --get:*)",
+      "Bash(git config --get-all:*)",
+      "Bash(git config --get-regexp:*)",
+      "Bash(git config --list:*)",
+      "Bash(git config -l:*)",
+      "Bash(git config get:*)",
+      "Bash(git config list:*)",
       "Bash(./.claude/hooks/*)",
       "Bash(.claude/scripts/*)",
       "Bash(claude-toolkit backlog:*)",
-      "Bash(claude-toolkit docs:*)",
-      "Bash(claude-toolkit eval:*)",
-      "Bash(claude-toolkit lessons:*)",
-      "Bash(claude-toolkit send:*)",
+      "Bash(ct backlog:*)",
       "Bash(claude-toolkit version:*)",
-      "Bash(claude-toolkit version-main:*)",
+      "Bash(ct version:*)",
       "Grep(/**)",
       "Read(/**)",
       "Read(~/.claude/CLAUDE.md)",
@@ -72,10 +83,29 @@
       "Read(//tmp/**)",
       "Edit(/output/claude-toolkit/**)",
       "Edit(/BACKLOG.json)",
-      "Edit(/CHANGELOG.md)"
+      "Edit(/CHANGELOG.md)",
+      "Bash(git remote -v:*)",
+      "Bash(git remote get-url:*)",
+      "Bash(git remote show:*)",
+      "Bash(claude-toolkit docs:*)",
+      "Bash(claude-toolkit eval:*)",
+      "Bash(claude-toolkit lessons:*)",
+      "Bash(claude-toolkit send:*)",
+      "Bash(claude-toolkit version-main:*)",
+      "Bash(ct lessons:*)",
+      "Bash(ct send:*)",
+      "Bash(ct-okf affected:*)",
+      "Bash(ct-okf query:*)",
+      "Bash(ct-okf refresh:*)",
+      "Bash(ct-okf show:*)",
+      "Bash(ct-okf validate:*)"
     ],
     "ask": [
       "Bash(claude-toolkit sync:*)",
+      "Bash(ct sync:*)",
+      "Bash(ct-okf generate:*)",
+      "Bash(ct-okf install:*)",
+      "Bash(ct-okf uninstall:*)",
       "Bash(git config:*)",
       "Bash(git merge:*)",
       "Bash(git rebase:*)",
@@ -163,7 +193,24 @@
       "TaskGet",
       "TaskStop",
       "TaskList",
-      "PushNotification"
+      "PushNotification",
+      "Bash(*/ct sync)",
+      "Bash(*/ct sync *)",
+      "Bash(*/claude-toolkit sync)",
+      "Bash(*/claude-toolkit sync *)",
+      "Bash(uv run ct sync)",
+      "Bash(uv run ct sync *)",
+      "Bash(uv run claude-toolkit sync)",
+      "Bash(uv run claude-toolkit sync *)",
+      "Bash(git remote add:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git remote remove:*)",
+      "Bash(git remote rm:*)",
+      "Bash(git remote rename:*)",
+      "Bash(git remote set-head:*)",
+      "Bash(git remote set-branches:*)",
+      "Bash(git remote prune:*)",
+      "Bash(git remote update:*)"
     ]
   },
   "hooks": {
@@ -173,6 +220,14 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/scan-prompt-secrets.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/turn-context.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -180,6 +235,10 @@
     "SessionStart": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh\""
@@ -193,16 +252,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/grouped-bash-guard.sh\""
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/grouped-edit-guard.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/dispatch-pretooluse-bash.sh\"",
+            "timeout": 10
           }
         ]
       },
@@ -225,30 +276,24 @@
         ]
       },
       {
-        "matcher": "Write",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/grouped-write-guard.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
     ],
     "PermissionRequest": [
       {
-        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/approve-safe-commands.sh\""
-          }
-        ]
-      },
-      {
-        "hooks": [
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-permission-request.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -259,7 +304,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/grouped-posttooluse-bash-scan.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/dispatchers/dispatch-posttooluse-bash.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/record-branch-base.sh\""
           }
         ]
       },
@@ -276,7 +326,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-tool-uses.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -286,7 +340,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-tool-uses.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -296,7 +354,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-tool-uses.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
           }
         ]
       }
@@ -306,7 +364,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-permission-denied.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -316,7 +378,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-stop.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -326,7 +392,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-stop.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
           }
         ]
       }
@@ -336,7 +402,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-subagent-start.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -346,7 +416,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-subagent-stop.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -356,7 +430,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-session-end.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/zellij-tab-status.sh\""
           }
         ]
       }
@@ -366,14 +444,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/track-instructions-loaded.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-events.sh\""
           }
         ]
       }
     ]
   },
+  "enabledPlugins": {
+    "context-tab@ct-mods": true,
+    "status-band@ct-mods": true,
+    "output-render@ct-mods": true,
+    "skill-facts@ct-mods": true
+  },
   "statusLine": {
     "type": "command",
-    "command": "\"$CLAUDE_PROJECT_DIR/.claude/scripts/statusline-capture.sh\""
+    "command": "\"$CLAUDE_PROJECT_DIR/.claude/scripts/statusline/statusline-capture.sh\""
   }
 }
