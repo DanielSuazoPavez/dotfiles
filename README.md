@@ -30,7 +30,8 @@ inline where root is needed.
 | Core GUI | ghostty, Nerd Fonts (JetBrainsMono + FiraCode) |
 | Runtimes (prompt, default Y) | uv, node, docker |
 | Optional (prompt, default Y) | Claude Code (+ playwright chromium) |
-| Desktop (prompt, default N) | KDE settings: dark theme, us/altgr-intl keyboard |
+| System (prompt, default Y) | earlyoom (kills runaway processes, preferring Python, before a freeze) |
+| Desktop (prompt, default N) | KDE settings: dark theme, us/altgr-intl keyboard; WirePlumber camera fix |
 | Doc-only (see [BOOTSTRAP.md](docs/BOOTSTRAP.md)) | rust, go |
 
 ## What's Included
@@ -44,6 +45,8 @@ inline where root is needed.
 - **File navigator**: broot (`br` cd's your shell) — [reference](docs/BROOT-REFERENCE.md)
 - **Data CLI**: duckdb (csv/json/parquet/xlsx from the shell) — [reference](docs/DUCKDB-REFERENCE.md)
 - **Desktop (KDE)**: dark theme + keyboard layout via `scripts/kde-setup.sh` — [setup](docs/BOOTSTRAP.md)
+- **Memory**: earlyoom with a dotfiles override (`etc/systemd/system/earlyoom.service.d/`, copied to `/etc`)
+- **Audio/video**: WirePlumber drop-in disabling the libcamera monitor (fixes browser calls losing A/V); `audiofix` alias restarts the PipeWire stack
 
 ## Related Projects
 

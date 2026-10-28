@@ -14,12 +14,12 @@ source "$REPO_ROOT/links.sh"
 echo "test_links.sh"
 
 # 1. Entry count
-assert_eq "${#LINKS[@]}" "14" "LINKS has 14 entries"
+assert_eq "${#LINKS[@]}" "15" "LINKS has 15 entries"
 
 # 2. Groups
 groups=$(for e in "${LINKS[@]}"; do echo "${e%%:*}"; done | sort -u | tr '\n' ' ')
-assert_eq "$groups" "broot cli-extras core ghostty nvim starship zellij " \
-    "groups are exactly the seven expected"
+assert_eq "$groups" "broot cli-extras core ghostty nvim starship wireplumber zellij " \
+    "groups are exactly the eight expected"
 
 # 3. No colon in any path. links.sh documents this: callers split on IFS=:,
 # so a colon in a path would silently truncate rather than fail.
