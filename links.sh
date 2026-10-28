@@ -32,6 +32,7 @@ LINKS=(
     "broot:.config/broot/conf.hjson:$HOME/.config/broot/conf.hjson"
     "broot:.config/broot/launcher/bash/br:$HOME/.config/broot/launcher/bash/br"
     "broot:.config/broot/launcher/installed-v4:$HOME/.config/broot/launcher/installed-v4"
+    "wireplumber:.config/wireplumber/wireplumber.conf.d/51-disable-libcamera.conf:$HOME/.config/wireplumber/wireplumber.conf.d/51-disable-libcamera.conf"
 )
 
 # group -> the INSTALL_* flags that gate it, space-separated.
@@ -46,7 +47,7 @@ LINKS=(
 # Declaring a flag here is enough: sourcing this file defines every flag named
 # below as `false` unless the caller already set it, so install.sh must not
 # re-declare them — it only needs the prompt that flips one to `true`.
-# uninstall.sh inherits the six `false` values harmlessly: it reads LINKS and
+# uninstall.sh inherits the `false` values harmlessly: it reads LINKS and
 # DOTFILES_DIR only, and never calls group_enabled.
 declare -A GROUP_FLAGS=(
     [core]=""
@@ -56,6 +57,7 @@ declare -A GROUP_FLAGS=(
     [ghostty]="INSTALL_GHOSTTY"
     [cli-extras]="INSTALL_RIPGREP INSTALL_BROOT"
     [broot]="INSTALL_BROOT"
+    [wireplumber]="INSTALL_WIREPLUMBER"
 )
 
 # Declare every flag GROUP_FLAGS names, defaulting to false. This is the single

@@ -104,12 +104,14 @@ scratch_home() {
 
 # Stub every tool an install_* function guards on. Each installer opens with
 # `command -v <tool> && return 0`, so a stub on PATH makes it a no-op — no
-# network, no sudo. Deliberately does NOT stub git/find/readlink/sed/grep:
+# network. sudo itself is stubbed too, so a step that writes system state
+# (configure_earlyoom, kde-setup's localectl) can never reach root. Deliberately does NOT stub git/find/readlink/sed/grep:
 # the harness itself needs those.
 stub_path() {
     local t
     for t in starship zellij nvim zoxide rg broot bat trash duckdb \
-             uv node npm docker claude ghostty crontab systemctl fc-list fc-cache unzip; do
+             uv node npm docker claude ghostty crontab systemctl fc-list fc-cache unzip \
+             earlyoom sudo; do
         printf '#!/bin/sh\nexit 0\n' > "$STUB/$t"
         chmod +x "$STUB/$t"
     done
@@ -130,8 +132,8 @@ stub_path() {
 #                       real ~/.gitconfig is a symlink into this repo, git
 #                       would otherwise write THROUGH it into the tracked file
 #                       even with HOME redirected
-# Answers: starship, neovim, zellij, zoxide, cli-extras, runtimes, claude,
-# ghostty, fonts, kde, kdeconnect. One character per prompt, NO newlines between them —
+# Answers: starship, neovim, zellij, zoxide, cli-extras, cron, earlyoom,
+# runtimes, claude, ghostty, fonts, kde, kdeconnect, wireplumber. One character per prompt, NO newlines between them —
 # prompt_category uses `read -n 1`, so a separator newline would be consumed as
 # the next prompt's answer (an empty REPLY). That reads as "yes" at a [Y/n]
 # prompt, which is why a newline-separated stream appeared to work: the answers
@@ -145,7 +147,7 @@ stub_path() {
 # assertion in test_install.sh is the only guard against that.
 run_install_sh() {
     env PATH="$STUB:$PATH" HOME="$SCRATCH" GIT_CONFIG_GLOBAL="$WORK/gitconfig" \
-        "$REPO_ROOT/install.sh" <<< $'yyyyyyyyyyyy\n' \
+        "$REPO_ROOT/install.sh" <<< $'yyyyyyyyyyyyyy\n' \
         > "$WORK/install.log" 2>&1
 }
 

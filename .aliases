@@ -69,6 +69,10 @@ fi
 # Python virtual environment
 alias act='source .venv/bin/activate'
 
+# Restart the PipeWire stack when a call loses audio/video. Fallback for what
+# the WirePlumber camera fix (install.sh prompt) doesn't cover.
+alias audiofix='systemctl --user restart wireplumber pipewire pipewire-pulse'
+
 # Quick edits
 alias aliases='nvim ~/.aliases'
 alias reload='source ~/.bashrc'

@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2026-10-28
+
+### Added
+- `install.sh`: **earlyoom** prompt (default Y). Installs the package and copies `etc/systemd/system/earlyoom.service.d/dotfiles.conf` to `/etc` (copied, not symlinked — a system service must not depend on a user checkout; `cmp` keeps re-runs sudo-free). The override prefers killing Python/Jupyter and avoids the compositor and PipeWire stack, so a runaway script dies before the desktop freezes instead of after minutes of swap thrashing.
+- `wireplumber` link group (prompt, default N): `51-disable-libcamera.conf` disables WirePlumber's libcamera monitor. With both libcamera and v4l2 monitors on, the UVC webcam was exposed twice and the two contended for it — Teams in Firefox came up with no audio *and* no video after a previous call until the PipeWire stack was restarted. Defaults to no because it hides cameras that only work through libcamera (MIPI/IPU6).
+- `.aliases`: `audiofix` restarts `wireplumber pipewire pipewire-pulse` as the manual fallback.
+
+### Changed
+- `tests/helpers.sh`: `sudo` is now stubbed alongside the tool stubs, so no install step (`configure_earlyoom`, `kde-setup.sh`'s `localectl`) can reach root during a test run. Answer stream extended to 14 prompts; pinned category and link-group lists updated.
+- `.ct-state/` (local claude-toolkit state) is gitignored and untracked.
+
+### Notes
+- earlyoom acts only when available RAM ≤10% **and** free swap ≤25%, so a very large swap delays the kill. Pair it with modest swap (~8G); 32G only makes sense for hibernation.
+- The libcamera diagnosis is inferred from logs (duplicate camera nodes, `link failed` / `proxy destroyed` errors), not from a captured failure. If a call still drops A/V, grab `wpctl status` and `journalctl --user -u wireplumber -n 50` before running `audiofix`.
+
 ## [0.4.2] - 2026-08-16
 
 ### Fixed

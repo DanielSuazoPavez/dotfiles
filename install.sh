@@ -332,6 +332,30 @@ install_kdeconnect() {
     pkg_install kdeconnect-kde kdeconnect
 }
 
+# earlyoom kills the biggest process (preferring Python) before memory runs out,
+# instead of the kernel OOM killer acting only after minutes of swap thrashing.
+install_earlyoom() {
+    command -v earlyoom &> /dev/null && return 0
+    echo "  Installing earlyoom..."
+    pkg_install earlyoom
+}
+
+# Copied, not symlinked: /etc is root-owned and a symlink into $HOME would make
+# a system service depend on a user checkout. cmp keeps re-runs sudo-free.
+configure_earlyoom() {
+    local src="$DOTFILES_DIR/etc/systemd/system/earlyoom.service.d/dotfiles.conf"
+    local dest="/etc/systemd/system/earlyoom.service.d/dotfiles.conf"
+    if ! cmp -s "$src" "$dest"; then
+        try_sudo install -D -m 644 "$src" "$dest" || return 1
+        try_sudo systemctl daemon-reload || return 1
+        try_sudo systemctl enable earlyoom || return 1
+        try_sudo systemctl restart earlyoom || return 1
+        return 0
+    fi
+    systemctl is-enabled earlyoom &> /dev/null && return 0
+    try_sudo systemctl enable --now earlyoom
+}
+
 # --- Runtimes ---------------------------------------------------------------
 
 install_uv() {
@@ -454,7 +478,7 @@ echo
 # Shell basics are always installed (no prompt).
 # Only installer-gating flags are declared here. The flags that gate link groups
 # (INSTALL_STARSHIP, INSTALL_NEOVIM, INSTALL_ZELLIJ, INSTALL_GHOSTTY,
-# INSTALL_RIPGREP, INSTALL_BROOT) are declared by links.sh from GROUP_FLAGS,
+# INSTALL_RIPGREP, INSTALL_BROOT, INSTALL_WIREPLUMBER) are declared by links.sh from GROUP_FLAGS,
 # sourced at line 34 — well before this block. Do not re-declare them.
 INSTALL_FONTS=false
 INSTALL_ZOXIDE=false
@@ -463,6 +487,7 @@ INSTALL_RUNTIMES=false
 INSTALL_CLAUDE=false
 INSTALL_KDE=false
 INSTALL_KDECONNECT=false
+INSTALL_EARLYOOM=false
 
 if prompt_category "Starship prompt" "y"; then
     INSTALL_STARSHIP=true
@@ -487,6 +512,10 @@ fi
 
 if prompt_category "Cron (cronie)" "y"; then
     INSTALL_CRON=true
+fi
+
+if prompt_category "earlyoom (kill runaway processes before the system freezes)" "y"; then
+    INSTALL_EARLYOOM=true
 fi
 
 if prompt_category "Runtimes (uv, node, docker)" "y"; then
@@ -516,6 +545,12 @@ fi
 # headless box, WSL, or GNOME should not get it by accepting every default.
 if prompt_category "KDE Connect (phone integration)" "n"; then
     INSTALL_KDECONNECT=true
+fi
+
+# Defaults to no: PipeWire-desktop-only, and it hides cameras that only work
+# through libcamera (MIPI/IPU6 sensors) — wrong for those machines.
+if prompt_category "WirePlumber camera fix (disable libcamera monitor)" "n"; then
+    INSTALL_WIREPLUMBER=true
 fi
 
 echo
@@ -576,6 +611,13 @@ if [ "$INSTALL_CRON" = true ]; then
     run_install enable_cron
 fi
 
+# earlyoom
+if [ "$INSTALL_EARLYOOM" = true ]; then
+    echo "Installing earlyoom..."
+    run_install install_earlyoom
+    run_install configure_earlyoom
+fi
+
 # Runtimes
 if [ "$INSTALL_RUNTIMES" = true ]; then
     echo "Installing runtimes..."
@@ -609,6 +651,12 @@ fi
 if [ "$INSTALL_KDECONNECT" = true ]; then
     echo "Installing KDE Connect..."
     run_install install_kdeconnect
+fi
+
+# WirePlumber: config only, linked by link_groups below. Needs
+# `systemctl --user restart wireplumber` to take effect in a running session.
+if [ "$INSTALL_WIREPLUMBER" = true ]; then
+    echo "Installing WirePlumber camera fix..."
 fi
 
 # Symlinks last: every enabled group in one pass, gated by GROUP_FLAGS in

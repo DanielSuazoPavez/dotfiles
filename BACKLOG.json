@@ -196,6 +196,32 @@
       "created_at": "2026-08-16",
       "updated_at": "2026-08-16",
       "notes": "Deferred from the keybind-mnemonics branch by user decision. docs/KEYBIND-MNEMONICS.md defines a core letter set (h/j/k/l, r, n, x) that nothing enforces automatically -- check-keybind-collisions.py covers overlap, check-keymap-docs.py covers key-set drift, neither covers meaning. A checker would also need to keep the deviation table's file:line citations honest; four of them drifted during this branch's own rebinds and were only caught by a manual sweep. Caveat from .claude/rules/workflow/script-first.md: a script encoding the charter's rules is a second source of truth -- single-source it from the doc or accept the sync burden."
+    },
+    {
+      "id": "swap-zram-setup",
+      "priority": "P3",
+      "title": "Automate swap sizing (btrfs swapfile) and optional zram",
+      "scope": [
+        "install"
+      ],
+      "status": "idea",
+      "created_at": "2026-10-28",
+      "updated_at": "2026-10-28",
+      "source": "user:2026-10-28",
+      "notes": "Swap was set up by hand on 0.4.3: 8G btrfs swapfile in a /var/swap subvolume (outside snapper snapshots) + fstab line. Not in install.sh. Consider a prompt or script; zram (zram-generator) as a faster first tier. Keep swap modest \u2014 earlyoom needs swap <=25% free to act."
+    },
+    {
+      "id": "bt-headset-hfp-failures",
+      "priority": "P3",
+      "title": "Investigate WH-CH400 Bluetooth HFP transport failures",
+      "scope": [
+        "config"
+      ],
+      "status": "idea",
+      "created_at": "2026-10-28",
+      "updated_at": "2026-10-28",
+      "source": "user:2026-10-28",
+      "notes": "wireplumber logs repeated 'Failure in Bluetooth audio transport' and bluez_output running->error for 00:18:09:D7:7D:6B when switching to headset profile for calls (mic issues). Separate from the libcamera fix in 0.4.3. Candidate: bluez5 roles/codec drop-in, autoswitch settings."
     }
   ]
 }

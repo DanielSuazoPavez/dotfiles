@@ -46,6 +46,7 @@ output/claude-toolkit/
 output/plans/
 !templates/claude-project/.claude
 !templates/claude-project/.claude/**
+.ct-state/
 
 # VS Code (except template)
 .vscode/
