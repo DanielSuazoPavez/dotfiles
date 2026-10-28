@@ -103,7 +103,10 @@ what they copied. Built-in alternatives: `Ctrl-g` shows the relative path,
 ## LSP — code intelligence
 
 Servers auto-install via mason: `lua_ls`, `basedpyright` + `ruff` (Python),
-`yamlls`, `jsonls`. Inlay hints on; diagnostics shown as virtual text.
+`yamlls`, `jsonls`, `terraformls` + `tflint` (Terraform). yamlls knows the
+CloudFormation intrinsic tags (`!Ref`, `!Sub`, ...) and validates templates
+named `*.cf.yaml`, `cloudformation.yaml`, `template.yaml` (SAM), or living under
+a `cloudformation/` directory. Inlay hints on; diagnostics shown as virtual text.
 **Format-on-save is enabled for all buffers.**
 
 | Key | Action |
@@ -170,11 +173,11 @@ need a browser-based previewer or the `mmdc` CLI.
 
 ## Folding
 
-Folding is treesitter-based and enabled in five filetypes: `markdown`, `json`,
-`sh`, `python` and `yaml`. What collapses is whatever the language's syntax tree
+Folding is treesitter-based and enabled in six filetypes: `markdown`, `json`,
+`sh`, `python`, `yaml` and `terraform`. What collapses is whatever the language's syntax tree
 calls a block — markdown sections under a heading, json objects and arrays,
 shell function bodies and `if`/`case`/loop blocks, python function and class
-bodies, yaml nested mappings and sequences.
+bodies, yaml nested mappings and sequences, terraform blocks.
 
 Buffers open fully expanded (`foldlevel=99`) — folding is opt-in per fold, never
 a wall of collapsed text on open. The fold column is on, so collapsed regions
