@@ -12,6 +12,8 @@ return {
       "lua",
       "python",
       "yaml",
+      "terraform",
+      "hcl",
       "markdown",
       "markdown_inline",
     })

@@ -9,7 +9,8 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "yamlls", "jsonls", "basedpyright", "ruff" }
+        ensure_installed = { "lua_ls", "yamlls", "jsonls", "basedpyright", "ruff",
+          "terraformls", "tflint" }
       })
     end
   },
@@ -53,9 +54,40 @@ return {
       -- Ruff (Python linter/formatter)
       vim.lsp.enable('ruff')
 
-      -- YAML & JSON
+      -- YAML (+ CloudFormation). Schemas come from SchemaStore by filename
+      -- (*.cf.yaml, cloudformation.yaml, template.yaml for SAM, ...); the
+      -- extra globs below catch templates kept under a cloudformation/ dir.
+      -- customTags teaches yamlls the CFN intrinsics so !Ref/!Sub/... aren't
+      -- flagged as unknown tags in every YAML file.
+      local cfn_schema =
+        "https://raw.githubusercontent.com/awslabs/goformation/master/schema/cloudformation.schema.json"
+      vim.lsp.config('yamlls', {
+        settings = {
+          yaml = {
+            schemas = {
+              [cfn_schema] = { "**/cloudformation/**/*.yaml", "**/cloudformation/**/*.yml" },
+            },
+            customTags = {
+              "!And sequence", "!If sequence", "!Not sequence", "!Equals sequence",
+              "!Or sequence", "!FindInMap sequence", "!Base64 scalar", "!Cidr sequence",
+              "!Ref scalar", "!Sub scalar", "!Sub sequence", "!GetAtt scalar",
+              "!GetAtt sequence", "!GetAZs scalar", "!ImportValue scalar",
+              "!ImportValue mapping", "!Select sequence", "!Split sequence",
+              "!Join sequence", "!Condition scalar", "!Transform mapping",
+            },
+          },
+        },
+      })
       vim.lsp.enable('yamlls')
+
+      -- JSON
       vim.lsp.enable('jsonls')
+
+      -- Terraform: terraformls (completion, docs, validation) + tflint (lint
+      -- diagnostics). Formatting shells out to `terraform fmt`, so format on
+      -- save is a silent no-op until the terraform CLI is on PATH.
+      vim.lsp.enable('terraformls')
+      vim.lsp.enable('tflint')
 
       -- descs are load-bearing: they're what which-key and the <leader>fk
       -- keymaps picker display. An undescribed map is an invisible one.
