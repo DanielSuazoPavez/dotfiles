@@ -27,6 +27,7 @@ LINKS=(
     "nvim:.config/nvim:$HOME/.config/nvim"
     "zellij:.config/zellij/config.kdl:$HOME/.config/zellij/config.kdl"
     "zellij:.config/zellij/layouts/project.kdl:$HOME/.config/zellij/layouts/project.kdl"
+    "zellij:scripts/proj-nvim:$HOME/.local/bin/proj-nvim"
     "ghostty:.config/ghostty/config:$HOME/.config/ghostty/config"
     "cli-extras:.duckdbrc:$HOME/.duckdbrc"
     "broot:.config/broot/conf.hjson:$HOME/.config/broot/conf.hjson"

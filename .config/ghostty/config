@@ -46,5 +46,6 @@
 shell-integration = "bash"
 window-theme = ghostty
 font-family = "JetBrainsMono Nerd Font"
+font-size = 10
 
 keybind = shift+enter=text:\x1b\r

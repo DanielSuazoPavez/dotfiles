@@ -14,7 +14,7 @@ source "$REPO_ROOT/links.sh"
 echo "test_links.sh"
 
 # 1. Entry count
-assert_eq "${#LINKS[@]}" "15" "LINKS has 15 entries"
+assert_eq "${#LINKS[@]}" "16" "LINKS has 16 entries"
 
 # 2. Groups
 groups=$(for e in "${LINKS[@]}"; do echo "${e%%:*}"; done | sort -u | tr '\n' ' ')
