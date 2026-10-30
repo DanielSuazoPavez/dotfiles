@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Open BACKLOG.md with the neo-tree sidebar when present, else the directory.
+# Runs in the pane's cwd, so the relative path resolves. Zellij records this
+# bare command for session restore, so the logic lives here, not in the layout.
+if [ -f BACKLOG.md ]; then
+    exec nvim BACKLOG.md -c 'Neotree filesystem reveal toggle left'
+fi
+exec nvim .

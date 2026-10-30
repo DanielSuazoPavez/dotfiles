@@ -1,5 +1,4 @@
-// Per-project layout: nvim (2/3) + Claude Code (1/3), side by side,
-// plus a hidden floating "scratch" terminal for quick commands.
+// Per-project layout: nvim (2/3) + Claude Code (1/3), side by side.
 //
 // Two ways to use it:
 //   - New session:  zellij --layout project      (the `proj` shell fn)
@@ -9,8 +8,8 @@
 // with the tab-bar / status-bar plugin panes, so `projtab` tabs keep their
 // top tab list and bottom status bar instead of rendering bare.
 //
-// Quick terminal: press  Alt f  to toggle the floating scratch shell
-// on/off over the nvim+cc panes. It persists across toggles.
+// Quick terminal: press  Alt f  (ToggleFloatingPanes in config.kdl) to get a
+// floating shell over the nvim+cc panes. The layout does not define one.
 layout {
     default_tab_template {
         pane size=1 borderless=true {
@@ -27,19 +26,10 @@ layout {
             // sidebar toggled (same as Ctrl-e); else just open the directory.
             // Runs in the pane's cwd (project root), so the path resolves.
             pane name="nvim" size="67%" {
-                command "bash"
-                args "-c" "[ -f BACKLOG.md ] && exec nvim BACKLOG.md -c 'Neotree filesystem reveal toggle left' || exec nvim ."
+                command "proj-nvim"
             }
             pane name="claude-code" size="33%" {
                 command "claude"
-            }
-        }
-        floating_panes {
-            pane name="scratch" {
-                width "70%"
-                height "60%"
-                x "15%"
-                y "20%"
             }
         }
     }

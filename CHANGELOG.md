@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.4] - 2026-10-30
+
+### Added
+- `scripts/proj-nvim` (linked to `~/.local/bin/proj-nvim` in the `zellij` group): opens `BACKLOG.md` with the neo-tree sidebar when present, else the directory. Zellij restores a pane by replaying its bare command, so the logic moved out of the layout's `bash -c` wrapper, which dropped its arguments on restore.
+
+### Changed
+- `project.kdl`: the nvim pane runs `proj-nvim`. The floating scratch pane is removed from the layout; `Alt f` (`ToggleFloatingPanes`) opens a floating shell in the pane's directory instead. Runtime-created floating panes are not part of zellij's session snapshot, so the layout-defined one could not be restored.
+- `~/.config/zellij/config.kdl` is now a symlink to the tracked file. The tracked copy gains `support_kitty_graphics_protocol true`, which was live-only drift.
+- Ghostty: `font-size = 10` set explicitly in `.config/ghostty/config`.
+- `tests/test_links.sh`: expected `LINKS` count 15 → 16.
+
+### Notes
+- Verified by hand on a throwaway session: after `kill -9` of the zellij server, `proj-nvim` reopens in the restored cwd once the pane is run (zellij shows the command and waits for Enter; `attach -f` runs it on attach). The floating scratch pane opens in the right cwd via `Alt f`.
+
 ## [0.4.3] - 2026-10-28
 
 ### Added
