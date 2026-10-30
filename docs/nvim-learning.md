@@ -91,8 +91,8 @@ Three to five keys a week; ignore the rest. That restraint is the method.
 |---|---|---|
 | ✅ | Discovery | `<leader>?`, `<leader>fk`, `Ctrl-/` |
 | ✅ | Telescope beyond ff/fg | `<leader>fr`, `<leader>fo`, `<leader>fb` |
-| **→** | **In-file movement** | **`f<char>`, `;`, `%`, `*`** |
-| | Text objects | `ciw`, `ci"`, `cib`, `dap` |
+| ✅ | In-file movement | `%`, `*` |
+| **→** | **`f`/`t` + text objects** | **`f<char>`, `;`, `ciw`, `ci"`, `cib`, `dap`** |
 | | Jumping | `Ctrl-o`, `Ctrl-i`, `gd`, `gr` |
 | | Telescope → quickfix | `Ctrl-a`, `:cnext`, `:cprev`, `:copen` |
 | | Git in-buffer | `]c`, `[c`, `<leader>hp`, `<leader>hb` |
